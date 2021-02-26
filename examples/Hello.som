@@ -1,0 +1,6 @@
+Hello = (
+    
+    run = (
+        'Hello, World from SOM' println )    
+
+)
