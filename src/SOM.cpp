@@ -2,8 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <vector>
 
-// #define ANTLR4CPP_STATIC // Needed when linking static antlr library
 #include "antlr4-runtime.h"
 #include "SOMLexer.h"
 #include "SOMParser.h"
@@ -11,6 +11,7 @@
 #include "./ast/CParseTreeConverter.h"
 #include "SOMParserBaseVisitor.h"
 #include "./ast/ASTNodes.h"
+#include "utils/SourceFilesDir.h"
 
 int main(int argc, char** argv)
 {
@@ -20,23 +21,24 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    // Open the SOM source file
-    std::ifstream input;
-    input.open(argv[1]);
-    if (!input) {
-        std::cerr << "Unable to open SOM source file: " << argv[1] << std::endl;
-        return -1;
+    som::SourceFilesDir srcFiles(argv[1]);
+    if (!srcFiles.loadSourceFiles()) {
+        return 1;
     }
 
-    antlr4::ANTLRInputStream inputStream(input);
-    SOMLexer lexer(&inputStream);
-    antlr4::CommonTokenStream tokens(&lexer);
-    SOMParser parser(&tokens);
+    
+    std::vector<som::nodePtr> asts;
+    for (auto& file : srcFiles.getSrcFiles()) {
+        antlr4::ANTLRInputStream inputStream(*file);
+        SOMLexer lexer(&inputStream);
+        antlr4::CommonTokenStream tokens(&lexer);
+        SOMParser parser(&tokens);
 
-    SOMParser::ClassdefContext* tree = parser.classdef();
-    som::CParseTreeConverter visitor;
-    som::ASTNode* ret = visitor.visitClassdef(tree).as<som::ASTNode*>();
-    som::nodePtr ast = std::unique_ptr<som::ASTNode>(ret);
+        SOMParser::ClassdefContext* tree = parser.classdef();
+        som::CParseTreeConverter visitor;
+        som::ASTNode* fileAST = visitor.visitClassdef(tree).as<som::ASTNode*>();
+        asts.emplace_back(fileAST);
+    }
 
     return 0;
 }
