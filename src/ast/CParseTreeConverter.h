@@ -62,6 +62,7 @@ namespace som {
 		antlrcpp::Any visitBinaryOperand(SOMParser::BinaryOperandContext* ctx) override;
 		antlrcpp::Any visitKeywordMessage(SOMParser::KeywordMessageContext* ctx) override;
 		antlrcpp::Any visitFormula(SOMParser::FormulaContext* ctx) override;
+		antlrcpp::Any visitResult(SOMParser::ResultContext* ctx) override;
 
 		//antlrcpp::Any visitPrimary(SOMParser::PrimaryContext* ctx) override;
 

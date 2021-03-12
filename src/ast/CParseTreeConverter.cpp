@@ -85,7 +85,7 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitPattern(SOMParser::PatternContext* ctx)
 	{
 		// Visits one of the unary/binary/keyword patterns
-		return visitChildren(ctx);
+		return visitChildren(ctx).as<ASTNode*>();
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitUnaryPattern(SOMParser::UnaryPatternContext* ctx)
@@ -154,7 +154,7 @@ namespace som {
 			ASTNode* argumentPtr = visit(ctx->argument().at(i)).as<ASTNode*>();
 			args.emplace_back(argumentPtr);
 		}
-		return new KeywordPattern(keywords, args);
+		return makeNode<KeywordPattern>(keywords, args);
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitKeyword(SOMParser::KeywordContext* ctx)
@@ -195,9 +195,19 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitNestedBlock(SOMParser::NestedBlockContext* ctx)
 	{
+		ASTNode* blockContents = nullptr;
+		if (ctx->blockContents()) {
+			blockContents = visit(ctx->blockContents()).as<ASTNode*>();
+		}
+
+		nodeVector blockPattern;
+		if (ctx->blockPattern()) {
+			blockPattern = std::move(visit(ctx->blockPattern()).as<nodeVector>());
+		}
+		
 		return makeNode<NestedBlock>(
-			visit(ctx->blockPattern()).as<nodeVector>(),
-			std::unique_ptr<ASTNode>(visit(ctx->blockContents()).as<ASTNode*>())
+			blockPattern,
+			std::unique_ptr<ASTNode>(blockContents)
 			);
 	}
 
@@ -317,9 +327,13 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitEvaluation(SOMParser::EvaluationContext* ctx)
 	{
+		nodeVector messages;
+		if (ctx->messages()) {
+			messages = std::move(visit(ctx->messages()).as<nodeVector>());
+		}
 		return makeNode<Evaluation>(
 			std::unique_ptr<ASTNode>(visit(ctx->primary()).as<ASTNode*>()),
-			visit(ctx->messages()).as<nodeVector>()
+			messages
 		);
 	}
 
@@ -354,7 +368,7 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitBinaryMessage(SOMParser::BinaryMessageContext* ctx)
 	{
-		return new BinaryMessage(
+		return makeNode<BinaryMessage>(
 			std::unique_ptr<ASTNode>(visit(ctx->binarySelector()).as<ASTNode*>()),
 			std::unique_ptr<ASTNode>(visit(ctx->binaryOperand()).as<ASTNode*>())
 		);
@@ -394,6 +408,11 @@ namespace som {
 			std::unique_ptr<ASTNode>(visit(ctx->binaryOperand()).as<ASTNode*>()),
 			messages
 		);
+	}
+
+	antlrcpp::Any CParseTreeConverter::visitResult(SOMParser::ResultContext* ctx)
+	{
+		return visit(ctx->expression()).as<ASTNode*>();
 	}
 
 	antlrcpp::Any CParseTreeConverter::createLiteralDecimal(SOMParser::LiteralDecimalContext* ctx, bool isNegative)
