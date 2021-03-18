@@ -362,7 +362,6 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitUnarySelector(SOMParser::UnarySelectorContext* ctx)
 	{
-		std::cout << "Unary selector: " << visit(ctx->identifier()).as<std::string>() << std::endl;
 		return makeNode<UnarySelector>(visit(ctx->identifier()).as<std::string>());
 	}
 

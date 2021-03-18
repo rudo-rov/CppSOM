@@ -15,7 +15,6 @@
 
 int main(int argc, char** argv)
 {
-    // Check the input arguments number
     if (argc <= 1) {
         std::cerr << "Invalid input arguments\n";
         return 1;
