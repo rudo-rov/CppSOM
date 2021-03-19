@@ -11,11 +11,12 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitClassdef(SOMParser::ClassdefContext* ctx)
 	{
 		nodeVector instMethods, classMethods;
-		instMethods.resize(ctx->method().size());
+		instMethods.reserve(ctx->method().size());
+		
 		for (auto method : ctx->method()) {
 			instMethods.emplace_back(visit(method).as<ASTNode*>());
 		}
-		classMethods.resize(ctx->classMethod().size());
+		classMethods.reserve(ctx->classMethod().size());
 		for (auto classMethod : ctx->classMethod()) {
 			classMethods.emplace_back(visit(classMethod).as<ASTNode*>());
 		}
@@ -145,8 +146,8 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitKeywordPattern(SOMParser::KeywordPatternContext* ctx)
 	{
 		nodeVector keywords, args;
-		keywords.resize(ctx->keyword().size());
-		args.resize(ctx->argument().size());
+		keywords.reserve(ctx->keyword().size());
+		args.reserve(ctx->argument().size());
 		// Handle if the number of kewords and arguments is not the same?
 		for (int i = 0; i < ctx->keyword().size(); ++i) {
 			ASTNode* keywordPtr = visit(ctx->keyword().at(i)).as<ASTNode*>();
@@ -219,7 +220,7 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitBlockArguments(SOMParser::BlockArgumentsContext* ctx)
 	{
 		nodeVector args;
-		args.resize(ctx->argument().size());
+		args.reserve(ctx->argument().size());
 		for (auto arg : ctx->argument()) {
 			args.emplace_back(visit(arg).as<ASTNode*>());
 		}
@@ -232,7 +233,7 @@ namespace som {
 		if (ctx->localDefs())
 			localDefs = std::move(visit(ctx->localDefs()).as<nodeVector>());
 		return makeNode<Block>(
-			localDefs,
+			std::move(localDefs),
 			visit(ctx->blockBody()).as<nodeVector>()
 		);
 	}
@@ -252,7 +253,7 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitLiteralArray(SOMParser::LiteralArrayContext* ctx)
 	{
 		nodeVector arr;
-		arr.resize(ctx->literal().size());
+		arr.reserve(ctx->literal().size());
 		for (auto lit : ctx->literal()) {
 			ASTNode* literalPtr = visit(lit).as<ASTNode*>();
 			arr.emplace_back(literalPtr);
@@ -313,7 +314,7 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitAssignments(SOMParser::AssignmentsContext* ctx)
 	{
 		nodeVector assignments;
-		assignments.resize(ctx->assignment().size());
+		assignments.reserve(ctx->assignment().size());
 		for (auto it : ctx->assignment()) {
 			assignments.emplace_back(visit(it).as<ASTNode*>());
 		}
@@ -376,7 +377,7 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitBinaryOperand(SOMParser::BinaryOperandContext* ctx)
 	{
 		nodeVector mssgs;
-		mssgs.resize(ctx->unaryMessage().size());
+		mssgs.reserve(ctx->unaryMessage().size());
 		for (auto mssg : ctx->unaryMessage()) {
 			mssgs.emplace_back(visit(mssg).as<ASTNode*>());
 		}
