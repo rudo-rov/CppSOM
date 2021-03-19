@@ -38,6 +38,7 @@ namespace som {
 		virtual void visit(BinaryPattern* binaryPattern) = 0;
 		virtual void visit(KeywordPattern* keywordPattern) = 0;
 		virtual void visit(Keyword* keyword) = 0;
+		virtual void visit(KeywordWithArgs* keyword) = 0;
 
 		virtual void visit(UnarySelector* unarySelector) = 0;
 		virtual void visit(BinarySelector* binarySelector) = 0;
