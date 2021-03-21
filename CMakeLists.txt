@@ -23,6 +23,8 @@ include_directories(${ANTLR4_INCLUDE_DIRS})
 # this is not required if the jar file can be found under PATH environment
 # set(ANTLR_EXECUTABLE /usr/local/lib/antlr-4.8-complete.jar)
 
+set(ANTLR4_WITH_STATIC_CRT ON)
+
 # add macros to generate ANTLR Cpp code from grammar
 find_package(ANTLR REQUIRED)
 antlr_target(SOMLexer ${PROJECT_SOURCE_DIR}/antlr_grammar/SOMLexer.g4 LEXER PACKAGE antlr_som)
