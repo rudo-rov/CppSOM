@@ -85,8 +85,14 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitPattern(SOMParser::PatternContext* ctx)
 	{
-		// Visits one of the unary/binary/keyword patterns
-		return visitChildren(ctx).as<ASTNode*>();
+		if (ctx->unaryPattern()) {
+			
+			return visit(ctx->unaryPattern()).as<ASTNode*>();
+		} else if (ctx->binaryPattern()) {
+			return visit(ctx->binaryPattern()).as<ASTNode*>();
+		} else { // keywordPattern can't be nullptr at this point
+			return visit(ctx->keywordPattern()).as<ASTNode*>();
+		}
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitUnaryPattern(SOMParser::UnaryPatternContext* ctx)
@@ -96,51 +102,49 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitBinaryPattern(SOMParser::BinaryPatternContext* ctx)
 	{
-		ASTNode* rawSelector = visit(ctx->binarySelector()).as<ASTNode*>();
+		std::string selector = visit(ctx->binarySelector()).as<std::string>();
 		ASTNode* rawArgument = visit(ctx->argument()).as<ASTNode*>();
-		return new BinaryPattern(
-			std::unique_ptr<ASTNode>(rawSelector),
-			std::unique_ptr<ASTNode>(rawArgument)
-		);
+		// return new BinaryPattern(
+		// 	selector,
+		// 	std::unique_ptr<ASTNode>(rawArgument)
+		// );
+		return makeNode<BinaryPattern>(selector, std::unique_ptr<ASTNode>(rawArgument));
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitBinarySelector(SOMParser::BinarySelectorContext* ctx)
 	{
-		BinaryOperation type;
 		if (ctx->Or())
-			type = BinaryOperation::Or;
+			return ctx->Or()->getText();
 		else if (ctx->Comma())
-			type = BinaryOperation::Comma;
+			return ctx->Comma()->getText();
 		else if (ctx->Minus())
-			type = BinaryOperation::Minus;
+			return ctx->Minus()->getText();
 		else if (ctx->Equal())
-			type = BinaryOperation::Equal;
+			return ctx->Equal()->getText();
 		else if (ctx->Not())
-			type = BinaryOperation::Not;
+			return ctx->Not()->getText();
 		else if (ctx->And())
-			type = BinaryOperation::And;
+			return ctx->And()->getText();
 		else if (ctx->Star())
-			type = BinaryOperation::Star;
+			return ctx->Star()->getText();
 		else if (ctx->Div())
-			type = BinaryOperation::Div;
+			return ctx->Div()->getText();
 		else if (ctx->Mod())
-			type = BinaryOperation::Mod;
+			return ctx->Mod()->getText();
 		else if (ctx->Plus())
-			type = BinaryOperation::Plus;
+			return ctx->Plus()->getText();
 		else if (ctx->More())
-			type = BinaryOperation::More;
+			return ctx->More()->getText();
 		else if (ctx->Less())
-			type = BinaryOperation::Less;
+			return ctx->Less()->getText();
 		else if (ctx->At())
-			type = BinaryOperation::At;
+			return ctx->At()->getText();
 		else if (ctx->Per())
-			type = BinaryOperation::Per;
+			return ctx->Per()->getText();
 		else if (ctx->OperatorSequence())
-			type = BinaryOperation::OperatorSequence;
-		else
-			type = BinaryOperation::Unknown;
+			return ctx->OperatorSequence()->getText();
 
-		return makeNode<BinarySelector>(type);
+		return "";
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitKeywordPattern(SOMParser::KeywordPatternContext* ctx)

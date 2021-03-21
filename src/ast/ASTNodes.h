@@ -9,7 +9,9 @@
 
 namespace som {
 
-	struct ASTNode {};
+	struct ASTNode {
+		virtual void accept(CAstAbstractVisitor& visitor) = 0;
+	};
 
 	typedef std::unique_ptr<ASTNode> nodePtr;
 	typedef std::vector<nodePtr> nodeVector;
@@ -63,12 +65,12 @@ namespace som {
 	struct UnaryPattern : ASTNode {
 		UnaryPattern(std::string identifier) : m_identifier(std::move(identifier)) {}
 		std::string m_identifier;
-		VISITABLE;
+		VISITABLE
 	};
 
 	struct BinaryPattern : ASTNode {
-		BinaryPattern(nodePtr binOp, nodePtr argument) : m_binOp(std::move(binOp)), m_argument(std::move(argument)) {}
-		nodePtr m_binOp;
+		BinaryPattern(std::string identifier, nodePtr argument) : m_identifier(std::move(identifier)), m_argument(std::move(argument)) {}
+		std::string m_identifier;		
 		nodePtr m_argument;
 		VISITABLE
 	};
@@ -97,31 +99,6 @@ namespace som {
 	struct UnarySelector : ASTNode {
 		UnarySelector(std::string identifier) : m_identifier(identifier) {}
 		std::string m_identifier;
-		VISITABLE
-	};
-
-	enum class BinaryOperation {
-		Or,
-		Comma,
-		Plus,
-		Minus,
-		Equal,
-		Not,
-		And,
-		Star,
-		Div,
-		Mod,
-		More,
-		Less,
-		At,
-		Per,
-		OperatorSequence,
-		Unknown
-	};
-
-	struct BinarySelector : ASTNode {
-		BinarySelector(BinaryOperation type) : m_type(type) {}
-		BinaryOperation m_type;
 		VISITABLE
 	};
 

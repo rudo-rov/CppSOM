@@ -11,6 +11,7 @@ namespace som {
 	struct BinaryPattern;
 	struct KeywordPattern;
 	struct Keyword;
+	struct KeywordWithArgs;
 	struct UnarySelector;
 	struct BinarySelector;
 	struct BinaryOperand;
