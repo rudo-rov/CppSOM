@@ -24,7 +24,7 @@ namespace som {
                 m_srcFiles.push_back(std::move(fileStream));
             }
         }
-        std::cout << m_srcFiles.size() << " source files loaded.\n"; 
+        std::cout << m_srcFiles.size() << " source file" << (m_srcFiles.size() == 1 ? " " : " s" ) << "loaded.\n"; 
         return true;
     }
 

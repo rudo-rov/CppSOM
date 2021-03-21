@@ -35,16 +35,27 @@ namespace som {
 
     void CBytecodeCompiler::visit(Method* method)
     {
-        UnaryPattern* unaryPtr;
-        unaryPtr = static_cast<UnaryPattern*>(method->m_pattern.get());
+        
 
         Block* methodBlock;
         methodBlock = static_cast<Block*>(method->m_methodBlock.get());
+        int32_t nlocals = methodBlock->m_localDefs.size();
+
+        UnaryPattern* unaryPtr;
+        unaryPtr = dynamic_cast<UnaryPattern*>(method->m_pattern.get());
         if (unaryPtr) {
             int32_t patternIdx = m_program->registerConstant(unaryPtr->m_identifier);
             std::vector<ByteIns> code; // TODO: compile the instructions in the code
-            int32_t nlocals = methodBlock->m_localDefs.size();
             int32_t methodIdx = m_program->registerMethod(patternIdx, 0, nlocals, code);
+            m_class.registerSlot(methodIdx);
+        }
+
+        BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());
+        if (binPtr) {
+            // Argument?
+            int32_t patternIdx = m_program->registerConstant(binPtr->m_identifier);
+            std::vector<ByteIns> code; // TODO
+            int32_t methodIdx = m_program->registerMethod(patternIdx, 1, nlocals, code);
             m_class.registerSlot(methodIdx);
         }
     }
