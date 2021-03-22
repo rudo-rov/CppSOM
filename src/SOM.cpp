@@ -12,6 +12,8 @@
 #include "SOMParserBaseVisitor.h"
 #include "./ast/ASTNodes.h"
 #include "utils/SourceFilesDir.h"
+#include "bytecode/Program.h"
+#include "bytecode/BytecodeCompiler.h"
 
 int main(int argc, char** argv)
 {
@@ -26,7 +28,7 @@ int main(int argc, char** argv)
     }
 
     
-    std::vector<som::nodePtr> asts;
+    som::Program program;
     for (auto& file : srcFiles.getSrcFiles()) {
         antlr4::ANTLRInputStream inputStream(*file);
         SOMLexer lexer(&inputStream);
@@ -36,8 +38,14 @@ int main(int argc, char** argv)
         SOMParser::ClassdefContext* tree = parser.classdef();
         som::CParseTreeConverter visitor;
         som::ASTNode* fileAST = visitor.visitClassdef(tree).as<som::ASTNode*>();
-        asts.emplace_back(fileAST);
+        som::nodePtr ast(fileAST);
+
+        som::CBytecodeCompiler bcCompiler(&program);
+        ast->accept(bcCompiler);
     }
+    program.print();
+
+    // Serialize the program
 
     return 0;
 }
