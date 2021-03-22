@@ -58,6 +58,19 @@ namespace som {
             int32_t methodIdx = m_program->registerMethod(patternIdx, 1, nlocals, code);
             m_class.registerSlot(methodIdx);
         }
+
+        KeywordPattern* keyPtr = dynamic_cast<KeywordPattern*>(method->m_pattern.get());
+        if (keyPtr) {
+            std::stringstream identifier;
+            for (const auto& keyword : keyPtr->m_keywords) {
+                Keyword* ptr = static_cast<Keyword*>(keyword.get());
+                identifier << ptr->m_keyword;
+            }
+            int32_t patternIdx = m_program->registerConstant(identifier.str());
+            std::vector<ByteIns> code; // TODO
+            int32_t methodIdx = m_program->registerMethod(patternIdx, keyPtr->m_arguments.size(), nlocals, code);
+            m_class.registerSlot(methodIdx);
+        }
     }
 
     void CBytecodeCompiler::visit(UnaryPattern* unaryPattern)
