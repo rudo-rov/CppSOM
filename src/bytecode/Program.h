@@ -25,11 +25,13 @@ namespace som {
         int32_t registerConstant(const std::string& value);
 
         void print();
+        bool serialize(const std::string& fileName) const;
 
     private:
         // Constants pool
         std::vector<std::unique_ptr<Value>> m_constants;
         // Entry point
+        int32_t m_entryPoint; // Idx of the method run
     };
 
 }

@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <memory>
 
 #include "Program.h"
 #include "Bytecode.h"
@@ -45,6 +48,20 @@ namespace som {
             std::cout << i++ << ": ";
             entry->print();
         }
+    }
+
+    bool Program::serialize(const std::string& fileName) const
+    {
+        // Create the output file and open it for writing, binary
+        std::ofstream bcFile(fileName, std::ios::binary);
+        if (!bcFile) {
+            return false;
+        }
+        // Serialize the constant pool
+        for (const auto& entry : m_constants) {
+            entry->serialize(bcFile);
+        }
+        return true;
     }
 
 }

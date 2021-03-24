@@ -37,6 +37,7 @@ namespace som {
         Value() : tag(ValueTag::NilVal) {}
         Value(ValueTag t) : tag(t) {}
         virtual void print() {}
+        virtual void serialize(std::ostream& file);
         ValueTag tag;
     };
 
@@ -47,18 +48,21 @@ namespace som {
     struct IntValue : Value {
         IntValue(int32_t val) : Value(ValueTag::IntVal), value(val) {}
         virtual void print() override;
+        virtual void serialize(std::ostream& file) override;
         int32_t value;
     };
 
     struct DoubleValue : Value {
         DoubleValue(double val) : Value(ValueTag::DoubleVal), value(val) {}
         virtual void print() override;
+        virtual void serialize(std::ostream& file) override;
         double value;
     };
 
     struct StringValue : Value {
         StringValue(const std::string& val) : Value(ValueTag::StringVal), value(val) {}
         virtual void print() override;
+        virtual void serialize(std::ostream& file) override;
         std::string value;
     };
 
@@ -66,6 +70,7 @@ namespace som {
         MethodValue(int32_t name, int32_t nargs, int32_t nlocals, const std::vector<ByteIns> code) :
             Value(ValueTag::MethodVal), name(name), nargs(nargs), nlocals(nlocals), code(std::move(code)) {}
         virtual void print() override;
+        virtual void serialize(std::ostream& file) override;
         int32_t name;
         int32_t nargs;
         int32_t nlocals;
@@ -75,6 +80,7 @@ namespace som {
     struct ClassValue : Value {
         ClassValue(std::vector<int32_t> slots) : slots(std::move(slots)) {}
         virtual void print() override;
+        virtual void serialize(std::ostream& file) override;
         std::vector<int32_t> slots;
     };
 

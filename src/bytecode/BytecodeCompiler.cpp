@@ -13,7 +13,6 @@ namespace som {
         
         // Instance fields - create slots
         for (const auto& insField : classNode->m_instanceFields) {
-            // Get the name of the slot
             Variable* slotPtr = static_cast<Variable*>(insField.get());
             if (slotPtr) {
                 visit(slotPtr);
@@ -35,8 +34,7 @@ namespace som {
 
     void CBytecodeCompiler::visit(Method* method)
     {
-        
-
+         
         Block* methodBlock;
         methodBlock = static_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock->m_localDefs.size();
@@ -88,6 +86,12 @@ namespace som {
         if (argPtr) {
             visit(argPtr);
         }
+    }
+
+    void CBytecodeCompiler::visit(Variable* variable)
+    {
+        int32_t slotIdx = m_program->registerConstant(variable->m_identifier);
+        m_class.registerSlot(slotIdx);
     }
     
     void CBytecodeCompiler::visit(LiteralInteger* litInteger)

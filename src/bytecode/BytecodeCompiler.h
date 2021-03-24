@@ -41,7 +41,7 @@ namespace som {
 
         void visit(Assignation* assignation) override {}
         void visit(Evaluation* evaluation) override {}
-        void visit(Variable* variable) override {}
+        void visit(Variable* variable) override;
         void visit(NestedTerm* nestedTerm) override {}
     
     private:
