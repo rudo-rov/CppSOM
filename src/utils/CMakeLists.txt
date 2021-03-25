@@ -1,5 +1,6 @@
 add_library(utils
     SourceFilesDir.h SourceFilesDir.cpp
+    Config.h Config.cpp
     )
 
 set_property(TARGET utils PROPERTY
