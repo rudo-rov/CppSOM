@@ -25,6 +25,8 @@ namespace som {
     void StringValue::serialize(std::ostream& file)
     {
         file.write(reinterpret_cast<char*>(&tag), sizeof tag);
+        int32_t size = value.size();
+        file.write(reinterpret_cast<char*>(&size), sizeof size);
         file.write(value.c_str(), value.size());
     }
 
