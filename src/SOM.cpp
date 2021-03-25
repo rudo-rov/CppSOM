@@ -15,6 +15,7 @@
 #include "utils/SourceFilesDir.h"
 #include "bytecode/Program.h"
 #include "bytecode/BytecodeCompiler.h"
+#include "bytecode/BytecodeLoader.h"
 
 int main(int argc, char** argv)
 {
@@ -52,14 +53,14 @@ int main(int argc, char** argv)
             return 1;
         }
     } else { // Interpret mode
-        // load the bytecode file
-        
+        som::CBytecodeLoader bcLoader("bytecode.bc"); // TODO: filename
+        std::unique_ptr<som::Program> program = std::move(bcLoader.load());
+        if (!program) {
+            std::cerr << bcLoader.lastError() << std::endl;
+            return 1;
+        }
     }
     
-    
-
-    
-
     return 0;
 }
 

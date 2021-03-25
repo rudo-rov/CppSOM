@@ -3,6 +3,7 @@ add_library(bytecode
     Bytecode.h Bytecode.cpp
     BCClass.h BCClass.cpp
     BytecodeCompiler.h BytecodeCompiler.cpp
+    BytecodeLoader.h BytecodeLoader.cpp
 )
 
 set_property(TARGET bytecode PROPERTY
