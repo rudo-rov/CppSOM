@@ -50,6 +50,16 @@ namespace som {
         }
     }
 
+    bool Program::setEntryPoint(int32_t entryPoint)
+    {
+        // If entry point is not set to default-1, there are multiple entry points = error
+        if (m_entryPoint == -1) {
+            m_entryPoint = entryPoint;
+            return true;
+        }
+        return false;
+    }
+
     bool Program::serialize(const std::string& fileName) const
     {
         // Create the output file and open it for writing, binary
@@ -61,7 +71,8 @@ namespace som {
         for (const auto& entry : m_constants) {
             entry->serialize(bcFile);
         }
+        std::cout << "------------\n";
+        std::cout << "Entry point: " << m_entryPoint << std::endl;
         return true;
     }
-
 }

@@ -11,7 +11,7 @@ namespace som {
     class Program {
     public:
 
-        Program() {}
+        Program() : m_entryPoint(-1) {}
         ~Program() {}
         
         // Serialization
@@ -23,6 +23,8 @@ namespace som {
         int32_t registerConstant(int32_t value);
         int32_t registerConstant(double value);
         int32_t registerConstant(const std::string& value);
+
+        bool setEntryPoint(int32_t entryPoint);
 
         void print();
         bool serialize(const std::string& fileName) const;
