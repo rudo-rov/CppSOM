@@ -12,7 +12,7 @@ namespace som {
         // Handle the superclass - register new class and instantiate the object?
         
         // Instance fields - create slots
-        for (const auto& insField : classNode->m_instanceFields) {
+        for (const auto& insField : *(classNode->m_instanceFields)) {
             Variable* slotPtr = static_cast<Variable*>(insField.get());
             if (slotPtr) {
                 visit(slotPtr);
@@ -20,7 +20,7 @@ namespace som {
         }
         
         // Instance methods - similar thing to instance fields
-        for (const auto& insMethod : classNode->m_instanceMethods) {
+        for (const auto& insMethod : *(classNode->m_instanceMethods)) {
             Method* methodPtr = static_cast<Method*>(insMethod.get());
             if (!methodPtr) {
                 // Handle the error
@@ -37,7 +37,7 @@ namespace som {
          
         Block* methodBlock;
         methodBlock = static_cast<Block*>(method->m_methodBlock.get());
-        int32_t nlocals = methodBlock->m_localDefs.size();
+        int32_t nlocals = methodBlock->m_localDefs->size();
 
         UnaryPattern* unaryPtr;
         unaryPtr = dynamic_cast<UnaryPattern*>(method->m_pattern.get());
@@ -46,6 +46,9 @@ namespace som {
             std::vector<ByteIns> code; // TODO: compile the instructions in the code
             int32_t methodIdx = m_program->registerMethod(patternIdx, 0, nlocals, code);
             m_class.registerSlot(methodIdx);
+            if (unaryPtr->m_identifier == "run") {
+                m_program->setEntryPoint(methodIdx);
+            }
         }
 
         BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());
@@ -60,13 +63,13 @@ namespace som {
         KeywordPattern* keyPtr = dynamic_cast<KeywordPattern*>(method->m_pattern.get());
         if (keyPtr) {
             std::stringstream identifier;
-            for (const auto& keyword : keyPtr->m_keywords) {
+            for (const auto& keyword : *(keyPtr->m_keywords)) {
                 Keyword* ptr = static_cast<Keyword*>(keyword.get());
                 identifier << ptr->m_keyword;
             }
             int32_t patternIdx = m_program->registerConstant(identifier.str());
             std::vector<ByteIns> code; // TODO
-            int32_t methodIdx = m_program->registerMethod(patternIdx, keyPtr->m_arguments.size(), nlocals, code);
+            int32_t methodIdx = m_program->registerMethod(patternIdx, keyPtr->m_arguments->size(), nlocals, code);
             m_class.registerSlot(methodIdx);
         }
     }

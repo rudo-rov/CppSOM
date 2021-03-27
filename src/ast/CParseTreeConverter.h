@@ -67,7 +67,7 @@ namespace som {
 		//antlrcpp::Any visitPrimary(SOMParser::PrimaryContext* ctx) override;
 
 	private:
-		nodeVector makeFieldsVector(const std::vector<SOMParser::VariableContext*>& variables);
+		nodeVector* makeFieldsVector(const std::vector<SOMParser::VariableContext*>& variables);
 		void appendBlockExpression(SOMParser::BlockBodyContext* ctx, nodeVector& expressions);
 	};
 

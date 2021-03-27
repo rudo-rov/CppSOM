@@ -15,6 +15,7 @@ namespace som {
 
 	typedef std::unique_ptr<ASTNode> nodePtr;
 	typedef std::vector<nodePtr> nodeVector;
+	typedef std::unique_ptr<nodeVector> nodeVectorPtr;
 
 	template <class T, class... Args>
 	ASTNode* makeNode(Args&&... args)
@@ -23,24 +24,24 @@ namespace som {
 	}
 
 	struct Class : ASTNode {
-		Class(std::string identifier, nodeVector& instanceFields, nodeVector& instanceMethods,
-			nodeVector& classFields, nodeVector& classMethods) : m_identifier(identifier), m_instanceFields(std::move(instanceFields)),
-			m_instanceMethods(std::move(instanceMethods)), m_classFields(std::move(classFields)), m_classMethods(std::move(classMethods))
+		Class(std::string identifier, nodeVector* instanceFields, nodeVector* instanceMethods,
+			nodeVector* classFields, nodeVector* classMethods) : m_identifier(identifier), m_instanceFields(instanceFields),
+			m_instanceMethods(instanceMethods), m_classFields(classFields), m_classMethods(classMethods)
 		{}
 
 		std::string m_identifier;
 		nodePtr m_superclass;
-		nodeVector m_instanceFields;
-		nodeVector m_instanceMethods;
-		nodeVector m_classFields;
-		nodeVector m_classMethods;
+		nodeVectorPtr m_instanceFields;
+		nodeVectorPtr m_instanceMethods;
+		nodeVectorPtr m_classFields;
+		nodeVectorPtr m_classMethods;
 		VISITABLE
 	};
 
 	// Methods and message patterns
 	struct Method : ASTNode {
-		Method(nodePtr pattern, nodePtr block) :
-			m_pattern(std::move(pattern)), m_methodBlock(std::move(block))
+		Method(ASTNode* pattern, ASTNode* block) :
+			m_pattern(pattern), m_methodBlock(block)
 		{}
 
 		nodePtr m_pattern;
@@ -49,14 +50,14 @@ namespace som {
 	};
 
 	struct Block : ASTNode {
-		Block(nodeVector& localDefs, nodeVector& expressions) : m_localDefs(std::move(localDefs)), m_expressions(std::move(localDefs)) {}
-		nodeVector m_localDefs;
-		nodeVector m_expressions;
+		Block(nodeVector* localDefs, nodeVector* expressions) : m_localDefs(localDefs), m_expressions(localDefs) {}
+		nodeVectorPtr m_localDefs;
+		nodeVectorPtr m_expressions;
 		VISITABLE
 	};
 	struct NestedBlock : ASTNode {
-		NestedBlock(nodeVector& args, nodePtr block) : m_arguments(std::move(args)), m_block(std::move(block)) {}
-		nodeVector m_arguments;
+		NestedBlock(nodeVector* args, ASTNode* block) : m_arguments(args), m_block(block) {}
+		nodeVectorPtr m_arguments;
 		nodePtr m_block;
 		VISITABLE
 	};
@@ -69,16 +70,16 @@ namespace som {
 	};
 
 	struct BinaryPattern : ASTNode {
-		BinaryPattern(std::string identifier, nodePtr argument) : m_identifier(std::move(identifier)), m_argument(std::move(argument)) {}
+		BinaryPattern(std::string identifier, ASTNode* argument) : m_identifier(std::move(identifier)), m_argument(argument) {}
 		std::string m_identifier;		
 		nodePtr m_argument;
 		VISITABLE
 	};
 
 	struct KeywordPattern : ASTNode {
-		KeywordPattern(nodeVector& keywords, nodeVector& args) : m_keywords(std::move(keywords)), m_arguments(std::move(args)) {}
-		nodeVector m_keywords;
-		nodeVector m_arguments;
+		KeywordPattern(nodeVector* keywords, nodeVector* args) : m_keywords(keywords), m_arguments(args) {}
+		nodeVectorPtr m_keywords;
+		nodeVectorPtr m_arguments;
 		VISITABLE
 	};
 
@@ -89,7 +90,7 @@ namespace som {
 	};
 
 	struct KeywordWithArgs : ASTNode {
-		KeywordWithArgs(std::string identifier, nodePtr argument) : m_identifier(std::move(identifier)), m_argument(std::move(argument)) {}
+		KeywordWithArgs(std::string identifier, ASTNode* argument) : m_identifier(std::move(identifier)), m_argument(argument) {}
 		std::string m_identifier;
 		nodePtr m_argument;
 		VISITABLE
@@ -103,41 +104,41 @@ namespace som {
 	};
 
 	struct KeywordSelector : ASTNode {
-		KeywordSelector(nodeVector& keywords) : m_keywords(std::move(keywords)) {}
-		nodeVector m_keywords;
+		KeywordSelector(nodeVector* keywords) : m_keywords(keywords) {}
+		nodeVectorPtr m_keywords;
 		VISITABLE
 	};
 
 	// Message sends
 	struct UnaryMessage : ASTNode {
-		UnaryMessage(nodePtr selector) : m_unarySelector(std::move(selector)) {}
+		UnaryMessage(ASTNode* selector) : m_unarySelector(selector) {}
 		nodePtr m_unarySelector;
 		VISITABLE
 	};
 
 	struct BinaryMessage : ASTNode {
-		BinaryMessage(nodePtr selector, nodePtr operand) : m_binarySelector(std::move(selector)), m_operand(std::move(operand)) {}
+		BinaryMessage(ASTNode* selector, ASTNode* operand) : m_binarySelector(selector), m_operand(operand) {}
 		nodePtr m_binarySelector;
 		nodePtr m_operand;
 		VISITABLE
 	};
 	struct BinaryOperand : ASTNode {
-		BinaryOperand(nodePtr primary, nodeVector& messages) : m_primary(std::move(primary)), m_unaryMessages(std::move(messages)) {}
+		BinaryOperand(ASTNode* primary, nodeVector* messages) : m_primary(primary), m_unaryMessages(messages) {}
 		nodePtr m_primary;
-		nodeVector m_unaryMessages;
+		nodeVectorPtr m_unaryMessages;
 		VISITABLE
 	};
 
 	struct KeywordMessage : ASTNode {
-		KeywordMessage(nodeVector& keywords, nodeVector& formulas) : m_keywords(std::move(keywords)), m_formulas(std::move(formulas)) {}
-		nodeVector m_keywords;
-		nodeVector m_formulas;
+		KeywordMessage(nodeVector* keywords, nodeVector* formulas) : m_keywords(keywords), m_formulas(formulas) {}
+		nodeVectorPtr m_keywords;
+		nodeVectorPtr m_formulas;
 		VISITABLE
 	};
 	struct Formula : ASTNode {
-		Formula(nodePtr arg, nodeVector& binaryMessage) : m_argument(std::move(arg)), m_binaryMessage(std::move(binaryMessage)) {}
+		Formula(ASTNode* arg, nodeVector* binaryMessage) : m_argument(arg), m_binaryMessage(binaryMessage) {}
 		nodePtr m_argument;
-		nodeVector m_binaryMessage;
+		nodeVectorPtr m_binaryMessage;
 		VISITABLE
 	};
 
@@ -162,22 +163,22 @@ namespace som {
 	};
 
 	struct LiteralArray : ASTNode {
-		LiteralArray(nodeVector& literals) : m_literals(std::move(literals)) {}
-		nodeVector m_literals;
+		LiteralArray(nodeVector* literals) : m_literals(literals) {}
+		nodeVectorPtr m_literals;
 		VISITABLE
 	};
 
 	struct Assignation : ASTNode {
-		Assignation(nodeVector& variables, nodePtr value) : m_variables(std::move(variables)), m_value(std::move(value)) {}
-		nodeVector m_variables;
+		Assignation(nodeVector* variables, ASTNode* value) : m_variables(variables), m_value(value) {}
+		nodeVectorPtr m_variables;
 		nodePtr m_value;
 		VISITABLE
 	};
 
 	struct Evaluation : ASTNode {
-		Evaluation(nodePtr primary, nodeVector& messages) : m_primary(std::move(primary)), m_messages(std::move(messages)) {}
+		Evaluation(ASTNode* primary, nodeVector* messages) : m_primary(primary), m_messages(messages) {}
 		nodePtr m_primary;
-		nodeVector m_messages;
+		nodeVectorPtr m_messages;
 		VISITABLE
 	};
 
@@ -188,7 +189,7 @@ namespace som {
 	};
 
 	struct NestedTerm : ASTNode {
-		NestedTerm(nodePtr exp) : m_expression(std::move(exp)) {}
+		NestedTerm(ASTNode* exp) : m_expression(exp) {}
 		nodePtr m_expression;
 		VISITABLE
 	};
