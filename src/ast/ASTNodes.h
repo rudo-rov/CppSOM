@@ -50,7 +50,7 @@ namespace som {
 	};
 
 	struct Block : ASTNode {
-		Block(nodeVector* localDefs, nodeVector* expressions) : m_localDefs(localDefs), m_expressions(localDefs) {}
+		Block(nodeVector* localDefs, nodeVector* expressions) : m_localDefs(localDefs), m_expressions(expressions) {}
 		nodeVectorPtr m_localDefs;
 		nodeVectorPtr m_expressions;
 		VISITABLE
