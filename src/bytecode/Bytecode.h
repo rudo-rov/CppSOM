@@ -3,6 +3,7 @@
 #include <cinttypes>
 #include <string>
 #include <vector>
+#include <fstream>
 
 namespace som {
 
@@ -16,6 +17,7 @@ namespace som {
     };
     
     enum class OpCode : uint8_t {
+        NoOp,
         LabelOp,
         LitOp,
         PrintOp,
@@ -37,32 +39,36 @@ namespace som {
         Value() : tag(ValueTag::NilVal) {}
         Value(ValueTag t) : tag(t) {}
         virtual void print() {}
-        virtual void serialize(std::ostream& file);
+        virtual void serialize(std::ofstream& file);
         ValueTag tag;
     };
 
     struct ByteIns {
+        ByteIns() : op(OpCode::NoOp) {}
+        ByteIns(OpCode opCode) : op(opCode) {}
+        virtual void print();
+        virtual void serialize(std::ofstream& file);
         OpCode op;
     };
 
     struct IntValue : Value {
         IntValue(int32_t val) : Value(ValueTag::IntVal), value(val) {}
         virtual void print() override;
-        virtual void serialize(std::ostream& file) override;
+        virtual void serialize(std::ofstream& file) override;
         int32_t value;
     };
 
     struct DoubleValue : Value {
         DoubleValue(double val) : Value(ValueTag::DoubleVal), value(val) {}
         virtual void print() override;
-        virtual void serialize(std::ostream& file) override;
+        virtual void serialize(std::ofstream& file) override;
         double value;
     };
 
     struct StringValue : Value {
         StringValue(const std::string& val) : Value(ValueTag::StringVal), value(val) {}
         virtual void print() override;
-        virtual void serialize(std::ostream& file) override;
+        virtual void serialize(std::ofstream& file) override;
         std::string value;
     };
 
@@ -70,7 +76,7 @@ namespace som {
         MethodValue(int32_t name, int32_t nargs, int32_t nlocals, const std::vector<ByteIns> code) :
             Value(ValueTag::MethodVal), name(name), nargs(nargs), nlocals(nlocals), code(std::move(code)) {}
         virtual void print() override;
-        virtual void serialize(std::ostream& file) override;
+        virtual void serialize(std::ofstream& file) override;
         int32_t name;
         int32_t nargs;
         int32_t nlocals;
@@ -80,7 +86,7 @@ namespace som {
     struct ClassValue : Value {
         ClassValue(std::vector<int32_t> slots) : slots(std::move(slots)) {}
         virtual void print() override;
-        virtual void serialize(std::ostream& file) override;
+        virtual void serialize(std::ofstream& file) override;
         std::vector<int32_t> slots;
     };
 
@@ -111,23 +117,39 @@ namespace som {
     };
 
     struct SlotIns : ByteIns {
-
+        SlotIns(int32_t slotIdx) : ByteIns(OpCode::SlotOp), slotIdx(slotIdx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t slotIdx;
     };
 
     struct SetSlotIns : ByteIns {
-
+        SetSlotIns(int32_t slotIdx) : ByteIns(OpCode::SetSlotOp), slotIdx(slotIdx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t slotIdx;
     };
 
     struct CallSlotIns : ByteIns {
-
+        CallSlotIns(int32_t methodIdx, int32_t arity) : ByteIns(OpCode::CallSlotOp), methodIdx(methodIdx), arity(arity) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t methodIdx;
+        int32_t arity;
     };
 
     struct SetLocalIns : ByteIns {
-
+        SetLocalIns(int32_t idx) : ByteIns(OpCode::SetLocalOp), idx(idx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t idx;
     };
 
     struct GetLocalIns : ByteIns {
-
+        GetLocalIns(int32_t idx) : ByteIns(OpCode::GetLocalOp), idx(idx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t idx;
     };
 
     struct SetGlobalIns : ByteIns {
