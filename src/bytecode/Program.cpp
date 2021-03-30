@@ -33,9 +33,9 @@ namespace som {
         return m_constants.size() - 1;
     }
 
-    size_t Program::registerMethod(int32_t patternIdx, int32_t arity, int32_t nlocals, const std::vector<ByteIns>& code)
+    size_t Program::registerMethod(int32_t patternIdx, int32_t arity, int32_t nlocals, insVector* code)
     {
-        MethodValue* newMethod = new MethodValue(patternIdx, arity, nlocals, std::move(code));
+        MethodValue* newMethod = new MethodValue(patternIdx, arity, nlocals, code);
         m_constants.emplace_back(newMethod);
         return m_constants.size() - 1;
     }
@@ -74,5 +74,18 @@ namespace som {
         std::cout << "------------\n";
         std::cout << "Entry point: " << m_entryPoint << std::endl;
         return true;
+    }
+
+    int32_t Program::indexOf(const std::string& value) const
+    {
+        for (auto i = 0; i < m_constants.size(); ++i) {
+            if (m_constants.at(i)->tag == ValueTag::StringVal) {
+                StringValue* strVal = static_cast<StringValue*>(m_constants.at(i).get());
+                if (strVal->value == value) {
+                    return i;
+                }
+            }
+        }
+        return -1; 
     }
 }

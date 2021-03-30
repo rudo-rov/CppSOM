@@ -18,11 +18,14 @@ namespace som {
         // Deserialization
 
         int32_t registerClass(const BCClass& newClass);
-        size_t registerMethod(int32_t patternIdx, int32_t arity, int32_t nlocals, const std::vector<ByteIns>& code);
+        size_t registerMethod(int32_t patternIdx, int32_t arity, int32_t nlocals, insVector* code);
         
         int32_t registerConstant(int32_t value);
         int32_t registerConstant(double value);
         int32_t registerConstant(const std::string& value);
+
+        [[nodiscard]]
+        int32_t indexOf(const std::string& value) const;
 
         bool setEntryPoint(int32_t entryPoint);
 
