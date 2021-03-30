@@ -7,14 +7,7 @@
 #include "Bytecode.h"
 
 namespace som {
-    
-    int32_t Program::registerClass(const BCClass& newClass)
-    {
-        ClassValue* newClassVal = new ClassValue(std::move(newClass.slots()));
-        m_constants.emplace_back(newClassVal);
-        return m_constants.size() - 1;
-    }
-    
+        
     int32_t Program::registerConstant(int32_t value)
     {
         m_constants.emplace_back(new IntValue(value));
@@ -40,6 +33,12 @@ namespace som {
         return m_constants.size() - 1;
     }
 
+    int32_t Program::registerClass(int32_t identifierIdx, std::vector<int32_t>& slots)
+    {
+        m_constants.emplace_back(new ClassValue(identifierIdx, slots));
+        return m_constants.size() - 1;
+    }
+
     void Program::print()
     {
         int i = 0;
@@ -48,6 +47,9 @@ namespace som {
             std::cout << i++ << ": ";
             entry->print();
         }
+        std::cout << "------------\n";
+        std::cout << "Entry point: " << m_entryPoint << std::endl;
+
     }
 
     bool Program::setEntryPoint(int32_t entryPoint)
@@ -67,12 +69,11 @@ namespace som {
         if (!bcFile) {
             return false;
         }
+        bcFile.write(reinterpret_cast<const char*>(&m_entryPoint), sizeof m_entryPoint);
         // Serialize the constant pool
         for (const auto& entry : m_constants) {
             entry->serialize(bcFile);
         }
-        std::cout << "------------\n";
-        std::cout << "Entry point: " << m_entryPoint << std::endl;
         return true;
     }
 

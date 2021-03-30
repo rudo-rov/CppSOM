@@ -86,9 +86,10 @@ namespace som {
     };
 
     struct ClassValue : Value {
-        ClassValue(std::vector<int32_t> slots) : Value(ValueTag::ClassVal), slots(std::move(slots)) {}
+        ClassValue(int32_t identifier, std::vector<int32_t> slots) : Value(ValueTag::ClassVal), identifier(identifier), slots(std::move(slots)) {}
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
+        int32_t identifier;
         std::vector<int32_t> slots;
     };
 

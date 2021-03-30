@@ -26,7 +26,6 @@ namespace som {
             std::stringstream err;
             err << "Error opening bytecode file: " << m_fileName << std::endl;
             m_lastError = err.str();
-            // return std::make_unique<Program>(nullptr);
             return std::move(std::unique_ptr<Program>(nullptr));
         }
 
@@ -97,9 +96,15 @@ namespace som {
 
     void CBytecodeLoader::loadClassVal()
     {
-        int32_t args[2]; // selector idx, arity
+        int32_t args[2]; // identifier, number of slots
         m_file.read(reinterpret_cast<char*>(args), 2 * (sizeof *args));
-        
+        std::vector<int32_t> slots;
+        for (auto i = 0; i < args[1]; ++i) {
+            int32_t tmp;
+            m_file.read(reinterpret_cast<char*>(&tmp), sizeof tmp);
+            slots.push_back(tmp);
+        }
+        m_program->registerClass(args[0], slots);
     }
 
     insVector* CBytecodeLoader::loadInstructionBlock()

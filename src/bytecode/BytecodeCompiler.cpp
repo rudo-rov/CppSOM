@@ -11,6 +11,7 @@ namespace som {
     std::any CBytecodeCompiler::visit(Class* classNode)
     {
         size_t classNameIdx = m_program->registerConstant(classNode->m_identifier);
+        std::vector<int32_t> slots;
         // Handle the superclass - register new class and instantiate the object?
         
         // Instance fields - create slots
@@ -18,22 +19,21 @@ namespace som {
             Variable* variablePtr = dynamic_cast<Variable*>(insField.get());
             if (variablePtr) {
                 int32_t identifierIdx = std::any_cast<int32_t>(visit(variablePtr));
-                m_class.registerSlot(identifierIdx);
+                // m_class.registerSlot(identifierIdx);
+                slots.push_back(identifierIdx);
             }
         }
         
         // Instance methods - similar thing to instance fields
         for (const auto& insMethod : *(classNode->m_instanceMethods)) {
-            visit(insMethod.get());
+            slots.push_back(std::any_cast<int32_t>(visit(insMethod.get())));
         }
-        
-        m_program->registerClass(m_class);
+        m_program->registerClass(classNameIdx, slots);
         return std::make_any<bool>(true);
     }
 
     std::any CBytecodeCompiler::visit(Method* method)
     {
-         
         Block* methodBlock;
         methodBlock = static_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock->m_localDefs->size();
@@ -43,10 +43,10 @@ namespace som {
             int32_t patternIdx = std::any_cast<int32_t>(visit(unaryPtr));
             insVector* instructions = std::any_cast<insVector*>(visit(methodBlock)); // bad any cast
             int32_t methodIdx = m_program->registerMethod(patternIdx, 0, nlocals, instructions);
-            m_class.registerSlot(methodIdx);
             if (unaryPtr->m_identifier == "run") {
                 m_program->setEntryPoint(methodIdx);
             }
+            return std::make_any<int32_t>(methodIdx);
         }
 
         BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());

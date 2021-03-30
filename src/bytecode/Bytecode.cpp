@@ -46,6 +46,9 @@ namespace som {
     void ClassValue::serialize(std::ofstream& file)
     {
         Value::serialize(file);
+        file.write(reinterpret_cast<char*>(&identifier), sizeof identifier);
+        int32_t slotsNr = slots.size();
+        file.write(reinterpret_cast<char*>(&slotsNr), sizeof slotsNr);
         for (int32_t slot : slots) {
             file.write(reinterpret_cast<char*>(&slot), sizeof slot);
         }
@@ -128,7 +131,7 @@ namespace som {
 
     void ClassValue::print()
     {
-        std::cout << "CLASS slots: ";
+        std::cout << "CLASS identifier: " << identifier << " slots: ";
         for (auto i = 0; i < slots.size(); ++i) {
             std::cout << slots.at(i) << (i + 1 == slots.size() ? "\n" : ", ");
         }
