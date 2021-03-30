@@ -36,8 +36,10 @@ namespace som {
         file.write(reinterpret_cast<char*>(&name), sizeof name);
         file.write(reinterpret_cast<char*>(&nargs), sizeof nargs);
         file.write(reinterpret_cast<char*>(&nlocals), sizeof nlocals);
+        int32_t blockSize = code->size();
+        file.write(reinterpret_cast<char*>(&blockSize), sizeof blockSize);
         for (const auto& ins : *code) {
-            // ins->serialize(file);
+            ins->serialize(file);
         }
     }
     
@@ -78,6 +80,7 @@ namespace som {
     {
         ByteIns::serialize(file);
         file.write(reinterpret_cast<char*>(&methodIdx), sizeof methodIdx);
+        file.write(reinterpret_cast<char*>(&arity), sizeof arity);
     }
 
     void SetLocalIns::serialize(std::ofstream& file)
