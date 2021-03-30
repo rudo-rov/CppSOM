@@ -36,7 +36,7 @@ namespace som {
         file.write(reinterpret_cast<char*>(&name), sizeof name);
         file.write(reinterpret_cast<char*>(&nargs), sizeof nargs);
         file.write(reinterpret_cast<char*>(&nlocals), sizeof nlocals);
-        for (const auto& ins : code) {
+        for (const auto& ins : *code) {
             // ins->serialize(file);
         }
     }
@@ -67,6 +67,12 @@ namespace som {
         ByteIns::serialize(file);
         file.write(reinterpret_cast<char*>(&slotIdx), sizeof slotIdx);
     }
+
+    void GetSlotIns::serialize(std::ofstream& file)
+    {
+        ByteIns::serialize(file);
+        file.write(reinterpret_cast<char*>(&slotIdx), sizeof slotIdx);
+    }
     
     void CallSlotIns::serialize(std::ofstream& file)
     {
@@ -81,6 +87,12 @@ namespace som {
     }
 
     void GetLocalIns::serialize(std::ofstream& file)
+    {
+        ByteIns::serialize(file);
+        file.write(reinterpret_cast<char*>(&idx), sizeof idx);
+    }
+
+    void LitIns::serialize(std::ofstream& file)
     {
         ByteIns::serialize(file);
         file.write(reinterpret_cast<char*>(&idx), sizeof idx);
@@ -104,7 +116,11 @@ namespace som {
 
     void MethodValue::print()
     {
-        std::cout << "METHOD name:" << name << " nargs:" << nargs << " nlocals:" << nlocals << std::endl;  
+        std::cout << "METHOD name:" << name << " nargs:" << nargs << " nlocals:" << nlocals << std::endl;
+        for (const auto& ins : *(code)) {
+            std::cout << "   ";
+            ins->print();
+        }
     }
 
     void ClassValue::print()
@@ -117,7 +133,7 @@ namespace som {
 
     void ByteIns::print()
     {
-        std::cout << "NOOP" << std::endl;
+        std::cout << "NOP" << std::endl;
     }
 
     void SlotIns::print()
@@ -128,6 +144,11 @@ namespace som {
     void SetSlotIns::print()
     {
         std::cout << "SET slot: " << slotIdx << std::endl;
+    }
+
+    void GetSlotIns::print()
+    {
+        std::cout << "GET slot: " << slotIdx << std::endl;
     }
     
     void CallSlotIns::print()
@@ -143,6 +164,11 @@ namespace som {
     void GetLocalIns::print()
     {
         std::cout << "GET local: " << idx << std::endl;
+    }
+
+    void LitIns::print()
+    {
+        std::cout << "LIT " << idx << std::endl;
     }
 
 }

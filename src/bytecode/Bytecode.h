@@ -25,6 +25,7 @@ namespace som {
         ObjectOp,
         SlotOp,
         SetSlotOp,
+        GetSlotOp,
         CallSlotOp,
         SetLocalOp,
         GetLocalOp,
@@ -50,6 +51,7 @@ namespace som {
         virtual void serialize(std::ofstream& file);
         OpCode op;
     };
+    typedef std::vector<std::unique_ptr<ByteIns>> insVector;
 
     struct IntValue : Value {
         IntValue(int32_t val) : Value(ValueTag::IntVal), value(val) {}
@@ -73,14 +75,14 @@ namespace som {
     };
 
     struct MethodValue : Value {
-        MethodValue(int32_t name, int32_t nargs, int32_t nlocals, const std::vector<ByteIns> code) :
-            Value(ValueTag::MethodVal), name(name), nargs(nargs), nlocals(nlocals), code(std::move(code)) {}
+        MethodValue(int32_t name, int32_t nargs, int32_t nlocals, insVector* code) :
+            Value(ValueTag::MethodVal), name(name), nargs(nargs), nlocals(nlocals), code(code) {}
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         int32_t name;
         int32_t nargs;
         int32_t nlocals;
-        std::vector<ByteIns> code;
+        std::unique_ptr<std::vector<std::unique_ptr<ByteIns>>> code;
     };
 
     struct ClassValue : Value {
@@ -101,7 +103,10 @@ namespace som {
     };
 
     struct LitIns : ByteIns {
-
+        LitIns(int32_t idx) : ByteIns(OpCode::LitOp), idx(idx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t idx;
     };
 
     struct PrintIns : ByteIns {
@@ -125,6 +130,13 @@ namespace som {
 
     struct SetSlotIns : ByteIns {
         SetSlotIns(int32_t slotIdx) : ByteIns(OpCode::SetSlotOp), slotIdx(slotIdx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t slotIdx;
+    };
+
+    struct GetSlotIns : ByteIns {
+        GetSlotIns(int32_t slotIdx) : ByteIns(OpCode::GetSlotOp), slotIdx(slotIdx) {}
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         int32_t slotIdx;
