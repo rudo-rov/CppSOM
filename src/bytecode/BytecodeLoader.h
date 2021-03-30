@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Program.h"
+#include "Bytecode.h"
 
 namespace som {
 
@@ -26,6 +27,15 @@ namespace som {
         void loadDoubleVal();
         void loadStringVal();
         void loadMethodVal();
+        void loadClassVal();
+
+        insVector* loadInstructionBlock();
+        ByteIns* loadInstruction();
+        LitIns* loadLitIns();
+        SlotIns* loadSlotIns();
+        SetSlotIns* loadSetSlotIns();
+        CallSlotIns* loadCallSlotIns();
+        GetSlotIns* loadGetSlotIns();
     };
 
 }
