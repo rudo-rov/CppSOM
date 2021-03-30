@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <string>
+#include <vector>
+#include <any>
 
 #include "../ast/ASTAbstractVisitor.h"
 #include "../ast/ASTNodes.h"
@@ -13,42 +16,47 @@ namespace som {
 
         CBytecodeCompiler(Program* program) : m_program(program) {}
         
-        void visit(Class* classNode) override;
-        void visit(Method* method) override;
-        void visit(Block* block) override {}
-        void visit(NestedBlock* nestedBlock) override {}
-        void visit(UnaryPattern* unaryPattern) override;
-        void visit(BinaryPattern* binaryPattern) override;
-        void visit(KeywordPattern* keywordPattern) override {}
-        void visit(Keyword* keyword) override {}
-        void visit(KeywordWithArgs* keyworrd) override {}
-
-        void visit(UnarySelector* unarySelector) override {}
-        void visit(BinarySelector* binarySelector) override {}
-        void visit(KeywordSelector* keywordSelector) override {}
-
-        void visit(UnaryMessage* unaryMessage) override {}
-        void visit(BinaryMessage* binaryMessage) override {}
-        void visit(BinaryOperand* binaryOperand) override {}
-        void visit(KeywordMessage* keywordMessage) override {}
-
-        void visit(Formula* formula) override {}
+        std::any visit(ASTNode* node) { return node->accept(*this); }
         
-        void visit(LiteralInteger* litInteger) override;
-        void visit(LiteralString* litString) override;
-        void visit(LiteralArray* litArray) override {}
-        void visit(LiteralDouble* litDouble) override;
+        std::any visit(Class* classNode) override;
+        std::any visit(Method* method) override;
+        std::any visit(Block* block) override;
+        std::any visit(NestedBlock* nestedBlock) override { return std::any(); }
+        std::any visit(UnaryPattern* unaryPattern) override;
+        std::any visit(BinaryPattern* binaryPattern) override;
+        std::any visit(KeywordPattern* keywordPattern) override { return std::any(); }
+        std::any visit(Keyword* keyword) override { return std::any(); }
+        std::any visit(KeywordWithArgs* keyworrd) override { return std::any(); }
 
-        void visit(Assignation* assignation) override {}
-        void visit(Evaluation* evaluation) override {}
-        void visit(Variable* variable) override;
-        void visit(NestedTerm* nestedTerm) override {}
+        std::any visit(UnarySelector* unarySelector) override { return std::any(); }
+        std::any visit(BinarySelector* binarySelector) override { return std::any(); }
+        std::any visit(KeywordSelector* keywordSelector) override { return std::any(); }
+
+        std::any visit(UnaryMessage* unaryMessage) override;
+        std::any visit(BinaryMessage* binaryMessage) override { return std::any(); }
+        std::any visit(BinaryOperand* binaryOperand) override { return std::any(); }
+        std::any visit(KeywordMessage* keywordMessage) override { return std::any(); }
+
+        std::any visit(Formula* formula) override { return std::any(); }
+        
+        std::any visit(LiteralInteger* litInteger) override;
+        std::any visit(LiteralString* litString) override;
+        std::any visit(LiteralArray* litArray) override { return std::any(); }
+        std::any visit(LiteralDouble* litDouble) override;
+
+        // Will return insVector* with compiled code
+        std::any visit(Assignation* assignation) override;
+        std::any visit(Evaluation* evaluation) override;
+        std::any visit(Variable* variable) override;
+        std::any visit(NestedTerm* nestedTerm) override { return std::any(); }
     
     private:
         Program* m_program;
         BCClass m_class;
 
+        std::string m_lastError;
 
+        void appendInstructions(insVector* first, insVector* second) const;
     };
 
 }

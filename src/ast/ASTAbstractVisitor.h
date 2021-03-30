@@ -1,5 +1,7 @@
 #pragma once
 
+#include <any>
+
 namespace som {
 
 	// Forward declaration of AST nodes to resolve circular reference
@@ -31,36 +33,36 @@ namespace som {
 	
 	class CAstAbstractVisitor {
 	public:
-		virtual void visit(Class* classNode) = 0;
-		virtual void visit(Method* method) = 0;
-		virtual void visit(Block* block) = 0;
-		virtual void visit(NestedBlock* nestedBlock) = 0;
-		virtual void visit(UnaryPattern* unaryPattern) = 0;
-		virtual void visit(BinaryPattern* binaryPattern) = 0;
-		virtual void visit(KeywordPattern* keywordPattern) = 0;
-		virtual void visit(Keyword* keyword) = 0;
-		virtual void visit(KeywordWithArgs* keyword) = 0;
+		virtual std::any visit(Method* method) = 0;
+		virtual std::any visit(Class* classNode) = 0;
+		virtual std::any visit(Block* block) = 0;
+		virtual std::any visit(NestedBlock* nestedBlock) = 0;
+		virtual std::any visit(UnaryPattern* unaryPattern) = 0;
+		virtual std::any visit(BinaryPattern* binaryPattern) = 0;
+		virtual std::any visit(KeywordPattern* keywordPattern) = 0;
+		virtual std::any visit(Keyword* keyword) = 0;
+		virtual std::any visit(KeywordWithArgs* keyword) = 0;
 
-		virtual void visit(UnarySelector* unarySelector) = 0;
-		virtual void visit(BinarySelector* binarySelector) = 0;
-		virtual void visit(KeywordSelector* keywordSelector) = 0;
+		virtual std::any visit(UnarySelector* unarySelector) = 0;
+		virtual std::any visit(BinarySelector* binarySelector) = 0;
+		virtual std::any visit(KeywordSelector* keywordSelector) = 0;
 
-		virtual void visit(UnaryMessage* unaryMessage) = 0;
-		virtual void visit(BinaryMessage* binaryMessage) = 0;
-		virtual void visit(BinaryOperand* binaryOperand) = 0;
-		virtual void visit(KeywordMessage* keywordMessage) = 0;
+		virtual std::any visit(UnaryMessage* unaryMessage) = 0;
+		virtual std::any visit(BinaryMessage* binaryMessage) = 0;
+		virtual std::any visit(BinaryOperand* binaryOperand) = 0;
+		virtual std::any visit(KeywordMessage* keywordMessage) = 0;
 		
-		virtual void visit(Formula* formula) = 0;
+		virtual std::any visit(Formula* formula) = 0;
 
-		virtual void visit(LiteralInteger* litInteger) = 0;
-		virtual void visit(LiteralString* litString) = 0;
-		virtual void visit(LiteralArray* litArray) = 0;
-		virtual void visit(LiteralDouble* litDouble) = 0;
+		virtual std::any visit(LiteralInteger* litInteger) = 0;
+		virtual std::any visit(LiteralString* litString) = 0;
+		virtual std::any visit(LiteralArray* litArray) = 0;
+		virtual std::any visit(LiteralDouble* litDouble) = 0;
 		
-		virtual void visit(Assignation* assignation) = 0;
-		virtual void visit(Evaluation* evaluation) = 0;
-		virtual void visit(Variable* variable) = 0;
-		virtual void visit(NestedTerm* nestedTerm) = 0;
+		virtual std::any visit(Assignation* assignation) = 0;
+		virtual std::any visit(Evaluation* evaluation) = 0;
+		virtual std::any visit(Variable* variable) = 0;
+		virtual std::any visit(NestedTerm* nestedTerm) = 0;
 	};
 
 }

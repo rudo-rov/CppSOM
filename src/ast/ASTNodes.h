@@ -2,15 +2,17 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <any>
 #include "antlr4-runtime.h"
 #include "ASTAbstractVisitor.h"
 
-#define VISITABLE virtual void accept(CAstAbstractVisitor& visitor) final { visitor.visit(this); }
+#define VISITABLE virtual std::any accept(CAstAbstractVisitor& visitor) final { return visitor.visit(this); }
 
 namespace som {
 
 	struct ASTNode {
-		virtual void accept(CAstAbstractVisitor& visitor) = 0;
+		virtual std::any accept(CAstAbstractVisitor& visitor) = 0;
+		
 	};
 
 	typedef std::unique_ptr<ASTNode> nodePtr;
