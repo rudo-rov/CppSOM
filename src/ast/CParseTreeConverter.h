@@ -68,7 +68,7 @@ namespace som {
 
 	private:
 		nodeVector* makeFieldsVector(const std::vector<SOMParser::VariableContext*>& variables);
-		void appendBlockExpression(SOMParser::BlockBodyContext* ctx, nodeVector& expressions);
+		void appendBlockExpression(SOMParser::BlockBodyContext* ctx, nodeVector* expressions);
 	};
 
 }

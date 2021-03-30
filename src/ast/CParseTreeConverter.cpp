@@ -65,9 +65,8 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitMethodBlock(SOMParser::MethodBlockContext* ctx)
 	{
-		return ctx->blockContents() ?
-			visit(ctx->blockContents()).as<ASTNode*>() :
-			nullptr;
+		ASTNode* blockContents = ctx->blockContents() ? visit(ctx->blockContents()).as<ASTNode*>() : nullptr;
+		return blockContents;
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitClassFields(SOMParser::ClassFieldsContext* ctx)
@@ -179,17 +178,17 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitBlockBody(SOMParser::BlockBodyContext* ctx)
 	{
 		nodeVector* expressions = new nodeVector();
-		appendBlockExpression(ctx, *expressions);
+		appendBlockExpression(ctx, expressions);
 		return expressions;
 	}
 
-	void CParseTreeConverter::appendBlockExpression(SOMParser::BlockBodyContext* ctx, nodeVector& expressions)
+	void CParseTreeConverter::appendBlockExpression(SOMParser::BlockBodyContext* ctx, nodeVector* expressions)
 	{
 		if (ctx->result()) {
-			expressions.emplace_back(visit(ctx->result()).as<ASTNode*>());
+			expressions->emplace_back(visit(ctx->result()).as<ASTNode*>());
 		}
 		else if (ctx->expression()) {
-			expressions.emplace_back(visit(ctx->expression()).as<ASTNode*>());
+			expressions->emplace_back(visit(ctx->expression()).as<ASTNode*>());
 			if (ctx->blockBody()) {
 				appendBlockExpression(ctx->blockBody(), expressions);
 			}
@@ -231,13 +230,9 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitBlockContents(SOMParser::BlockContentsContext* ctx)
 	{
-		nodeVector* localDefs = nullptr;
-		if (ctx->localDefs())
-			localDefs = visit(ctx->localDefs()).as<nodeVector*>();
-		return makeNode<Block>(
-			localDefs,
-			visit(ctx->blockBody()).as<nodeVector*>()
-		);
+		nodeVector* localDefs = ctx->localDefs() ? visit(ctx->localDefs()).as<nodeVector*>() : new nodeVector();
+		nodeVector* body = visit(ctx->blockBody()).as<nodeVector*>();
+		return makeNode<Block>(localDefs, body);
 	}
 
 	nodeVector* CParseTreeConverter::makeFieldsVector(const std::vector<SOMParser::VariableContext*>& variables)
