@@ -62,6 +62,11 @@ namespace som {
         return false;
     }
 
+    Value* Program::getValue(int32_t idx) const
+    {
+        return m_constants.at(idx).get();
+    }
+
     bool Program::serialize(const std::string& fileName) const
     {
         // Create the output file and open it for writing, binary
@@ -88,5 +93,11 @@ namespace som {
             }
         }
         return -1; 
+    }
+
+    std::vector<std::unique_ptr<ByteIns>>::iterator Program::entryPoint()
+    {
+        MethodValue* runMethod = dynamic_cast<MethodValue*>(m_constants.at(m_entryPoint).get());
+        return runMethod->code->begin();
     }
 }

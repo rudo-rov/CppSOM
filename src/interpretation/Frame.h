@@ -1,6 +1,9 @@
 #pragma once
 #include <cinttypes>
-#include <unordered_map>
+#include <deque>
+#include <memory>
+
+#include "ObjectReference.h"
 
 namespace som {
 
@@ -9,10 +12,12 @@ namespace som {
 
         int32_t returnAddress() const { return m_returnAddress; }
 
+        void push(CObjectReference* obj);
+        
+
     private:
         int32_t m_returnAddress;
-              
-
+        std::deque<std::unique_ptr<CObjectReference>> m_stack;
     };
 
 }

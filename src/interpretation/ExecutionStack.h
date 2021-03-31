@@ -7,11 +7,11 @@ namespace som {
 
     class CExecutionStack {
     public:
-        CExecutionStack() {}
+        CExecutionStack();
         ~CExecutionStack() = default;
 
         // push and pop
-        
+        void push(CObjectReference* obj);
 
     private:
         std::queue<Frame> m_stack;

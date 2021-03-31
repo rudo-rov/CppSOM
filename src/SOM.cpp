@@ -16,6 +16,7 @@
 #include "bytecode/Program.h"
 #include "bytecode/BytecodeCompiler.h"
 #include "bytecode/BytecodeLoader.h"
+#include "interpretation/Interpret.h"
 
 int main(int argc, char** argv)
 {
@@ -59,6 +60,10 @@ int main(int argc, char** argv)
             std::cerr << bcLoader.lastError() << std::endl;
             return 1;
         }
+        std::cout << "Loaded bytecode:" << std::endl;
+        program->print();
+        som::CInterpret interpret(std::move(program));
+        interpret.interpret();
     }
     
     return 0;

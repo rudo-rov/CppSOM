@@ -26,9 +26,12 @@ namespace som {
         int32_t indexOf(const std::string& value) const;
 
         bool setEntryPoint(int32_t entryPoint);
+        std::vector<std::unique_ptr<ByteIns>>::iterator entryPoint();
 
         void print();
         bool serialize(const std::string& fileName) const;
+
+        Value* getValue(int32_t idx) const;
 
     private:
         // Constants pool
