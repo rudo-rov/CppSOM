@@ -182,7 +182,9 @@ namespace som {
     };
 
     struct ReturnIns : ByteIns {
-
+        ReturnIns() : ByteIns(OpCode::ReturnOp) {}
+        void print() override;
+        void serialize(std::ofstream& file) override;
     };
 
 }

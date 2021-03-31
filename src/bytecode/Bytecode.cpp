@@ -104,6 +104,11 @@ namespace som {
         file.write(reinterpret_cast<char*>(&idx), sizeof idx);
     }
 
+    void ReturnIns::serialize(std::ofstream& file)
+    {
+        ByteIns::serialize(file);
+    }
+
     // Bytecode printing
     void IntValue::print()
     {
@@ -175,6 +180,11 @@ namespace som {
     void LitIns::print()
     {
         std::cout << "LIT " << idx << std::endl;
+    }
+
+    void ReturnIns::print()
+    {
+        std::cout << "RET" << std::endl;
     }
 
 }

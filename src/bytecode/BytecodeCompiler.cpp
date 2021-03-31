@@ -41,7 +41,8 @@ namespace som {
         UnaryPattern* unaryPtr = dynamic_cast<UnaryPattern*>(method->m_pattern.get());
         if (unaryPtr) {
             int32_t patternIdx = std::any_cast<int32_t>(visit(unaryPtr));
-            insVector* instructions = std::any_cast<insVector*>(visit(methodBlock)); // bad any cast
+            insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
+            instructions->emplace_back(new ReturnIns());
             int32_t methodIdx = m_program->registerMethod(patternIdx, 0, nlocals, instructions);
             if (unaryPtr->m_identifier == "run") {
                 m_program->setEntryPoint(methodIdx);

@@ -135,6 +135,8 @@ namespace som {
             return loadGetSlotIns();
         case OpCode::CallSlotOp:
             return loadCallSlotIns();
+        case OpCode::ReturnOp:
+            return loadReturnIns();
         
         default:
             return new ByteIns();
@@ -174,6 +176,11 @@ namespace som {
         int32_t idx;
         m_file.read(reinterpret_cast<char*>(&idx), sizeof idx);
         return new GetSlotIns(idx);
+    }
+
+    ReturnIns* CBytecodeLoader::loadReturnIns()
+    {
+        return new ReturnIns();
     }
 
 }
