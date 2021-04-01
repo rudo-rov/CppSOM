@@ -4,19 +4,22 @@
 #include <memory>
 
 #include "ObjectReference.h"
+#include "ProgramCounter.h"
 
 namespace som {
 
     class Frame {
     public:
 
-        int32_t returnAddress() const { return m_returnAddress; }
+        Frame() = default;
+        Frame(CodeAddress retAddress) : m_returnAddress(retAddress) {}
+        CodeAddress returnAddress() const { return m_returnAddress; }
 
         void push(CObjectReference* obj);
-        
+        std::unique_ptr<CObjectReference>&& pop();
 
     private:
-        int32_t m_returnAddress;
+        CodeAddress m_returnAddress;
         std::deque<std::unique_ptr<CObjectReference>> m_stack;
     };
 

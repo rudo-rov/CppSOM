@@ -100,4 +100,10 @@ namespace som {
         MethodValue* runMethod = dynamic_cast<MethodValue*>(m_constants.at(m_entryPoint).get());
         return runMethod->code->begin();
     }
+
+    std::vector<std::unique_ptr<ByteIns>>::iterator Program::exitPoint()
+    {
+        MethodValue* runMethod = dynamic_cast<MethodValue*>(m_constants.at(m_entryPoint).get());
+        return runMethod->code->end();
+    }
 }

@@ -5,6 +5,9 @@
 
 namespace som {
 
-   
+   bool CProgramCounter::shouldExit() const
+   {
+       return m_pc == m_programEnd;
+   }
 
 }

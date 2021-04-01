@@ -11,7 +11,7 @@ namespace som {
 
     class CInterpret {
     public:
-        CInterpret(std::unique_ptr<Program>&& program) : m_program(std::move(program)), m_pc(m_program->entryPoint()) {}
+        CInterpret(std::unique_ptr<Program>&& program) : m_program(std::move(program)), m_pc(m_program->entryPoint(), m_program->exitPoint()) {}
         ~CInterpret() {}
 
         void interpret();
@@ -21,9 +21,9 @@ namespace som {
         CExecutionStack m_executionStack;
         CProgramCounter m_pc;
 
-        
-
         void execute(LitIns* ins);
+        void execute(CallSlotIns* ins);
+        void execute(ReturnIns* ins);
     };
 
 }

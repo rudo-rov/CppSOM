@@ -27,6 +27,7 @@ namespace som {
 
         bool setEntryPoint(int32_t entryPoint);
         std::vector<std::unique_ptr<ByteIns>>::iterator entryPoint();
+        std::vector<std::unique_ptr<ByteIns>>::iterator exitPoint();
 
         void print();
         bool serialize(const std::string& fileName) const;
