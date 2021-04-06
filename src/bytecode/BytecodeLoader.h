@@ -34,7 +34,7 @@ namespace som {
         LitIns* loadLitIns();
         SlotIns* loadSlotIns();
         SetSlotIns* loadSetSlotIns();
-        CallSlotIns* loadCallSlotIns();
+        SendIns* loadSendIns();
         GetSlotIns* loadGetSlotIns();
         ReturnIns* loadReturnIns();
     };

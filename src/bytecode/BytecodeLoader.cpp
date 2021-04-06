@@ -133,8 +133,8 @@ namespace som {
             return loadSlotIns();
         case OpCode::GetSlotOp:
             return loadGetSlotIns();
-        case OpCode::CallSlotOp:
-            return loadCallSlotIns();
+        case OpCode::SendOp:
+            return loadSendIns();
         case OpCode::ReturnOp:
             return loadReturnIns();
         
@@ -164,11 +164,11 @@ namespace som {
         return new SetSlotIns(idx);
     }
 
-    CallSlotIns* CBytecodeLoader::loadCallSlotIns()
+    SendIns* CBytecodeLoader::loadSendIns()
     {
         int32_t args[2]; // method idx, arity
         m_file.read(reinterpret_cast<char*>(args), 2 * (sizeof *args));
-        return new CallSlotIns(args[0], args[1]);
+        return new SendIns(args[0], args[1]);
     }
 
     GetSlotIns* CBytecodeLoader::loadGetSlotIns()
