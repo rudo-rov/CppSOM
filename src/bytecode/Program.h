@@ -23,7 +23,9 @@ namespace som {
         int32_t registerConstant(const std::string& value);
 
         [[nodiscard]]
-        int32_t indexOf(const std::string& value) const;
+        int32_t indexOf(const std::string& value);
+        int32_t indexOf(int32_t value);
+        int32_t indexOf(double value);
 
         bool setEntryPoint(int32_t entryPoint);
         std::vector<std::unique_ptr<ByteIns>>::iterator entryPoint();

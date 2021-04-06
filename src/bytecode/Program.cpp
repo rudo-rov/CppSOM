@@ -82,7 +82,7 @@ namespace som {
         return true;
     }
 
-    int32_t Program::indexOf(const std::string& value) const
+    int32_t Program::indexOf(const std::string& value)
     {
         for (auto i = 0; i < m_constants.size(); ++i) {
             if (m_constants.at(i)->tag == ValueTag::StringVal) {
@@ -92,7 +92,33 @@ namespace som {
                 }
             }
         }
-        return -1; 
+        return registerConstant(value); 
+    }
+
+    int32_t Program::indexOf(int32_t value)
+    {
+        for (auto i = 0; i < m_constants.size(); ++i) {
+            if (m_constants.at(i)->tag == ValueTag::IntVal) {
+                IntValue* intVal = dynamic_cast<IntValue*>(m_constants.at(i).get());
+                if (intVal->value == value) {
+                    return i;
+                }
+            }
+        }
+        return registerConstant(value);
+    }
+
+    int32_t Program::indexOf(double value)
+    {
+        for (auto i = 0; i < m_constants.size(); ++i) {
+            if (m_constants.at(i)->tag == ValueTag::DoubleVal) {
+                DoubleValue* doubleVal = dynamic_cast<DoubleValue*>(m_constants.at(i).get());
+                if (doubleVal->value == value) {
+                    return i;
+                }
+            }
+        }
+        return registerConstant(value);
     }
 
     std::vector<std::unique_ptr<ByteIns>>::iterator Program::entryPoint()

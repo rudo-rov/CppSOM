@@ -86,7 +86,7 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(Variable* variable)
     {
-        return std::make_any<int32_t>(m_program->registerConstant(variable->m_identifier));
+        return std::make_any<int32_t>(m_program->indexOf(variable->m_identifier));
     }
 
     std::any CBytecodeCompiler::visit(Block* block)
@@ -111,9 +111,6 @@ namespace som {
         // Selector -> index of string in constants pool
         UnarySelector* unSelector = static_cast<UnarySelector*>(unaryMessage->m_unarySelector.get());
         int32_t selectorIdx = m_program->indexOf(unSelector->m_identifier);
-        if (selectorIdx < 0) {
-            selectorIdx = m_program->registerConstant(unSelector->m_identifier);
-        }
         
         SendIns* newCall = new SendIns(selectorIdx, 0);
         return newCall;
@@ -174,24 +171,21 @@ namespace som {
     std::any CBytecodeCompiler::visit(LiteralInteger* litInteger)
     {
         insVector* result = new insVector();
-        int32_t idx = m_program->registerConstant(litInteger->m_value);
-        result->emplace_back(new LitIns(idx));
+        result->emplace_back(new LitIns(m_program->indexOf(litInteger->m_value)));
         return std::make_any<insVector*>(result);
     }
 
     std::any CBytecodeCompiler::visit(LiteralDouble* litDouble)
     {
         insVector* result = new insVector();
-        int32_t idx = m_program->registerConstant(litDouble->m_value);
-        result->emplace_back(new LitIns(idx));
+        result->emplace_back(new LitIns(m_program->indexOf(litDouble->m_value)));
         return std::make_any<insVector*>(result);
     }
 
     std::any CBytecodeCompiler::visit(LiteralString* litString)
     {
         insVector* result = new insVector();
-        int32_t idx = m_program->registerConstant(litString->m_value);
-        result->emplace_back(new LitIns(idx));
+        result->emplace_back(new LitIns(m_program->indexOf(litString->m_value)));
         return std::make_any<insVector*>(result);
     }
 
