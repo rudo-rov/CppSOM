@@ -22,7 +22,7 @@ namespace som {
         CProgramCounter m_pc;
 
         void execute(LitIns* ins);
-        void execute(CallSlotIns* ins);
+        void execute(SendIns* ins);
         void execute(ReturnIns* ins);
     };
 

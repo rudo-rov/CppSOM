@@ -19,7 +19,6 @@ namespace som {
             Variable* variablePtr = dynamic_cast<Variable*>(insField.get());
             if (variablePtr) {
                 int32_t identifierIdx = std::any_cast<int32_t>(visit(variablePtr));
-                // m_class.registerSlot(identifierIdx);
                 slots.push_back(identifierIdx);
             }
         }
@@ -52,7 +51,7 @@ namespace som {
 
         BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());
         if (binPtr) {
-        
+            
         }
 
         KeywordPattern* keyPtr = dynamic_cast<KeywordPattern*>(method->m_pattern.get());
@@ -116,7 +115,7 @@ namespace som {
             selectorIdx = m_program->registerConstant(unSelector->m_identifier);
         }
         
-        CallSlotIns* newCall = new CallSlotIns(selectorIdx, 0);
+        SendIns* newCall = new SendIns(selectorIdx, 0);
         return newCall;
 
         // Handle error - no such slot
@@ -125,10 +124,19 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(Assignation* assignation)
     {
-       // nodeVectorPtr m_variables
-       // nodePtr m_value
-
-       return std::any();
+        // nodeVectorPtr m_variables
+        // nodePtr m_value
+        insVector* result = new insVector();
+        // Retrieve value, push to stack
+        for (const auto& var : *assignation->m_variables) {
+            // Push the new value to the stack
+            appendInstructions(result, std::any_cast<insVector*>(visit(assignation->m_value.get())));
+            Variable* varPtr = dynamic_cast<Variable*>(var.get());
+            // Set the variable to the value on top of the stack
+            result->emplace_back(new SetSlotIns(m_program->indexOf(varPtr->m_identifier)));
+        }
+       
+        return std::make_any<insVector*>(result);
     }
 
     std::any CBytecodeCompiler::visit(Evaluation* evaluation)
@@ -150,16 +158,19 @@ namespace som {
         }
 
         // nodeVectorPtr m_messages -- add calls to slots in correct order
-        for (const auto& mssg : *(evaluation->m_messages)) {
-            UnaryMessage* unMssg = dynamic_cast<UnaryMessage*>(mssg.get());
-            if (unMssg) {
-                result->emplace_back(std::any_cast<CallSlotIns*>(visit(unMssg)));
+        if (evaluation->m_messages) {
+            for (const auto& mssg : *(evaluation->m_messages)) {
+                UnaryMessage* unMssg = dynamic_cast<UnaryMessage*>(mssg.get());
+                if (unMssg) {
+                    result->emplace_back(std::any_cast<SendIns*>(visit(unMssg)));
+                }
             }
         }
-
         return std::make_any<insVector*>(result);
     }
     
+    
+    // Literals
     std::any CBytecodeCompiler::visit(LiteralInteger* litInteger)
     {
         insVector* result = new insVector();
@@ -190,7 +201,7 @@ namespace som {
         for (auto& ins : *second) {
             first->emplace_back(std::move(ins));
         }
-        delete second; // :(
+        delete second;
     }
 
 }

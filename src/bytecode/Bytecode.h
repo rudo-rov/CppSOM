@@ -26,7 +26,7 @@ namespace som {
         SlotOp,
         SetSlotOp,
         GetSlotOp,
-        CallSlotOp,
+        SendOp,
         SetLocalOp,
         GetLocalOp,
         SetGlobalOp,
@@ -143,8 +143,8 @@ namespace som {
         int32_t slotIdx;
     };
 
-    struct CallSlotIns : ByteIns {
-        CallSlotIns(int32_t methodIdx, int32_t arity) : ByteIns(OpCode::CallSlotOp), methodIdx(methodIdx), arity(arity) {}
+    struct SendIns : ByteIns {
+        SendIns(int32_t methodIdx, int32_t arity) : ByteIns(OpCode::SendOp), methodIdx(methodIdx), arity(arity) {}
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         int32_t methodIdx;

@@ -12,8 +12,8 @@ namespace som {
         case OpCode::LitOp:
             execute(static_cast<LitIns*>(currentInstruction));
             break;
-        case OpCode::CallSlotOp:
-            execute(static_cast<CallSlotIns*>(currentInstruction));
+        case OpCode::SendOp:
+            execute(static_cast<SendIns*>(currentInstruction));
             break;
         
         
@@ -30,7 +30,7 @@ namespace som {
         interpret();
     }
 
-    void CInterpret::execute(CallSlotIns* ins)
+    void CInterpret::execute(SendIns* ins)
     {
         auto receiver = m_executionStack.pop();
         m_executionStack.pushFrame(++m_pc.currentInstruction());

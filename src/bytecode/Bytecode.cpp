@@ -79,7 +79,7 @@ namespace som {
         file.write(reinterpret_cast<char*>(&slotIdx), sizeof slotIdx);
     }
     
-    void CallSlotIns::serialize(std::ofstream& file)
+    void SendIns::serialize(std::ofstream& file)
     {
         ByteIns::serialize(file);
         file.write(reinterpret_cast<char*>(&methodIdx), sizeof methodIdx);
@@ -162,9 +162,9 @@ namespace som {
         std::cout << "GET slot: " << slotIdx << std::endl;
     }
     
-    void CallSlotIns::print()
+    void SendIns::print()
     {
-        std::cout << "CALL slot: " << methodIdx << " arity: " << arity << std::endl;
+        std::cout << "SEND slot: " << methodIdx << " arity: " << arity << std::endl;
     }
 
     void SetLocalIns::print()
