@@ -28,7 +28,7 @@ namespace som {
         m_stack.front().push(obj);
     }
 
-    std::unique_ptr<CObjectReference>&& CExecutionStack::pop()
+    std::shared_ptr<CObjectReference> CExecutionStack::pop()
     {
         assert(!m_stack.empty());
         return m_stack.front().pop();

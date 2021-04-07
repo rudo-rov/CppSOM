@@ -16,11 +16,11 @@ namespace som {
         CodeAddress returnAddress() const { return m_returnAddress; }
 
         void push(CObjectReference* obj);
-        std::unique_ptr<CObjectReference>&& pop();
+        std::shared_ptr<CObjectReference> pop();
 
     private:
         CodeAddress m_returnAddress;
-        std::deque<std::unique_ptr<CObjectReference>> m_stack;
+        std::deque<std::shared_ptr<CObjectReference>> m_stack;
     };
 
 }

@@ -13,7 +13,7 @@ namespace som {
 
         // push and pop
         void push(CObjectReference* obj);
-        std::unique_ptr<CObjectReference>&& pop();
+        std::shared_ptr<CObjectReference> pop();
         
         void pushFrame(CodeAddress retAddress);
         CodeAddress popFrame();
