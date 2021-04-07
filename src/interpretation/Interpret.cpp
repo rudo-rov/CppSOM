@@ -1,4 +1,5 @@
 #include "Interpret.h"
+#include "ExecutionStack.h"
 #include "../bytecode/Bytecode.h"
 
 namespace som {
@@ -33,8 +34,18 @@ namespace som {
     void CInterpret::execute(SendIns* ins)
     {
         auto receiver = m_executionStack.pop();
-        m_executionStack.pushFrame(++m_pc.currentInstruction());
-        // m_pc.setAddress(receiver->method(ins->methodIdx));
+        StringValue* selectorVal = dynamic_cast<StringValue*>(m_program->getValue(ins->methodIdx));
+        if (selectorVal) {
+            if (receiver->isPrimitive(selectorVal->value)) {
+                receiver->dispatch(selectorVal->value, m_executionStack);
+            } else {
+                // New stack frame
+
+                // Get the address of the begining of the method and set pc to it
+
+            }
+        }
+        m_pc.nextInstruction();
         interpret();
     }
     
