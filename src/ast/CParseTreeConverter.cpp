@@ -57,9 +57,18 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitMethod(SOMParser::MethodContext* ctx)
 	{
+		bool isPrimitive = ctx->Primitive() ? true : false;
+		if (isPrimitive) {
+			return makeNode<Method>(
+				visit(ctx->pattern()).as<ASTNode*>(),
+				nullptr,
+				isPrimitive
+			);
+		}
 		return makeNode<Method>(
 			visit(ctx->pattern()).as<ASTNode*>(),
-			visit(ctx->methodBlock()).as<ASTNode*>()
+			visit(ctx->methodBlock()).as<ASTNode*>(),
+			isPrimitive
 		);
 	}
 

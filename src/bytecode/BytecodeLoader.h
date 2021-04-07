@@ -27,6 +27,7 @@ namespace som {
         void loadDoubleVal();
         void loadStringVal();
         void loadMethodVal();
+        void loadPrimitiveVal();
         void loadClassVal();
 
         insVector* loadInstructionBlock();

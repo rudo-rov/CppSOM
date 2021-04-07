@@ -42,12 +42,13 @@ namespace som {
 
 	// Methods and message patterns
 	struct Method : ASTNode {
-		Method(ASTNode* pattern, ASTNode* block) :
-			m_pattern(pattern), m_methodBlock(block)
+		Method(ASTNode* pattern, ASTNode* block, bool primitive) :
+			m_pattern(pattern), m_methodBlock(block), m_primitive(primitive)
 		{}
 
 		nodePtr m_pattern;
 		nodePtr m_methodBlock;
+		bool m_primitive;
 		VISITABLE
 	};
 

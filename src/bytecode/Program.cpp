@@ -33,6 +33,13 @@ namespace som {
         return m_constants.size() - 1;
     }
 
+    int32_t Program::registerMethod(int32_t patternIdx)
+    {
+        PrimitiveValue* newMethod = new PrimitiveValue(patternIdx);
+        m_constants.emplace_back(newMethod);
+        return m_constants.size() - 1;
+    }
+
     int32_t Program::registerClass(int32_t identifierIdx, std::vector<int32_t>& slots)
     {
         m_constants.emplace_back(new ClassValue(identifierIdx, slots));

@@ -42,6 +42,12 @@ namespace som {
             ins->serialize(file);
         }
     }
+
+    void PrimitiveValue::serialize(std::ofstream& file)
+    {
+        Value::serialize(file);
+        file.write(reinterpret_cast<char*>(&name), sizeof name);
+    }
     
     void ClassValue::serialize(std::ofstream& file)
     {
@@ -132,6 +138,11 @@ namespace som {
             std::cout << "   ";
             ins->print();
         }
+    }
+
+    void PrimitiveValue::print()
+    {
+        std::cout << "PRIMITIVE name: " << name << std::endl;
     }
 
     void ClassValue::print()

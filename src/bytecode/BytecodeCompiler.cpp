@@ -33,15 +33,19 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(Method* method)
     {
-        Block* methodBlock;
-        methodBlock = static_cast<Block*>(method->m_methodBlock.get());
-        int32_t nlocals = methodBlock->m_localDefs->size();
+        if (method->m_primitive) {
+            int32_t patternIdx = std::any_cast<int32_t>(visit(method->m_pattern.get()));
+            return std::make_any<int32_t>(m_program->registerMethod(patternIdx));
+        }
+        
+        Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
+        int32_t nlocals = methodBlock ? methodBlock->m_localDefs->size() : 0;
+        insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
+        instructions->emplace_back(new ReturnIns());
 
         UnaryPattern* unaryPtr = dynamic_cast<UnaryPattern*>(method->m_pattern.get());
         if (unaryPtr) {
             int32_t patternIdx = std::any_cast<int32_t>(visit(unaryPtr));
-            insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
-            instructions->emplace_back(new ReturnIns());
             int32_t methodIdx = m_program->registerMethod(patternIdx, 0, nlocals, instructions);
             if (unaryPtr->m_identifier == "run") {
                 m_program->setEntryPoint(methodIdx);

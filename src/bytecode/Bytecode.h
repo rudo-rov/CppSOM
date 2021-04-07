@@ -13,6 +13,7 @@ namespace som {
         NilVal,
         StringVal,
         MethodVal,
+        PrimitiveVal,
         ClassVal
     };
     
@@ -20,7 +21,6 @@ namespace som {
         NoOp,
         LabelOp,
         LitOp,
-        PrintOp,
         ArrayOp,
         ObjectOp,
         SlotOp,
@@ -85,6 +85,13 @@ namespace som {
         std::unique_ptr<std::vector<std::unique_ptr<ByteIns>>> code;
     };
 
+    struct PrimitiveValue : Value {
+        PrimitiveValue(int32_t name) : Value(ValueTag::PrimitiveVal), name(name) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t name;
+    };
+
     struct ClassValue : Value {
         ClassValue(int32_t identifier, std::vector<int32_t> slots) : Value(ValueTag::ClassVal), identifier(identifier), slots(std::move(slots)) {}
         virtual void print() override;
@@ -108,10 +115,6 @@ namespace som {
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         int32_t idx;
-    };
-
-    struct PrintIns : ByteIns {
-
     };
 
     struct ArrayIns : ByteIns {

@@ -50,6 +50,9 @@ namespace som {
             case ValueTag::MethodVal:
                 loadMethodVal();
                 break;
+            case ValueTag::PrimitiveVal:
+                loadPrimitiveVal();
+                break;
             case ValueTag::ClassVal:
                 loadClassVal();
                 break;
@@ -92,6 +95,13 @@ namespace som {
         int32_t args[3]; // pattern index, nargs, nlocals
         m_file.read(reinterpret_cast<char*>(args), (sizeof *args) * 3);
         m_program->registerMethod(args[0], args[1], args[2], loadInstructionBlock());
+    }
+
+    void CBytecodeLoader::loadPrimitiveVal()
+    {
+        int32_t name;
+        m_file.read(reinterpret_cast<char*>(&name), sizeof name);
+        m_program->registerMethod(name);
     }
 
     void CBytecodeLoader::loadClassVal()
