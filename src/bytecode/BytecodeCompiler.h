@@ -24,8 +24,8 @@ namespace som {
         std::any visit(NestedBlock* nestedBlock) override { return std::any(); }
         std::any visit(UnaryPattern* unaryPattern) override;
         std::any visit(BinaryPattern* binaryPattern) override;
-        std::any visit(KeywordPattern* keywordPattern) override { return std::any(); }
-        std::any visit(Keyword* keyword) override { return std::any(); }
+        std::any visit(KeywordPattern* keywordPattern) override;
+        std::any visit(Keyword* keyword) override;
         std::any visit(KeywordWithArgs* keyworrd) override { return std::any(); }
 
         std::any visit(UnarySelector* unarySelector) override { return std::any(); }

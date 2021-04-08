@@ -55,18 +55,17 @@ namespace som {
 
         BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());
         if (binPtr) {
-            
+            int32_t patternIdx = std::any_cast<int32_t>(visit(binPtr));
+            return std::make_any<int32_t>(m_program->registerMethod(patternIdx, 1, nlocals, instructions));
         }
 
         KeywordPattern* keyPtr = dynamic_cast<KeywordPattern*>(method->m_pattern.get());
         if (keyPtr) {
-            std::stringstream identifier;
-            for (const auto& keyword : *(keyPtr->m_keywords)) {
-                Keyword* ptr = static_cast<Keyword*>(keyword.get());
-                identifier << ptr->m_keyword;
-            }
+            int32_t patternIdx = std::any_cast<int32_t>(visit(keyPtr));
+            return std::make_any<int32_t>(m_program->registerMethod(patternIdx, keyPtr->m_keywords->size(), nlocals, instructions));
         }
 
+        // Unreachable
         return std::any();
     }
 
@@ -77,15 +76,21 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(BinaryPattern* binaryPattern)
     {
-        size_t patternIdx = m_program->registerConstant(binaryPattern->m_identifier);
-        m_class.registerSlot(patternIdx);
+        return std::make_any<int32_t>(m_program->registerConstant(binaryPattern->m_identifier));
+    }
 
-        // Register the argument
-        Variable* argPtr = static_cast<Variable*>(binaryPattern->m_argument.get());
-        if (argPtr) {
-            visit(argPtr);
+    std::any CBytecodeCompiler::visit(KeywordPattern* keywordPattern)
+    {
+        std::stringstream selector;
+        for (const auto& keyword : *keywordPattern->m_keywords) {
+            selector << std::any_cast<std::string>(visit(keyword.get()));
         }
-        return std::any();
+        return std::make_any<int32_t>(m_program->registerConstant(selector.str()));
+    }
+
+    std::any CBytecodeCompiler::visit(Keyword* keyword) 
+    {
+        return std::make_any<std::string>(keyword->m_keyword);
     }
 
     std::any CBytecodeCompiler::visit(Variable* variable)
