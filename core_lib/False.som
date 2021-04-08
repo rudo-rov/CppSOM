@@ -1,0 +1,12 @@
+False = Boolean (
+
+    asString = ( ^'false' )
+
+    ifTrue: aBlock = ( ^nil )
+    ifFalse: aBlock = ( ^block value )
+
+    not = ( ^true )
+    or: aBlock = ( ^aBlock value )
+    and: aBlock = ( ^false )
+
+)

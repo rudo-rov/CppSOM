@@ -1,0 +1,12 @@
+Boolean = (
+
+    "Conditionals"
+    ifTrue: trueBlock ifFalse: falseBlock = (
+        self ifTrue: [ ^trueBlock value ].
+        self ifFalse: [ ^falseBlock value ].
+    )
+
+    || aBoolean = ( ^self or: aBoolean )
+    && aBoolean =  ( ^self and: aBoolean )
+
+)
