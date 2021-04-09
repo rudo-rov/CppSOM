@@ -24,6 +24,7 @@ namespace som {
         void execute(LitIns* ins);
         void execute(SendIns* ins);
         void execute(ReturnIns* ins);
+        void execute(SetSlotIns* ins);
     };
 
 }

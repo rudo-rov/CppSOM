@@ -33,28 +33,37 @@ namespace som {
         return true;
     }
 
+    // CClassObjectReference
+    void CClassObjectReference::initialize(ClassValue* classVal, Program* program)
+    {
+        StringValue* identifierVal = dynamic_cast<StringValue*>(program->getValue(classVal->identifier));
+        m_identifier = identifierVal->value;
+        for (int32_t slot : classVal->slots) {
+            Value* slotPtr = program->getValue(slot);
+            StringValue* strVal = dynamic_cast<StringValue*>(slotPtr);
+            if (strVal) { // fields
+                m_fields[strVal->value] = CObjectReference();
+            }
+        }
+    }
+
     // CStringObjectReference
     void CStringObjectReference::dispatch(const std::string& methodIdentifier, CExecutionStack& stack)
     {
         // Temporary, there will be a better solution
         if (methodIdentifier == "print") {
-            print();
+            print(stack);
         } else if (methodIdentifier == "printLn") {
-            printLn();
+            printLn(stack);
         }
     }
     
-    void CStringObjectReference::asString(CExecutionStack& stack) const
-    {
-        
-    }
-
-    void CStringObjectReference::print() const
+    void CStringObjectReference::print(CExecutionStack& stack) const
     {
         std::cout << m_val;
     }
 
-    void CStringObjectReference::printLn() const
+    void CStringObjectReference::printLn(CExecutionStack& stack) const
     {
         std::cout << m_val << std::endl;
     }

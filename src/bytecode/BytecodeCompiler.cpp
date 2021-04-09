@@ -40,6 +40,7 @@ namespace som {
         
         Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock ? methodBlock->m_localDefs->size() : 0;
+        m_scopes.newScope();
         insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
         instructions->emplace_back(new ReturnIns());
 
@@ -104,6 +105,7 @@ namespace som {
         for (const auto& localDef : *(block->m_localDefs)) {
             Variable* localDefPtr = static_cast<Variable*>(localDef.get());
             int32_t identifierIdx = std::any_cast<int32_t>(visit(localDefPtr));
+            
         }
 
         insVector* blockCode = new insVector();
@@ -206,5 +208,8 @@ namespace som {
         }
         delete second;
     }
+
+    // Method compilation context
+    
 
 }

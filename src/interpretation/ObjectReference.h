@@ -4,6 +4,7 @@
 
 #include "../bytecode/Bytecode.h"
 #include "ProgramCounter.h"
+#include "../bytecode/Program.h"
 // #include "ExecutionStack.h"
 
 namespace som {
@@ -17,6 +18,7 @@ namespace som {
             String,
             Array,
             Nil,
+            Class,
             Custom
         };
 
@@ -33,6 +35,18 @@ namespace som {
         // std::map
     };
 
+    class CClassObjectReference : CObjectReference {
+    public:
+        CClassObjectReference(ClassValue* classVal, Program* program) : CObjectReference(EObjectTag::Class) { initialize(classVal, program); }
+        void initialize(ClassValue* classVal, Program* program);
+        
+    private:
+        std::string m_identifier;
+        std::unordered_map<std::string, CObjectReference> m_fields;
+        std::unordered_map<std::string, CodeAddress> m_methods;
+        
+    };
+
     class CStringObjectReference : public CObjectReference {
     public:
         CStringObjectReference(std::string val) : CObjectReference(EObjectTag::String), m_val(val) {}
@@ -40,8 +54,9 @@ namespace som {
         void asString(CExecutionStack& stack) const;
         
         // CodeAddress method(int32_t idx) override;
-        void print() const;
-        void printLn() const;
+        void print(CExecutionStack& stack) const;
+        void printLn(CExecutionStack& stack) const;
+        void length(CExecutionStack& stack) const;
 
     private:
         std::string m_val;

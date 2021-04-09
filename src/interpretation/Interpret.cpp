@@ -16,6 +16,9 @@ namespace som {
         case OpCode::SendOp:
             execute(static_cast<SendIns*>(currentInstruction));
             break;
+        case OpCode::SetSlotOp:
+            execute(static_cast<SetSlotIns*>(currentInstruction));
+            break;
         
         
         default:
@@ -53,6 +56,11 @@ namespace som {
     {
         m_pc.setAddress(m_executionStack.popFrame());
         interpret();
+    }
+
+    void CInterpret::execute(SetSlotIns* ins)
+    {
+        
     }
 
 }

@@ -8,6 +8,7 @@
 #include "../ast/ASTAbstractVisitor.h"
 #include "../ast/ASTNodes.h"
 #include "Program.h"
+#include "../interpretation/ScopeStack.h"
 
 namespace som {
 
@@ -51,9 +52,11 @@ namespace som {
         std::any visit(NestedTerm* nestedTerm) override { return std::any(); }
     
     private:
+        
+        
         Program* m_program;
         BCClass m_class;
-
+        CScopeStack m_scopes;
         std::string m_lastError;
 
         void appendInstructions(insVector* first, insVector* second) const;
