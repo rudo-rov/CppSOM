@@ -26,6 +26,11 @@ namespace som {
         }
     }
 
+    void CInterpret::initialize()
+    {
+        m_globalCtx.initialize(m_program.get());
+    }
+
     void CInterpret::execute(LitIns* ins)
     {
         Value* valPtr = m_program->getValue(ins->idx);

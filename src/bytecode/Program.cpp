@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <cassert>
 
 #include "Program.h"
 #include "Bytecode.h"
@@ -72,6 +73,13 @@ namespace som {
     Value* Program::getValue(int32_t idx) const
     {
         return m_constants.at(idx).get();
+    }
+
+    std::string Program::getStringValue(int32_t idx) const 
+    {
+        assert(getValue(idx)->tag == ValueTag::StringVal);
+        StringValue* strValPtr = dynamic_cast<StringValue*>(getValue(idx));
+        return strValPtr->value;
     }
 
     bool Program::serialize(const std::string& fileName) const

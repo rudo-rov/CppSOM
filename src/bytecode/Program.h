@@ -36,6 +36,9 @@ namespace som {
         bool serialize(const std::string& fileName) const;
 
         Value* getValue(int32_t idx) const;
+        std::string getStringValue(int32_t idx) const;
+
+        const std::vector<std::unique_ptr<Value>>& getConstants() const { return m_constants; }
 
     private:
         // Constants pool

@@ -8,6 +8,16 @@ namespace som {
         m_scopes.push(CMethodCompilationCtx());
     }
 
+    void CScopeStack::registerLocals(nodeVector* locals)
+    {
+        for (const auto& var : *locals) {
+            Variable* varPtr = dynamic_cast<Variable*>(var.get());
+            if (varPtr) {
+                addLocal(varPtr->m_identifier);
+            }
+        }
+    }
+
     void CScopeStack::addLocal(const std::string& identifier)
     {
         assert(!m_scopes.empty());

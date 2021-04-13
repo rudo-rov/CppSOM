@@ -40,7 +40,11 @@ namespace som {
         
         Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock ? methodBlock->m_localDefs->size() : 0;
+        
         m_scopes.newScope();
+        if (methodBlock)
+            m_scopes.registerLocals(methodBlock->m_localDefs.get());
+
         insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
         instructions->emplace_back(new ReturnIns());
 
@@ -97,6 +101,21 @@ namespace som {
     std::any CBytecodeCompiler::visit(Variable* variable)
     {
         return std::make_any<int32_t>(m_program->indexOf(variable->m_identifier));
+    }
+
+    ByteIns* CBytecodeCompiler::resolveVariable(ASTNode* node)
+    {
+        Variable* varPtr = dynamic_cast<Variable*>(node);
+        if (varPtr) {
+            int32_t localIdx = m_scopes.localIdx(varPtr->m_identifier);
+            if (localIdx >= 0) {
+                return new GetLocalIns(localIdx);
+            }
+
+            return new GetSlotIns(m_program->indexOf(varPtr->m_identifier));
+        }
+
+        return nullptr;
     }
 
     std::any CBytecodeCompiler::visit(Block* block)

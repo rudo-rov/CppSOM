@@ -60,6 +60,7 @@ namespace som {
         std::string m_lastError;
 
         void appendInstructions(insVector* first, insVector* second) const;
+        ByteIns* resolveVariable(ASTNode* node);
     };
 
 }
