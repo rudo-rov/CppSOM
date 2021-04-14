@@ -8,13 +8,15 @@
 
 namespace som {
 
+    class CGlobalContext;
+
     class VMClass : public VMObject {
     public:
         VMClass() {}
         VMClass(const std::string& identifier) : m_identifier(identifier), m_primitives() {}
         virtual ~VMClass() {}
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack) {}
+        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx) {}
         
         virtual void addSlot(const Program* program, int32_t slotIdx);
         const std::string& className() const { return m_identifier; }

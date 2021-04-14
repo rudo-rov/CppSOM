@@ -63,7 +63,7 @@ namespace som {
         std::string selector = m_program->getStringValue(ins->methodIdx);
         if (receiver->getClass()->isPrimitive(selector)) {
             // Dispatch the primitive method call
-            receiver->getClass()->dispatchPrimitive(selector, m_executionStack);
+            receiver->getClass()->dispatchPrimitive(selector, m_executionStack, m_globalCtx);
         }
     }
     

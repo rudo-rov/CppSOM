@@ -3,6 +3,7 @@
 #include <functional>
 #include "VMClass.h"
 #include "../ExecutionStack.h"
+#include "../GlobalContext.h"
 
 namespace som {
 
@@ -10,16 +11,16 @@ namespace som {
     public:
         VMInteger() : VMClass("Integer") {}
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack) override;
+        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx) override;
 
         // Implementations of primitive methods
-        void asString(CExecutionStack& stack);
+        void asString(CExecutionStack& stack, CGlobalContext& globalCtx);
 
     private:
 
     };
 
-    const std::map<std::string, std::function<void(VMInteger*, CExecutionStack&)>> integerPrimitives = {
+    const std::map<std::string, std::function<void(VMInteger*, CExecutionStack&, CGlobalContext&)>> integerPrimitives = {
         { "asString", std::mem_fn(&VMInteger::asString) }
     };
 

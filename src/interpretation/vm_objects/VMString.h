@@ -3,6 +3,7 @@
 #include <functional>
 #include "VMClass.h"
 #include "../ExecutionStack.h"
+#include "../GlobalContext.h"
 
 namespace som {
     
@@ -10,24 +11,24 @@ namespace som {
     public:
         VMString() : VMClass("String") {}
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack) override;
+        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx) override;
 
         // Implementation of primitive methods
-        void print(CExecutionStack& stack);
-        void printLn(CExecutionStack& stack);
-        void length(CExecutionStack& stack);
-        void concatenate(CExecutionStack& stack);
-        void isWhitespace(CExecutionStack& stack);
-        void isDigits(CExecutionStack& stack);
+        void print(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void printLn(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void length(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void concatenate(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void isWhitespace(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void isDigits(CExecutionStack& stack, CGlobalContext& globalCtx);
         // Comparations - binary meesage with selector '='
-        void compare(CExecutionStack& stack);
+        void compare(CExecutionStack& stack, CGlobalContext& globalCtx);
 
     private:
 
     };
 
     // Standard mapping of primitive methods to their implementations
-    const std::map<std::string, std::function<void(VMString*, CExecutionStack&)>> stringPrimitives = {
+    const std::map<std::string, std::function<void(VMString*, CExecutionStack&, CGlobalContext&)>> stringPrimitives = {
         { "print", std::mem_fn(&VMString::print) },
         { "printLn", std::mem_fn(&VMString::printLn) },
         { "length", std::mem_fn(&VMString::length) },
