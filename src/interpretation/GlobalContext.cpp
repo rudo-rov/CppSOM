@@ -1,6 +1,7 @@
 #include <string>
 #include "GlobalContext.h"
 #include "vm_objects/VMString.h"
+#include "vm_objects/VMInteger.h"
 
 namespace som {
 
@@ -31,6 +32,8 @@ namespace som {
         VMClass* newClass = nullptr;
         if (identifier == "String") {
            newClass = new VMString();
+        } else if (identifier == "Integer") {
+            newClass = new VMInteger();
         } else {
             newClass = new VMClass();
         }

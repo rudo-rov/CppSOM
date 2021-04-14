@@ -1,3 +1,4 @@
+#include <string>
 #include "VMInteger.h"
 
 namespace som {
@@ -15,9 +16,8 @@ namespace som {
     void VMInteger::asString(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
         auto receiver = stack.pop();
-        int32_t intValue = receiver->getValue().asInt();
-        // A way to retrieve string class?
-        // stack.push(std::make_shared<VMObject>())
+        std::string value = std::to_string(receiver->getValue().asInt());
+        stack.push(std::make_shared<VMObject>(globalCtx.getClass("String"), VMValue(value)));
     }
 
 }

@@ -65,6 +65,8 @@ namespace som {
             // Dispatch the primitive method call
             receiver->getClass()->dispatchPrimitive(selector, m_executionStack, m_globalCtx);
         }
+        m_pc.nextInstruction();
+        interpret();
     }
     
     void CInterpret::execute(ReturnIns* ins)
