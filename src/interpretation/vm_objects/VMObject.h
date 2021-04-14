@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
+#include <optional>
 #include "../../bytecode/Bytecode.h"
+#include "VMValue.h"
 // #include "VMClass.h"
 
 namespace som {
@@ -9,17 +11,19 @@ namespace som {
 
     class VMObject {
     public:
-        VMObject() : m_value(nullptr), m_class(nullptr) {}
-        VMObject(std::shared_ptr<VMClass> clazz, Value* val = nullptr) : m_class(clazz), m_value(val) {}
+        VMObject() : m_primValue(), m_class(nullptr) {}
+        VMObject(std::shared_ptr<VMClass> clazz) : m_class(clazz), m_primValue() {}
+        VMObject(std::shared_ptr<VMClass> clazz, VMValue value) : m_class(clazz), m_primValue(value) {}
 
-        void setValue(Value* val) { m_value = val; }
+        void setValue(VMValue val) { m_primValue = val; }
 
         const std::shared_ptr<VMClass> getClass() const { return m_class; }
-        const Value* getValue() const { return m_value; }
+        VMValue getValue() const;
 
     private:
         std::shared_ptr<VMClass> m_class;
-        Value* m_value;
+        // Value* m_value;
+        std::optional<VMValue> m_primValue;
 
     };
 

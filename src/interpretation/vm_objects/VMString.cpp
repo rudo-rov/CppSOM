@@ -16,9 +16,8 @@ namespace som {
     void VMString::print(CExecutionStack& stack)
     {
         auto receiver = stack.top(); // Don't pop - function returns the callee
-        const StringValue* strVal = dynamic_cast<const StringValue*>(receiver->getValue());
-        if (strVal)
-            std::cout << strVal->value;
+        std::string strVal = receiver->getValue().asString();
+        std::cout << strVal;
     }
 
     void VMString::printLn(CExecutionStack& stack)

@@ -1,6 +1,7 @@
 #include "Interpret.h"
 #include "ExecutionStack.h"
 #include "../bytecode/Bytecode.h"
+#include "vm_objects/VMValue.h"
 
 namespace som {
 
@@ -38,10 +39,10 @@ namespace som {
         {
         case ValueTag::StringVal:
             clazz = m_globalCtx.getClass("String");
-            return std::make_shared<VMObject>(clazz, val);
+            return std::make_shared<VMObject>(clazz, VMValue(dynamic_cast<StringValue*>(val)->value));
         case ValueTag::IntVal:
             clazz = m_globalCtx.getClass("Integer");
-            return std::make_shared<VMObject>(clazz, val);
+            return std::make_shared<VMObject>(clazz, VMValue(dynamic_cast<IntValue*>(val)->value));
         
         default:
             return std::make_shared<VMObject>(); // Should not be reachable
