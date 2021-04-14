@@ -5,7 +5,6 @@ add_library(interpret
     ProgramCounter.h ProgramCounter.cpp
     Frame.h Frame.cpp
     ExecutionStack.h ExecutionStack.cpp
-    ObjectReference.h ObjectReference.cpp
     ScopeStack.h ScopeStack.cpp
     GlobalContext.h GlobalContext.cpp
 )
