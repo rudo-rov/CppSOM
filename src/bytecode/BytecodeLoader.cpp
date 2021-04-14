@@ -34,8 +34,8 @@ namespace som {
         m_program->setEntryPoint(entryPoint);
 
         int8_t tag;
-        while(!m_file.eof()) {
-            m_file.read(reinterpret_cast<char*>(&tag), sizeof tag);
+        while(m_file.read(reinterpret_cast<char*>(&tag), sizeof tag)) {
+            // m_file.read(reinterpret_cast<char*>(&tag), sizeof tag);
             switch (ValueTag(tag))
             {
             case ValueTag::IntVal:
