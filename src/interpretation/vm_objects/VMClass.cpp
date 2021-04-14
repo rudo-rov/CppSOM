@@ -17,6 +17,15 @@ namespace som {
         }
     }
 
+    bool VMClass::isPrimitive(const std::string& selector) const
+    {
+        for (const auto& prim : m_primitives) {
+            if (prim == selector)
+                return true;
+        }
+        return false;
+    }
+
     void VMClass::addPrimitive(const Program* program, const Value* valPtr)
     {
         const PrimitiveValue* primPtr = dynamic_cast<const PrimitiveValue*>(valPtr);
