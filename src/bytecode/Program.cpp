@@ -77,6 +77,7 @@ namespace som {
 
     std::string Program::getStringValue(int32_t idx) const 
     {
+        assert(idx >= 0);
         assert(getValue(idx)->tag == ValueTag::StringVal);
         StringValue* strValPtr = dynamic_cast<StringValue*>(getValue(idx));
         return strValPtr->value;

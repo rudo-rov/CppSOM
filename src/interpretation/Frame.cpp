@@ -1,19 +1,18 @@
 #include <deque>
 #include "Frame.h"
-#include "ObjectReference.h"
 
 namespace som {
 
-    void Frame::push(CObjectReference* obj)
+    void Frame::push(std::shared_ptr<VMObject>& obj)
     {
-        m_stack.emplace_front(obj);
+        m_stack.push(obj);
     }
 
-    std::shared_ptr<CObjectReference> Frame::pop()
+    std::shared_ptr<VMObject> Frame::pop()
     {
-        auto ret = std::move(m_stack.front());
-        m_stack.pop_front();
-        return std::move(ret);
+        auto ret = m_stack.top();
+        m_stack.pop();
+        return ret;
     }
 
 }

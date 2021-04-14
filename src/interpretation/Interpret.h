@@ -5,8 +5,8 @@
 #include "../bytecode/Program.h"
 #include "ExecutionStack.h"
 #include "ProgramCounter.h"
-#include "ObjectReference.h"
 #include "GlobalContext.h"
+#include "vm_objects/VMObject.h"
 
 namespace som {
 
@@ -28,6 +28,8 @@ namespace som {
         void execute(SendIns* ins);
         void execute(ReturnIns* ins);
         void execute(SetSlotIns* ins);
+
+        std::shared_ptr<VMObject> objFromValue(Value* val);
     };
 
 }

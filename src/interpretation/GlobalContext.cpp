@@ -15,18 +15,27 @@ namespace som {
         }
     }
 
+    std::shared_ptr<VMClass> CGlobalContext::getClass(const std::string& identifier) const
+    {
+        for (const auto& clazz : m_classes) {
+            if (clazz->className() == identifier)
+                return clazz;
+        }
+        return nullptr;
+    }
+
     VMClass* CGlobalContext::createClass(const Program* program, const ClassValue* classVal) const
     {
         // Get the class identifier - handles String, Boolean etc. in special cases
         std::string identifier = program->getStringValue(classVal->identifier);
-        VMClass* newClass;
+        VMClass* newClass = nullptr;
         if (identifier == "String") {
-            VMString* newClass = new VMString();
+           newClass = new VMString();
         } else {
-            VMClass* newClass = new VMClass();
+            newClass = new VMClass();
         }
         for (int32_t slotIdx : classVal->slots) {
-            
+            newClass->addSlot(program, slotIdx);
         }
         return newClass;
         

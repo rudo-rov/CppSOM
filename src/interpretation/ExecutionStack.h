@@ -1,5 +1,5 @@
 #pragma once
-#include <queue>
+#include <stack>
 
 #include "Frame.h"
 
@@ -12,15 +12,16 @@ namespace som {
         ~CExecutionStack() = default;
 
         // push and pop
-        void push(CObjectReference* obj);
-        std::shared_ptr<CObjectReference> pop();
+        void push(std::shared_ptr<VMObject>& obj);
+        std::shared_ptr<VMObject> pop();
+        std::shared_ptr<VMObject> top() { return m_stack.top().top(); }
         
         void pushFrame(CodeAddress retAddress);
         CodeAddress popFrame();
 
 
     private:
-        std::queue<Frame> m_stack;
+        std::stack<Frame> m_stack;
     };
 
 }

@@ -17,21 +17,21 @@ namespace som {
 
     CodeAddress CExecutionStack::popFrame()
     {
-        CodeAddress retAddr = m_stack.front().returnAddress();
+        CodeAddress retAddr = m_stack.top().returnAddress();
         m_stack.pop();
         return retAddr;
     }
     
-    void CExecutionStack::push(CObjectReference* obj)
+    void CExecutionStack::push(std::shared_ptr<VMObject>& obj)
     {
         assert(!m_stack.empty());
-        m_stack.front().push(obj);
+        m_stack.top().push(obj);
     }
 
-    std::shared_ptr<CObjectReference> CExecutionStack::pop()
+    std::shared_ptr<VMObject> CExecutionStack::pop()
     {
         assert(!m_stack.empty());
-        return m_stack.front().pop();
+        return m_stack.top().pop();
     }
 
 }

@@ -31,30 +31,39 @@ namespace som {
         m_globalCtx.initialize(m_program.get());
     }
 
+    std::shared_ptr<VMObject> CInterpret::objFromValue(Value* val)
+    {
+        std::shared_ptr<VMClass> clazz;
+        switch (val->tag)
+        {
+        case ValueTag::StringVal:
+            clazz = m_globalCtx.getClass("String");
+            return std::make_shared<VMObject>(clazz, val);
+        case ValueTag::IntVal:
+            clazz = m_globalCtx.getClass("Integer");
+            return std::make_shared<VMObject>(clazz, val);
+        
+        default:
+            return std::make_shared<VMObject>(); // Should not be reachable
+        }
+    }
+
     void CInterpret::execute(LitIns* ins)
     {
         Value* valPtr = m_program->getValue(ins->idx);
-        m_executionStack.push(CObjectReference::fromValue(valPtr));
+        m_executionStack.push(objFromValue(valPtr));
         m_pc.nextInstruction();
         interpret();
     }
 
     void CInterpret::execute(SendIns* ins)
     {
-        auto receiver = m_executionStack.pop();
-        StringValue* selectorVal = dynamic_cast<StringValue*>(m_program->getValue(ins->methodIdx));
-        if (selectorVal) {
-            if (receiver->isPrimitive(selectorVal->value)) {
-                receiver->dispatch(selectorVal->value, m_executionStack);
-            } else {
-                // New stack frame
-
-                // Get the address of the begining of the method and set pc to it
-
-            }
+        auto receiver = m_executionStack.top();
+        std::string selector = m_program->getStringValue(ins->methodIdx);
+        if (receiver->getClass()->isPrimitive(selector)) {
+            // Dispatch the primitive method call
+            receiver->getClass()->dispatchPrimitive(selector, m_executionStack);
         }
-        m_pc.nextInstruction();
-        interpret();
     }
     
     void CInterpret::execute(ReturnIns* ins)

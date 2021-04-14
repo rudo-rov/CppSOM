@@ -11,8 +11,9 @@ namespace som {
         CGlobalContext() {}
 
         void initialize(const Program* program);
+        std::shared_ptr<VMClass> getClass(const std::string& identifier) const;
     private:
-        std::vector<std::shared_ptr<VMObject>> m_classes;
+        std::vector<std::shared_ptr<VMClass>> m_classes;
 
         VMClass* createClass(const Program* program, const ClassValue* classVal) const;
     };

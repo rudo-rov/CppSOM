@@ -1,9 +1,9 @@
 #pragma once
 #include <cinttypes>
-#include <deque>
+#include <stack>
 #include <memory>
 
-#include "ObjectReference.h"
+#include "vm_objects/VMObject.h"
 #include "ProgramCounter.h"
 
 namespace som {
@@ -15,12 +15,13 @@ namespace som {
         Frame(CodeAddress retAddress) : m_returnAddress(retAddress) {}
         CodeAddress returnAddress() const { return m_returnAddress; }
 
-        void push(CObjectReference* obj);
-        std::shared_ptr<CObjectReference> pop();
+        void push(std::shared_ptr<VMObject>& obj);
+        std::shared_ptr<VMObject> pop();
+        std::shared_ptr<VMObject> top() { return m_stack.top(); }
 
     private:
         CodeAddress m_returnAddress;
-        std::deque<std::shared_ptr<CObjectReference>> m_stack;
+        std::stack<std::shared_ptr<VMObject>> m_stack;
     };
 
 }
