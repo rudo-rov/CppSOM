@@ -33,15 +33,17 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(Method* method)
     {
+        m_scopes.newScope();
+        
         if (method->m_primitive) {
             int32_t patternIdx = std::any_cast<int32_t>(visit(method->m_pattern.get()));
+            m_scopes.popScope();
             return std::make_any<int32_t>(m_program->registerMethod(patternIdx));
         }
         
         Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock ? methodBlock->m_localDefs->size() : 0;
         
-        m_scopes.newScope();
         if (methodBlock)
             m_scopes.registerLocals(methodBlock->m_localDefs.get());
 
@@ -55,18 +57,21 @@ namespace som {
             if (unaryPtr->m_identifier == "run") {
                 m_program->setEntryPoint(methodIdx);
             }
+            m_scopes.popScope();
             return std::make_any<int32_t>(methodIdx);
         }
 
         BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());
         if (binPtr) {
             int32_t patternIdx = std::any_cast<int32_t>(visit(binPtr));
+            m_scopes.popScope();
             return std::make_any<int32_t>(m_program->registerMethod(patternIdx, 1, nlocals, instructions));
         }
 
         KeywordPattern* keyPtr = dynamic_cast<KeywordPattern*>(method->m_pattern.get());
         if (keyPtr) {
             int32_t patternIdx = std::any_cast<int32_t>(visit(keyPtr));
+            m_scopes.popScope();
             return std::make_any<int32_t>(m_program->registerMethod(patternIdx, keyPtr->m_keywords->size(), nlocals, instructions));
         }
 
@@ -156,10 +161,16 @@ namespace som {
     {
         int32_t selectorIdx = m_program->indexOf(binaryMessage->m_identifier);
         insVector* result = new insVector();
-        // Push the argument to the stack
-
-        // 
+        appendInstructions(result, std::any_cast<insVector*>(visit(binaryMessage->m_operand.get())));
         result->emplace_back(new SendIns(selectorIdx, 1));
+        return result;
+    }
+
+    std::any CBytecodeCompiler::visit(BinaryOperand* binaryOperand)
+    {
+        insVector* result = new insVector();
+        // Push the value on the stack
+        appendInstructions(result, std::any_cast<insVector*>(visit(binaryOperand->m_primary.get())));
         return result;
     }
 
@@ -184,13 +195,14 @@ namespace som {
     {
         insVector* result = new insVector();
         // nodePtr m_primary - variable, nested term, nested block, literal
-        Variable* varPtr = dynamic_cast<Variable*>(evaluation->m_primary.get());
-        if (varPtr) {
-            result->emplace_back(resolveVariable(varPtr));
-        } else {
-            insVector* primary = std::any_cast<insVector*>(visit(evaluation->m_primary.get()));
-            appendInstructions(result, primary);
-        }
+        // Variable* varPtr = dynamic_cast<Variable*>(evaluation->m_primary.get());
+        // if (varPtr) {
+        //     result->emplace_back(resolveVariable(varPtr));
+        // } else {
+        //     insVector* primary = std::any_cast<insVector*>(visit(evaluation->m_primary.get()));
+        //     appendInstructions(result, primary);
+        // }
+        appendInstructions(result, std::any_cast<insVector*>(resolvePrimary(evaluation->m_primary.get())));
 
         // nodeVectorPtr m_messages -- add calls to slots in correct order
         if (evaluation->m_messages) {
@@ -198,6 +210,11 @@ namespace som {
                 UnaryMessage* unMssg = dynamic_cast<UnaryMessage*>(mssg.get());
                 if (unMssg) {
                     result->emplace_back(std::any_cast<SendIns*>(visit(unMssg)));
+                }
+
+                BinaryMessage* binMssg = dynamic_cast<BinaryMessage*>(mssg.get());
+                if (binMssg) {
+                    appendInstructions(result, std::any_cast<insVector*>(visit(binMssg)));
                 }
             }
         }
@@ -241,7 +258,18 @@ namespace som {
         delete second;
     }
 
-    // Method compilation context
-    
+    insVector* CBytecodeCompiler::resolvePrimary(ASTNode* node)
+    {
+        // Might need some more finagling
+        insVector* result = new insVector();
+        Variable* varPtr = dynamic_cast<Variable*>(node);
+        if (varPtr) {
+            result->emplace_back(resolveVariable(varPtr));
+            return result;
+        } else {
+            delete result;
+            return std::any_cast<insVector*>(visit(node)); // Literal, nested term, nested block
+        }
+    }
 
 }

@@ -8,6 +8,11 @@ namespace som {
         m_scopes.push(CMethodCompilationCtx());
     }
 
+    void CScopeStack::popScope()
+    {
+        m_scopes.pop();
+    }
+
     void CScopeStack::registerLocals(nodeVector* locals)
     {
         for (const auto& var : *locals) {
@@ -38,8 +43,8 @@ namespace som {
 
     int32_t CScopeStack::argIdx(const std::string& identifier) const
     {
-
-        return 0;
+        assert(!m_scopes.empty());
+        return m_scopes.top().argIdx(identifier);
     }
     
     void CMethodCompilationCtx::setLocals(nodeVector* localDefs)

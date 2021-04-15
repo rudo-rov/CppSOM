@@ -9,10 +9,15 @@ namespace som {
         m_stack.push(std::move(newFrame));
     }
 
-    void CExecutionStack::pushFrame(CodeAddress retAddress)
+    void CExecutionStack::pushFrame(CodeAddress retAddress, int nargs)
     {
+        auto& oldFrame = m_stack.top();
         Frame newFrame(retAddress);
         m_stack.push(std::move(newFrame));
+
+        for (int i = 0; i < nargs; ++i) {
+            push(oldFrame.pop());
+        }
     }
 
     CodeAddress CExecutionStack::popFrame()
@@ -32,6 +37,11 @@ namespace som {
     {
         assert(!m_stack.empty());
         return m_stack.top().pop();
+    }
+
+    std::shared_ptr<VMObject> CExecutionStack::getArgument(int32_t idx)
+    {
+        return m_stack.top().getArgument(idx);
     }
 
 }

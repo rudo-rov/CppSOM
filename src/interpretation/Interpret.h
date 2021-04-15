@@ -28,6 +28,7 @@ namespace som {
         void execute(SendIns* ins);
         void execute(ReturnIns* ins);
         void execute(SetSlotIns* ins);
+        void execute(GetArgIns* ins);
 
         std::shared_ptr<VMObject> objFromValue(Value* val);
     };

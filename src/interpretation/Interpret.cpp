@@ -80,4 +80,9 @@ namespace som {
         
     }
 
+    void CInterpret::execute(GetArgIns* ins)
+    {
+        m_executionStack.push(m_executionStack.getArgument(ins->idx));
+    }
+
 }

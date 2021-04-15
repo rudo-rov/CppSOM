@@ -31,6 +31,7 @@ namespace som {
         CScopeStack() {}
 
         void newScope();
+        void popScope();
         void registerLocals(nodeVector* locals);
         void addLocal(const std::string& identifier);
         void addArgument(const std::string& identifier);

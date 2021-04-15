@@ -16,9 +16,10 @@ namespace som {
         std::shared_ptr<VMObject> pop();
         std::shared_ptr<VMObject> top() { return m_stack.top().top(); }
         
-        void pushFrame(CodeAddress retAddress);
+        void pushFrame(CodeAddress retAddress, int nargs = 0);
         CodeAddress popFrame();
 
+        std::shared_ptr<VMObject> getArgument(int32_t idx);
 
     private:
         std::stack<Frame> m_stack;
