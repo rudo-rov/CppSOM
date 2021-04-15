@@ -16,6 +16,9 @@ namespace som {
         // Implementations of primitive methods
         void asString(CExecutionStack& stack, CGlobalContext& globalCtx);
         void plus(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void minus(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void mult(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void div(CExecutionStack& stack, CGlobalContext& globalCtx);
 
     private:
 
@@ -23,7 +26,10 @@ namespace som {
 
     const std::map<std::string, std::function<void(VMInteger*, CExecutionStack&, CGlobalContext&)>> integerPrimitives = {
         { "asString", std::mem_fn(&VMInteger::asString) },
-        { "+", std::mem_fn(&VMInteger::plus) }
+        { "+", std::mem_fn(&VMInteger::plus) },
+        { "-", std::mem_fn(&VMInteger::minus) },
+        { "*", std::mem_fn(&VMInteger::mult) },
+        { "/", std::mem_fn(&VMInteger::div) }
     };
 
 }
