@@ -174,6 +174,13 @@ namespace som {
         return new SetSlotIns(idx);
     }
 
+    GetArgIns* CBytecodeLoader::loadGetArgIns()
+    {
+        int32_t idx;
+        m_file.read(reinterpret_cast<char*>(&idx), sizeof idx);
+        return new GetArgIns(idx);
+    }
+
     SendIns* CBytecodeLoader::loadSendIns()
     {
         int32_t args[2]; // method idx, arity

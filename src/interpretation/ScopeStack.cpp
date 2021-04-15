@@ -24,6 +24,12 @@ namespace som {
         m_scopes.top().addLocal(identifier);
     }
 
+    void CScopeStack::addArgument(const std::string& identifier)
+    {
+        assert(!m_scopes.empty());
+        m_scopes.top().addArgument(identifier);
+    }
+
     int32_t CScopeStack::localIdx(const std::string& identifier) const
     {
         assert(!m_scopes.empty());
@@ -48,6 +54,11 @@ namespace som {
     void CMethodCompilationCtx::addLocal(const std::string& identifier)
     {
         m_locals.push_back(identifier);
+    }
+
+    void CMethodCompilationCtx::addArgument(const std::string& identifier)
+    {
+        m_args.push_back(identifier);
     }
 
     void CMethodCompilationCtx::setArgs(nodeVector* args)

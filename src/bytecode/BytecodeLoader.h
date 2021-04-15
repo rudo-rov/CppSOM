@@ -38,6 +38,7 @@ namespace som {
         SendIns* loadSendIns();
         GetSlotIns* loadGetSlotIns();
         ReturnIns* loadReturnIns();
+        GetArgIns* loadGetArgIns();
     };
 
 }
