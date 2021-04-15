@@ -147,6 +147,8 @@ namespace som {
             return loadSendIns();
         case OpCode::ReturnOp:
             return loadReturnIns();
+        case OpCode::GetArgOp:
+            return loadGetArgIns();
         
         default:
             return new ByteIns();
