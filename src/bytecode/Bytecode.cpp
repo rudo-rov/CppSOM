@@ -104,6 +104,12 @@ namespace som {
         file.write(reinterpret_cast<char*>(&idx), sizeof idx);
     }
 
+    void GetArgIns::serialize(std::ofstream& file)
+    {
+        ByteIns::serialize(file);
+        file.write(reinterpret_cast<char*>(&idx), sizeof idx);
+    }
+
     void LitIns::serialize(std::ofstream& file)
     {
         ByteIns::serialize(file);
@@ -196,6 +202,11 @@ namespace som {
     void ReturnIns::print()
     {
         std::cout << "RET" << std::endl;
+    }
+
+    void GetArgIns::print()
+    {
+        std::cout << "GET arg: " << idx << std::endl;
     }
 
 }

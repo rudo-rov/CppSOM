@@ -375,7 +375,7 @@ namespace som {
 	antlrcpp::Any CParseTreeConverter::visitBinaryMessage(SOMParser::BinaryMessageContext* ctx)
 	{
 		return makeNode<BinaryMessage>(
-			visit(ctx->binarySelector()).as<ASTNode*>(),
+			visit(ctx->binarySelector()).as<std::string>(),
 			visit(ctx->binaryOperand()).as<ASTNode*>()
 		);
 	}

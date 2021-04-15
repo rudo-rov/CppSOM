@@ -34,7 +34,7 @@ namespace som {
         std::any visit(KeywordSelector* keywordSelector) override { return std::any(); }
 
         std::any visit(UnaryMessage* unaryMessage) override;
-        std::any visit(BinaryMessage* binaryMessage) override { return std::any(); }
+        std::any visit(BinaryMessage* binaryMessage) override;
         std::any visit(BinaryOperand* binaryOperand) override { return std::any(); }
         std::any visit(KeywordMessage* keywordMessage) override { return std::any(); }
 
@@ -49,8 +49,7 @@ namespace som {
         std::any visit(Assignation* assignation) override;
         std::any visit(Evaluation* evaluation) override;
         std::any visit(Variable* variable) override;
-        std::any visit(NestedTerm* nestedTerm) override { return std::any(); }
-    
+        std::any visit(NestedTerm* nestedTerm) override;    
     private:
         
         

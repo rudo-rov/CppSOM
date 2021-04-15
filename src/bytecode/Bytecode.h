@@ -31,6 +31,7 @@ namespace som {
         GetLocalOp,
         SetGlobalOp,
         GetGlobalOp,
+        GetArgOp,
         GotoOp,
         ReturnOp
     };
@@ -163,6 +164,13 @@ namespace som {
 
     struct GetLocalIns : ByteIns {
         GetLocalIns(int32_t idx) : ByteIns(OpCode::GetLocalOp), idx(idx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t idx;
+    };
+
+    struct GetArgIns : ByteIns {
+        GetArgIns(int32_t idx) : ByteIns(OpCode::GetArgOp), idx(idx) {}
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         int32_t idx;

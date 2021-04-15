@@ -120,8 +120,8 @@ namespace som {
 	};
 
 	struct BinaryMessage : ASTNode {
-		BinaryMessage(ASTNode* selector, ASTNode* operand) : m_binarySelector(selector), m_operand(operand) {}
-		nodePtr m_binarySelector;
+		BinaryMessage(std::string selector, ASTNode* operand) : m_identifier(selector), m_operand(operand) {}
+		std::string m_identifier;
 		nodePtr m_operand;
 		VISITABLE
 	};

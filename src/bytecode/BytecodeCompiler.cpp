@@ -81,6 +81,8 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(BinaryPattern* binaryPattern)
     {
+        // Register arguments
+        m_scopes.addArgument(dynamic_cast<Variable*>(binaryPattern->m_argument.get())->m_identifier);
         return std::make_any<int32_t>(m_program->registerConstant(binaryPattern->m_identifier));
     }
 
@@ -111,7 +113,10 @@ namespace som {
             if (localIdx >= 0) {
                 return new GetLocalIns(localIdx);
             }
-
+            int32_t argIdx = m_scopes.argIdx(varPtr->m_identifier);
+            if (argIdx >= 0) {
+                return new GetArgIns(argIdx);
+            }
             return new GetSlotIns(m_program->indexOf(varPtr->m_identifier));
         }
 
@@ -145,8 +150,17 @@ namespace som {
         SendIns* newCall = new SendIns(selectorIdx, 0);
         return newCall;
 
-        // Handle error - no such slot
-        return std::any();
+    }
+
+    std::any CBytecodeCompiler::visit(BinaryMessage* binaryMessage)
+    {
+        int32_t selectorIdx = m_program->indexOf(binaryMessage->m_identifier);
+        insVector* result = new insVector();
+        // Push the argument to the stack
+
+        // 
+        result->emplace_back(new SendIns(selectorIdx, 1));
+        return result;
     }
 
     std::any CBytecodeCompiler::visit(Assignation* assignation)
@@ -172,13 +186,7 @@ namespace som {
         // nodePtr m_primary - variable, nested term, nested block, literal
         Variable* varPtr = dynamic_cast<Variable*>(evaluation->m_primary.get());
         if (varPtr) {
-            // Get the slot
-            int32_t varIdx = m_program->indexOf(varPtr->m_identifier);
-            if (varIdx < 0) {
-                varIdx = m_program->registerConstant(varPtr->m_identifier);
-            } 
-            GetSlotIns* newIns = new GetSlotIns(varIdx);
-            result->emplace_back(newIns);
+            result->emplace_back(resolveVariable(varPtr));
         } else {
             insVector* primary = std::any_cast<insVector*>(visit(evaluation->m_primary.get()));
             appendInstructions(result, primary);
@@ -217,6 +225,11 @@ namespace som {
         insVector* result = new insVector();
         result->emplace_back(new LitIns(m_program->indexOf(litString->m_value)));
         return std::make_any<insVector*>(result);
+    }
+
+    std::any CBytecodeCompiler::visit(NestedTerm* nestedTerm)
+    {
+        return visit(nestedTerm->m_expression.get());
     }
 
 
