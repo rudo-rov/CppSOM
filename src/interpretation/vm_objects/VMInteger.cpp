@@ -22,8 +22,8 @@ namespace som {
 
     void VMInteger::plus(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
-        auto receiver = stack.pop()->getValue().asInt();
         auto argument = stack.pop()->getValue().asInt();
+        auto receiver = stack.pop()->getValue().asInt();
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver + argument)));
     }
 

@@ -1,5 +1,8 @@
 Integer = (
 
+    "Arithmethics"
+    + argument = primitive
+    
     asString = primitive
 
 )
