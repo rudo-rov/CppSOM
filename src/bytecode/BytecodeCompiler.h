@@ -61,6 +61,7 @@ namespace som {
         void appendInstructions(insVector* first, insVector* second) const;
         ByteIns* resolveVariable(ASTNode* node);
         insVector* resolvePrimary(ASTNode* node);
+        void trimString(std::string& val);
     };
 
 }

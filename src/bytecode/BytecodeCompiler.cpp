@@ -240,8 +240,19 @@ namespace som {
     std::any CBytecodeCompiler::visit(LiteralString* litString)
     {
         insVector* result = new insVector();
+        trimString(litString->m_value);
         result->emplace_back(new LitIns(m_program->indexOf(litString->m_value)));
         return std::make_any<insVector*>(result);
+    }
+
+    void CBytecodeCompiler::trimString(std::string& val)
+    {
+        if (val.front() == '\'') {
+            val.erase(0, 1);
+        }
+        if (val.back() == '\'') {
+            val.erase(val.size() - 1, 1);
+        }
     }
 
     std::any CBytecodeCompiler::visit(NestedTerm* nestedTerm)
