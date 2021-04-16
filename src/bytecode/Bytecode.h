@@ -87,10 +87,11 @@ namespace som {
     };
 
     struct PrimitiveValue : Value {
-        PrimitiveValue(int32_t name) : Value(ValueTag::PrimitiveVal), name(name) {}
+        PrimitiveValue(int32_t name, int32_t nargs) : Value(ValueTag::PrimitiveVal), name(name), nargs(nargs) {}
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         int32_t name;
+        int32_t nargs;
     };
 
     struct ClassValue : Value {

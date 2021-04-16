@@ -36,9 +36,9 @@ namespace som {
         std::any visit(UnaryMessage* unaryMessage) override;
         std::any visit(BinaryMessage* binaryMessage) override;
         std::any visit(BinaryOperand* binaryOperand) override;
-        std::any visit(KeywordMessage* keywordMessage) override { return std::any(); }
+        std::any visit(KeywordMessage* keywordMessage) override;
 
-        std::any visit(Formula* formula) override { return std::any(); }
+        std::any visit(Formula* formula) override;
         
         std::any visit(LiteralInteger* litInteger) override;
         std::any visit(LiteralString* litString) override;
@@ -62,6 +62,7 @@ namespace som {
         ByteIns* resolveVariable(ASTNode* node);
         insVector* resolvePrimary(ASTNode* node);
         void trimString(std::string& val);
+        int32_t primitiveMethod(Method* method);
     };
 
 }

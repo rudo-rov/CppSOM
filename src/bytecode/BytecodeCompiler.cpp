@@ -36,9 +36,7 @@ namespace som {
         m_scopes.newScope();
         
         if (method->m_primitive) {
-            int32_t patternIdx = std::any_cast<int32_t>(visit(method->m_pattern.get()));
-            m_scopes.popScope();
-            return std::make_any<int32_t>(m_program->registerMethod(patternIdx));
+            return std::make_any<int32_t>(primitiveMethod(method));
         }
         
         Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
@@ -77,6 +75,19 @@ namespace som {
 
         // Unreachable
         return std::any();
+    }
+
+    int32_t CBytecodeCompiler::primitiveMethod(Method* method)
+    {
+        int32_t patternIdx = std::any_cast<int32_t>(visit(method->m_pattern.get()));
+        m_scopes.popScope();
+        int32_t arity = 0;
+        if (dynamic_cast<BinaryPattern*>(method->m_pattern.get())) {
+            arity = 1;
+        } else if (dynamic_cast<KeywordPattern*>(method->m_pattern.get())) {
+            arity = dynamic_cast<KeywordPattern*>(method->m_pattern.get())->m_keywords->size();
+        }
+        return m_program->registerMethod(patternIdx, arity);
     }
 
     std::any CBytecodeCompiler::visit(UnaryPattern* unaryPattern)
@@ -170,7 +181,35 @@ namespace som {
     {
         insVector* result = new insVector();
         // Push the value on the stack
-        appendInstructions(result, std::any_cast<insVector*>(visit(binaryOperand->m_primary.get())));
+        appendInstructions(result, std::any_cast<insVector*>(resolvePrimary(binaryOperand->m_primary.get())));
+        return result;
+    }
+
+    std::any CBytecodeCompiler::visit(KeywordMessage* keywordMessage)
+    {
+        insVector* result = new insVector();
+        for (const auto& formula : *keywordMessage->m_formulas) {
+            appendInstructions(result, std::any_cast<insVector*>(visit(formula.get())));
+        }
+
+        std::stringstream selector;
+        for (const auto& key : *keywordMessage->m_keywords) {
+            selector << std::any_cast<std::string>(visit(key.get()));
+        }
+        result->emplace_back(new SendIns(m_program->indexOf(selector.str()), keywordMessage->m_keywords->size()));
+
+        return std::make_any<insVector*>(result);
+    }
+
+    std::any CBytecodeCompiler::visit(Formula* formula)
+    {
+        insVector* result = new insVector();
+        if (formula->m_argument) {
+            appendInstructions(result, resolvePrimary(formula->m_argument.get())); // ???
+        }
+        for (const auto& mssg : *formula->m_binaryMessage) {
+            appendInstructions(result, std::any_cast<insVector*>(visit(mssg.get())));
+        }
         return result;
     }
 
@@ -215,6 +254,11 @@ namespace som {
                 BinaryMessage* binMssg = dynamic_cast<BinaryMessage*>(mssg.get());
                 if (binMssg) {
                     appendInstructions(result, std::any_cast<insVector*>(visit(binMssg)));
+                }
+
+                KeywordMessage* keyMssg = dynamic_cast<KeywordMessage*>(mssg.get());
+                if (keyMssg) {
+                    appendInstructions(result, std::any_cast<insVector*>(visit(keyMssg)));
                 }
             }
         }

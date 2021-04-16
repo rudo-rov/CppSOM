@@ -99,9 +99,9 @@ namespace som {
 
     void CBytecodeLoader::loadPrimitiveVal()
     {
-        int32_t name;
-        m_file.read(reinterpret_cast<char*>(&name), sizeof name);
-        m_program->registerMethod(name);
+        int32_t args[2];
+        m_file.read(reinterpret_cast<char*>(args), (sizeof args[0]) * 2);
+        m_program->registerMethod(args[0], args[1]);
     }
 
     void CBytecodeLoader::loadClassVal()

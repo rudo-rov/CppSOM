@@ -47,6 +47,7 @@ namespace som {
     {
         Value::serialize(file);
         file.write(reinterpret_cast<char*>(&name), sizeof name);
+        file.write(reinterpret_cast<char*>(&nargs), sizeof nargs);
     }
     
     void ClassValue::serialize(std::ofstream& file)
@@ -148,7 +149,7 @@ namespace som {
 
     void PrimitiveValue::print()
     {
-        std::cout << "PRIMITIVE name: " << name << std::endl;
+        std::cout << "PRIMITIVE name: " << name << " nargs: " << nargs << std::endl;
     }
 
     void ClassValue::print()
