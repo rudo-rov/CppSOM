@@ -16,7 +16,7 @@ namespace som {
         VMClass(const std::string& identifier) : m_identifier(identifier), m_primitives() {}
         virtual ~VMClass() {}
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx) {}
+        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) {}
         
         virtual void addSlot(const Program* program, int32_t slotIdx);
         const std::string& className() const { return m_identifier; }

@@ -16,15 +16,16 @@ namespace som {
         m_stack.push(std::move(newFrame));
 
         for (int i = 0; i < nargs; ++i) {
-            push(oldFrame.pop());
+            // push(std::move(oldFrame.pop()));
+            m_stack.top().addArgument(oldFrame.pop());
         }
     }
 
-    CodeAddress CExecutionStack::popFrame()
+    Frame CExecutionStack::popFrame()
     {
-        CodeAddress retAddr = m_stack.top().returnAddress();
+        auto ret = m_stack.top();
         m_stack.pop();
-        return retAddr;
+        return ret;
     }
     
     void CExecutionStack::push(std::shared_ptr<VMObject>& obj)

@@ -3,7 +3,7 @@
 
 namespace som {
 
-    void VMInteger::dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMInteger::dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity)
     {
         auto fnIt = integerPrimitives.find(selector);
         if (fnIt == integerPrimitives.end()) {

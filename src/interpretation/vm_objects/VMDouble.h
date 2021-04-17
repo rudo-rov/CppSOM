@@ -7,9 +7,9 @@
 
 namespace som {
 
-    class VMInteger : public VMClass {
+    class VMDouble : public VMClass {
     public:
-        VMInteger() : VMClass("Integer") {}
+        VMDouble() : VMClass("Double") {}
 
         virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) override;
 
@@ -21,15 +21,14 @@ namespace som {
         void div(CExecutionStack& stack, CGlobalContext& globalCtx);
 
     private:
-
     };
 
-    const std::map<std::string, std::function<void(VMInteger*, CExecutionStack&, CGlobalContext&)>> integerPrimitives = {
-        { "asString", std::mem_fn(&VMInteger::asString) },
-        { "+", std::mem_fn(&VMInteger::plus) },
-        { "-", std::mem_fn(&VMInteger::minus) },
-        { "*", std::mem_fn(&VMInteger::mult) },
-        { "/", std::mem_fn(&VMInteger::div) }
+    const std::map<std::string, std::function<void(VMDouble*, CExecutionStack&, CGlobalContext&)>> doublePrimitives = {
+        { "asString", std::mem_fn(&VMDouble::asString) },
+        { "+", std::mem_fn(&VMDouble::plus) },
+        { "-", std::mem_fn(&VMDouble::minus) },
+        { "*", std::mem_fn(&VMDouble::mult) },
+        { "/", std::mem_fn(&VMDouble::div) }
     };
 
 }

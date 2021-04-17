@@ -11,7 +11,7 @@ namespace som {
     public:
         VMString() : VMClass("String") {}
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx) override;
+        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) override;
 
         // Implementation of primitive methods
         void print(CExecutionStack& stack, CGlobalContext& globalCtx);
@@ -32,7 +32,7 @@ namespace som {
         { "print", std::mem_fn(&VMString::print) },
         { "printLn", std::mem_fn(&VMString::printLn) },
         { "length", std::mem_fn(&VMString::length) },
-        { "concatenate", std::mem_fn(&VMString::concatenate) },
+        { "concatenate:", std::mem_fn(&VMString::concatenate) },
         { "isWhitespace", std::mem_fn(&VMString::isWhitespace) },
         { "isDigits", std::mem_fn(&VMString::isDigits) },
         { "=", std::mem_fn(&VMString::compare) }
