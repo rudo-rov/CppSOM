@@ -7,6 +7,7 @@ add_library(interpret
     ExecutionStack.h ExecutionStack.cpp
     ScopeStack.h ScopeStack.cpp
     GlobalContext.h GlobalContext.cpp
+    Heap.h Heap.cpp
 )
 
 target_link_libraries(interpret vm_objects)
