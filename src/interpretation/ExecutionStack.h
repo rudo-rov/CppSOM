@@ -24,6 +24,8 @@ namespace som {
         std::shared_ptr<VMObject> getSelf();
         std::shared_ptr<VMObject>& fromTop(int32_t idx) { return m_stack.top().fromTop(idx); }
 
+        size_t size() const { return m_stack.size(); }
+
     private:
         std::stack<Frame> m_stack;
     };

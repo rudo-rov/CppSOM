@@ -49,4 +49,18 @@ namespace som {
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver / argument)));
     }
 
+    void VMInteger::floatDiv(CExecutionStack& stack, CGlobalContext& globalCtx)
+    {
+        auto argument = stack.getArgument(0)->getValue().asInt();
+        auto receiver = stack.getArgument(1)->getValue().asInt();
+        stack.push(std::make_shared<VMObject>(globalCtx.getClass("Double"), VMValue((double)receiver / argument)));
+    }
+
+    void VMInteger::mod(CExecutionStack& stack, CGlobalContext& globalCtx)
+    {
+        auto argument = stack.getArgument(0)->getValue().asInt();
+        auto receiver = stack.getArgument(1)->getValue().asInt();
+        stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver % argument)));
+    }
+
 }

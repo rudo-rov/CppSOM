@@ -23,8 +23,8 @@ namespace som {
         std::unique_ptr<Program> m_program;
         CExecutionStack m_executionStack;
         CProgramCounter m_pc;
-        CGlobalContext m_globalCtx;
         CHeap m_heap;
+        CGlobalContext m_globalCtx;
         
         void execute(LitIns* ins);
         void execute(SendIns* ins);
@@ -34,6 +34,7 @@ namespace som {
         void execute(GetSelfIns* ins);
 
         std::shared_ptr<VMObject> objFromValue(Value* val);
+        bool shouldExit() const;
     };
 
 }

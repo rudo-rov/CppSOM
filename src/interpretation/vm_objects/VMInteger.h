@@ -19,6 +19,8 @@ namespace som {
         void minus(CExecutionStack& stack, CGlobalContext& globalCtx);
         void mult(CExecutionStack& stack, CGlobalContext& globalCtx);
         void div(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void floatDiv(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void mod(CExecutionStack& stack, CGlobalContext& globalCtx);
 
     private:
 
@@ -29,7 +31,9 @@ namespace som {
         { "+", std::mem_fn(&VMInteger::plus) },
         { "-", std::mem_fn(&VMInteger::minus) },
         { "*", std::mem_fn(&VMInteger::mult) },
-        { "/", std::mem_fn(&VMInteger::div) }
+        { "/", std::mem_fn(&VMInteger::div) },
+        { "//", std::mem_fn(&VMInteger::floatDiv) },
+        { "%", std::mem_fn(&VMInteger::mod) }
     };
 
 }

@@ -22,7 +22,6 @@ namespace som {
 
     private:
         std::shared_ptr<VMClass> m_class;
-        // Value* m_value;
         std::optional<VMValue> m_primValue;
 
     };
