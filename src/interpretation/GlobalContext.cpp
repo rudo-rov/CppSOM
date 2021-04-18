@@ -8,12 +8,14 @@ namespace som {
     void CGlobalContext::initialize(const Program* program)
     {
         // For every class definition in the bytecode (CLASS value), instantiate a global class object
+        std::string runClassIdentifier;
         for (const auto& val : program->getConstants()) {
             if (val->tag == ValueTag::ClassVal) {
                 ClassValue* classVal = dynamic_cast<ClassValue*>(val.get());
-                m_classes.emplace_back(createClass(program, classVal));
+                m_classes.emplace_back(createClass(program, classVal, runClassIdentifier));
             }
         }
+        m_runClass = getClass(runClassIdentifier);
     }
 
     std::shared_ptr<VMClass> CGlobalContext::getClass(const std::string& identifier) const
@@ -25,7 +27,7 @@ namespace som {
         return nullptr;
     }
 
-    VMClass* CGlobalContext::createClass(const Program* program, const ClassValue* classVal)
+    VMClass* CGlobalContext::createClass(const Program* program, const ClassValue* classVal, std::string& runClass)
     {
         // Get the class identifier - handles String, Boolean etc. in special cases
         std::string identifier = program->getStringValue(classVal->identifier);
@@ -42,7 +44,7 @@ namespace som {
             MethodValue* method = dynamic_cast<MethodValue*>(program->getValue(slotIdx));
             if (method) {
                 if (program->getStringValue(method->name) == "run" && method->nargs == 0) {
-                    m_runClass = std::shared_ptr<VMClass>(newClass);
+                    runClass = identifier;
                 }
             }
         }

@@ -10,6 +10,7 @@ namespace som {
     class VMString : public VMClass {
     public:
         VMString() : VMClass("String") {}
+        ~VMString() = default;
 
         virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) override;
 

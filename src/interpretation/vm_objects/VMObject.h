@@ -11,7 +11,7 @@ namespace som {
 
     class VMObject {
     public:
-        VMObject() : m_primValue(), m_class(nullptr) {}
+        VMObject() : m_primValue(), m_class() {}
         VMObject(std::shared_ptr<VMClass> clazz) : m_class(clazz), m_primValue() {}
         VMObject(std::shared_ptr<VMClass> clazz, VMValue value) : m_class(clazz), m_primValue(value) {}
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <vector>
 #include <memory>
 #include "../bytecode/Program.h"
@@ -18,7 +19,7 @@ namespace som {
         std::vector<std::shared_ptr<VMClass>> m_classes;
         std::shared_ptr<VMClass> m_runClass;
 
-        VMClass* createClass(const Program* program, const ClassValue* classVal);
+        VMClass* createClass(const Program* program, const ClassValue* classVal, std::string& runClass);
     };
 
 }

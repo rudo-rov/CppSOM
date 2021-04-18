@@ -75,7 +75,6 @@ namespace som {
 
     void CInterpret::execute(SendIns* ins)
     {
-        // ARITY!!! receiver is not always on the top of the stack
         auto receiver = m_executionStack.fromTop(ins->arity);
         std::string selector = m_program->getStringValue(ins->methodIdx);
         if (receiver->getClass()->isPrimitive(selector)) {

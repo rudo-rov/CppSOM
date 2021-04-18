@@ -14,7 +14,7 @@ namespace som {
     class CInterpret {
     public:
         CInterpret(std::unique_ptr<Program>&& program) : m_program(std::move(program)), m_pc(m_program->entryPoint(), m_program->exitPoint()) {}
-        ~CInterpret() {}
+        ~CInterpret() = default;
 
         void initialize();
         void interpret();
