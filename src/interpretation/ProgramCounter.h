@@ -17,6 +17,8 @@ namespace som {
 
         bool shouldExit() const;
 
+        CodeAddress getProgramEnd() const { return m_programEnd; }
+
     private:
         CodeAddress m_pc;
         CodeAddress m_programEnd;

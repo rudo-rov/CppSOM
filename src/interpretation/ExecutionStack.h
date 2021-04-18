@@ -8,7 +8,7 @@ namespace som {
 
     class CExecutionStack {
     public:
-        CExecutionStack();
+        CExecutionStack() {}
         ~CExecutionStack() = default;
 
         // push and pop
@@ -21,6 +21,7 @@ namespace som {
         Frame& topFrame() { return m_stack.top(); }
 
         std::shared_ptr<VMObject> getArgument(int32_t idx);
+        std::shared_ptr<VMObject>& fromTop(int32_t idx) { return m_stack.top().fromTop(idx); }
 
     private:
         std::stack<Frame> m_stack;

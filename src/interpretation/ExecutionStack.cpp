@@ -3,21 +3,17 @@
 
 namespace som {
 
-    CExecutionStack::CExecutionStack()
-    {
-        Frame newFrame;
-        m_stack.push(std::move(newFrame));
-    }
-
     void CExecutionStack::pushFrame(CodeAddress retAddress, int nargs)
     {
-        auto& oldFrame = m_stack.top();
-        Frame newFrame(retAddress);
-        m_stack.push(std::move(newFrame));
-
-        for (int i = 0; i < nargs; ++i) {
-            // push(std::move(oldFrame.pop()));
-            m_stack.top().addArgument(oldFrame.pop());
+        if (nargs > 0) {
+            auto& oldFrame = m_stack.top();
+            Frame newFrame(retAddress);
+            m_stack.push(std::move(newFrame));
+            for (int i = 0; i < nargs; ++i) {
+                m_stack.top().addArgument(oldFrame.pop());
+            }
+        } else {
+            m_stack.emplace(retAddress);
         }
     }
 

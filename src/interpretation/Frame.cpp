@@ -6,13 +6,13 @@ namespace som {
 
     void Frame::push(std::shared_ptr<VMObject>& obj)
     {
-        m_stack.push(obj);
+        m_stack.push_back(obj);
     }
 
     std::shared_ptr<VMObject> Frame::pop()
     {
-        auto ret = m_stack.top();
-        m_stack.pop();
+        auto ret = m_stack.back();
+        m_stack.pop_back();
         return ret;
     }
 
@@ -25,6 +25,12 @@ namespace som {
     {
         assert(idx < m_args.size());
         return m_args.at(idx);
+    }
+
+    std::shared_ptr<VMObject>& Frame::fromTop(int32_t idx)
+    {
+        assert(m_stack.size() - idx - 1 >= 0);
+        return m_stack.at(m_stack.size() - idx - 1);
     }
 
 }

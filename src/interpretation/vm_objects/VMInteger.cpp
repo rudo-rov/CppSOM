@@ -10,41 +10,42 @@ namespace som {
             // VMClass::dispatchPrimitive(selector, stack);
         }
         auto fn = integerPrimitives.at(selector);
+        stack.pushFrame(retAddress, arity + 1);
         fn(this, stack, globalCtx);
     }
 
     void VMInteger::asString(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
-        auto receiver = stack.pop();
+        auto receiver = stack.getArgument(0);
         std::string value = std::to_string(receiver->getValue().asInt());
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("String"), VMValue(value)));
     }
 
     void VMInteger::plus(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
-        auto argument = stack.pop()->getValue().asInt();
-        auto receiver = stack.pop()->getValue().asInt();
+        auto argument = stack.getArgument(0)->getValue().asInt();
+        auto receiver = stack.getArgument(1)->getValue().asInt();
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver + argument)));
     }
 
     void VMInteger::minus(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
-        auto argument = stack.pop()->getValue().asInt();
-        auto receiver = stack.pop()->getValue().asInt();
+        auto argument = stack.getArgument(0)->getValue().asInt();
+        auto receiver = stack.getArgument(1)->getValue().asInt();
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver - argument)));
     }
 
     void VMInteger::mult(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
-        auto argument = stack.pop()->getValue().asInt();
-        auto receiver = stack.pop()->getValue().asInt();
+        auto argument = stack.getArgument(0)->getValue().asInt();
+        auto receiver = stack.getArgument(1)->getValue().asInt();
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver * argument)));
     }
 
     void VMInteger::div(CExecutionStack& stack, CGlobalContext& globalCtx)
     {
-        auto argument = stack.pop()->getValue().asInt();
-        auto receiver = stack.pop()->getValue().asInt();
+        auto argument = stack.getArgument(0)->getValue().asInt();
+        auto receiver = stack.getArgument(1)->getValue().asInt();
         stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue(receiver / argument)));
     }
 

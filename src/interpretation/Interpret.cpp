@@ -7,29 +7,37 @@ namespace som {
 
     void CInterpret::interpret()
     {
-        if (m_pc.shouldExit()) return;
-        ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-        switch (currentInstruction->op)
-        {
-        case OpCode::LitOp:
-            execute(static_cast<LitIns*>(currentInstruction));
-            break;
-        case OpCode::SendOp:
-            execute(static_cast<SendIns*>(currentInstruction));
-            break;
-        case OpCode::SetSlotOp:
-            execute(static_cast<SetSlotIns*>(currentInstruction));
-            break;
+        while (!m_pc.shouldExit()) {
+            ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
+            currentInstruction->print();
+            switch (currentInstruction->op)
+            {
+            case OpCode::LitOp:
+                execute(static_cast<LitIns*>(currentInstruction));
+                break;
+            case OpCode::SendOp:
+                execute(static_cast<SendIns*>(currentInstruction));
+                break;
+            case OpCode::SetSlotOp:
+                execute(static_cast<SetSlotIns*>(currentInstruction));
+                break;
+            case OpCode::ReturnOp:
+                execute(static_cast<ReturnIns*>(currentInstruction));
+                break;
         
         
-        default:
-            break;
+            default:
+                break;
+            }
         }
+        
     }
 
     void CInterpret::initialize()
     {
         m_globalCtx.initialize(m_program.get());
+        m_executionStack.pushFrame(m_pc.getProgramEnd());
+        m_executionStack.pushFrame(m_pc.getProgramEnd());
     }
 
     std::shared_ptr<VMObject> CInterpret::objFromValue(Value* val)
@@ -57,13 +65,12 @@ namespace som {
         Value* valPtr = m_program->getValue(ins->idx);
         m_executionStack.push(objFromValue(valPtr));
         m_pc.nextInstruction();
-        interpret();
     }
 
     void CInterpret::execute(SendIns* ins)
     {
         // ARITY!!! receiver is not always on the top of the stack
-        auto receiver = m_executionStack.top();
+        auto receiver = m_executionStack.fromTop(ins->arity);
         std::string selector = m_program->getStringValue(ins->methodIdx);
         if (receiver->getClass()->isPrimitive(selector)) {
             // Dispatch the primitive method call
@@ -73,7 +80,6 @@ namespace som {
             m_executionStack.popFrame();
             m_executionStack.push(retValue);
         }
-        interpret();
     }
     
     void CInterpret::execute(ReturnIns* ins)
@@ -82,7 +88,6 @@ namespace som {
         m_pc.setAddress(oldFrame.returnAddress());
         // Push the return value to the current frame
         m_executionStack.push(oldFrame.top());
-        interpret();
     }
 
     void CInterpret::execute(SetSlotIns* ins)
