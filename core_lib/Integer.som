@@ -2,6 +2,12 @@ Integer = (
 
     "Arithmethics"
     + argument = primitive
+    - argument = primitive
+    * argument = primitive
+    / argument = primitive "Integer division"
+    // argument = primitive "Floating point division"
+    % argument = primitive "Modulo operation"
+
     
     asString = primitive
 
