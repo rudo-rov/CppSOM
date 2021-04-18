@@ -22,7 +22,7 @@ namespace som {
         std::shared_ptr<VMObject> top() { return m_stack.back(); }
 
         std::shared_ptr<VMObject> getArgument(int32_t idx);
-
+        std::shared_ptr<VMObject> getSelf();
         std::shared_ptr<VMObject>& fromTop(int32_t idx);
 
     private:

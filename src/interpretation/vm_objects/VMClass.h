@@ -5,6 +5,7 @@
 #include "VMObject.h"
 #include "../../bytecode/Program.h"
 #include "../ExecutionStack.h"
+#include "../Heap.h"
 
 namespace som {
 
@@ -14,7 +15,7 @@ namespace som {
     public:
         VMClass() {}
         VMClass(const std::string& identifier) : m_identifier(identifier), m_primitives() {}
-        virtual ~VMClass() {}
+        ~VMClass() = default;
 
         virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) {}
         
@@ -23,6 +24,9 @@ namespace som {
 
         // Method handling
         bool isPrimitive(const std::string& selector) const;
+
+        // Object instantiation
+        std::shared_ptr<VMObject> newObject(CHeap& heap);
 
     protected:
         std::string m_identifier;

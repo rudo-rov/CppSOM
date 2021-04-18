@@ -44,4 +44,9 @@ namespace som {
         }
     }
 
+    std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap)
+    {
+        return heap.newObject(this);
+    }
+
 }

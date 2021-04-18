@@ -9,7 +9,7 @@ namespace som {
     {
         while (!m_pc.shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            currentInstruction->print();
+            // currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
@@ -24,6 +24,9 @@ namespace som {
             case OpCode::ReturnOp:
                 execute(static_cast<ReturnIns*>(currentInstruction));
                 break;
+            case OpCode::GetSelfOp:
+                execute(static_cast<GetSelfIns*>(currentInstruction));
+                break;
         
         
             default:
@@ -37,7 +40,10 @@ namespace som {
     {
         m_globalCtx.initialize(m_program.get());
         m_executionStack.pushFrame(m_pc.getProgramEnd());
-        m_executionStack.pushFrame(m_pc.getProgramEnd());
+        auto rootObject = m_globalCtx.getRunClass()->newObject(m_heap);
+        m_executionStack.push(rootObject);
+        m_executionStack.pushFrame(m_pc.getProgramEnd(), 1); // The root object as receiver of the run message
+
     }
 
     std::shared_ptr<VMObject> CInterpret::objFromValue(Value* val)
@@ -98,6 +104,11 @@ namespace som {
     void CInterpret::execute(GetArgIns* ins)
     {
         m_executionStack.push(m_executionStack.getArgument(ins->idx));
+    }
+
+    void CInterpret::execute(GetSelfIns* ins)
+    {
+        m_executionStack.push(m_executionStack.getSelf());
     }
 
 }

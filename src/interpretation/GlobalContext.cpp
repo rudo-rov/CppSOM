@@ -25,7 +25,7 @@ namespace som {
         return nullptr;
     }
 
-    VMClass* CGlobalContext::createClass(const Program* program, const ClassValue* classVal) const
+    VMClass* CGlobalContext::createClass(const Program* program, const ClassValue* classVal)
     {
         // Get the class identifier - handles String, Boolean etc. in special cases
         std::string identifier = program->getStringValue(classVal->identifier);
@@ -39,6 +39,12 @@ namespace som {
         }
         for (int32_t slotIdx : classVal->slots) {
             newClass->addSlot(program, slotIdx);
+            MethodValue* method = dynamic_cast<MethodValue*>(program->getValue(slotIdx));
+            if (method) {
+                if (program->getStringValue(method->name) == "run" && method->nargs == 0) {
+                    m_runClass = std::shared_ptr<VMClass>(newClass);
+                }
+            }
         }
         return newClass;
         

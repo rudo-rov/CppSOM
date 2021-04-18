@@ -33,4 +33,10 @@ namespace som {
         return m_stack.at(m_stack.size() - idx - 1);
     }
 
+    std::shared_ptr<VMObject> Frame::getSelf()
+    {
+        assert(m_args.size() > 0);
+        return m_args.back();
+    }
+
 }

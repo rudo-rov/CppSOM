@@ -41,4 +41,9 @@ namespace som {
         return m_stack.top().getArgument(idx);
     }
 
+    std::shared_ptr<VMObject> CExecutionStack::getSelf()
+    {
+        return m_stack.top().getSelf();
+    }
+
 }
