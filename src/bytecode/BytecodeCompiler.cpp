@@ -182,6 +182,9 @@ namespace som {
         insVector* result = new insVector();
         // Push the value on the stack
         appendInstructions(result, std::any_cast<insVector*>(resolvePrimary(binaryOperand->m_primary.get())));
+        for (const auto& mssg : *binaryOperand->m_unaryMessages) {
+            result->emplace_back(std::any_cast<SendIns*>(visit(mssg.get())));
+        }
         return result;
     }
 
@@ -233,14 +236,6 @@ namespace som {
     std::any CBytecodeCompiler::visit(Evaluation* evaluation)
     {
         insVector* result = new insVector();
-        // nodePtr m_primary - variable, nested term, nested block, literal
-        // Variable* varPtr = dynamic_cast<Variable*>(evaluation->m_primary.get());
-        // if (varPtr) {
-        //     result->emplace_back(resolveVariable(varPtr));
-        // } else {
-        //     insVector* primary = std::any_cast<insVector*>(visit(evaluation->m_primary.get()));
-        //     appendInstructions(result, primary);
-        // }
         appendInstructions(result, std::any_cast<insVector*>(resolvePrimary(evaluation->m_primary.get())));
 
         // nodeVectorPtr m_messages -- add calls to slots in correct order
