@@ -210,4 +210,9 @@ namespace som {
         std::cout << "GET arg: " << idx << std::endl;
     }
 
+    void GetSelfIns::print()
+    {
+        std::cout << "GET SELF" << std::endl;
+    }
+
 }

@@ -149,6 +149,8 @@ namespace som {
             return loadReturnIns();
         case OpCode::GetArgOp:
             return loadGetArgIns();
+        case OpCode::GetSelfOp:
+            return loadGetSelfIns();
         
         default:
             return new ByteIns();
@@ -200,6 +202,11 @@ namespace som {
     ReturnIns* CBytecodeLoader::loadReturnIns()
     {
         return new ReturnIns();
+    }
+
+    GetSelfIns* CBytecodeLoader::loadGetSelfIns()
+    {
+        return new GetSelfIns();
     }
 
 }

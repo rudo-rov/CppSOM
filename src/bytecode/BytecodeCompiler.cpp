@@ -125,6 +125,9 @@ namespace som {
     {
         Variable* varPtr = dynamic_cast<Variable*>(node);
         if (varPtr) {
+            if (varPtr->m_identifier == "self") {
+                return new GetSelfIns();
+            }
             int32_t localIdx = m_scopes.localIdx(varPtr->m_identifier);
             if (localIdx >= 0) {
                 return new GetLocalIns(localIdx);
