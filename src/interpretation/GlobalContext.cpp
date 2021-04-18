@@ -3,7 +3,14 @@
 #include "vm_objects/VMString.h"
 #include "vm_objects/VMInteger.h"
 
-namespace som {
+namespace som { 
+
+    CGlobalContext::~CGlobalContext()
+    {
+        for (auto& ptr : m_classes){
+            ptr.reset();
+        }
+    }
 
     void CGlobalContext::initialize(const Program* program)
     {
@@ -37,7 +44,7 @@ namespace som {
         } else if (identifier == "Integer") {
             newClass = new VMInteger();
         } else {
-            newClass = new VMClass();
+            newClass = new VMClass(identifier);
         }
         for (int32_t slotIdx : classVal->slots) {
             newClass->addSlot(program, slotIdx);

@@ -10,7 +10,7 @@ namespace som {
         CHeap() {}
         ~CHeap() = default;
 
-        std::shared_ptr<VMObject> newObject(VMClass* clazz);
+        std::shared_ptr<VMObject> newObject(std::shared_ptr<VMClass>& clazz);
 
     private:
         std::vector<std::shared_ptr<VMObject>> m_objects;

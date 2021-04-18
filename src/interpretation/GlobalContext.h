@@ -10,11 +10,12 @@ namespace som {
     class CGlobalContext {
     public:
         CGlobalContext() {}
+        ~CGlobalContext();
 
         void initialize(const Program* program);
         std::shared_ptr<VMClass> getClass(const std::string& identifier) const;
 
-        std::shared_ptr<VMClass>& getRunClass() { return m_runClass; }
+        std::shared_ptr<VMClass> getRunClass() { return m_runClass; }
     private:
         std::vector<std::shared_ptr<VMClass>> m_classes;
         std::shared_ptr<VMClass> m_runClass;

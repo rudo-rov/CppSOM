@@ -40,13 +40,13 @@ namespace som {
     {
         const MethodValue* methodPtr = dynamic_cast<const MethodValue*>(valPtr);
         if (methodPtr) {
-            
+            m_methods[program->getStringValue(methodPtr->name)] = methodPtr->code->begin();
         }
     }
 
-    std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap)
+    std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx)
     {
-        return heap.newObject(this);
+        return heap.newObject(globalCtx.getClass(m_identifier));
     }
 
 }

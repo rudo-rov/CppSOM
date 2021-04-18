@@ -7,9 +7,9 @@ namespace som {
 
     void CInterpret::interpret()
     {
-        while (!m_pc.shouldExit()) {
+        while (!shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            // currentInstruction->print();
+            currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
@@ -36,11 +36,19 @@ namespace som {
         
     }
 
+    bool CInterpret::shouldExit() const
+    {
+        if (m_executionStack.size() > 2) {
+            return false;
+        }
+        return m_pc.shouldExit();
+    }
+
     void CInterpret::initialize()
     {
         m_globalCtx.initialize(m_program.get());
         m_executionStack.pushFrame(m_pc.getProgramEnd());
-        auto rootObject = m_globalCtx.getRunClass()->newObject(m_heap);
+        auto rootObject = m_globalCtx.getRunClass()->newObject(m_heap, m_globalCtx);
         m_executionStack.push(rootObject);
         m_executionStack.pushFrame(m_pc.getProgramEnd(), 1); // The root object as receiver of the run message
 
@@ -84,6 +92,10 @@ namespace som {
             auto retValue = m_executionStack.pop();
             m_executionStack.popFrame();
             m_executionStack.push(retValue);
+        } else {
+            CodeAddress newMethod = receiver->getClass()->getMethodAddr(selector);
+            m_executionStack.pushFrame(m_pc.nextInstruction(), ins->arity + 1);
+            m_pc.setAddress(newMethod);
         }
     }
     
@@ -103,11 +115,13 @@ namespace som {
     void CInterpret::execute(GetArgIns* ins)
     {
         m_executionStack.push(m_executionStack.getArgument(ins->idx));
+        m_pc.nextInstruction();
     }
 
     void CInterpret::execute(GetSelfIns* ins)
     {
         m_executionStack.push(m_executionStack.getSelf());
+        m_pc.nextInstruction();
     }
 
 }
