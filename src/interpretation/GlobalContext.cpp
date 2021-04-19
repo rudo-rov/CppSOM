@@ -2,6 +2,7 @@
 #include "GlobalContext.h"
 #include "vm_objects/VMString.h"
 #include "vm_objects/VMInteger.h"
+#include "vm_objects/VMBlock.h"
 
 namespace som { 
 
@@ -43,6 +44,8 @@ namespace som {
            newClass = new VMString();
         } else if (identifier == "Integer") {
             newClass = new VMInteger();
+        } else if (identifier == "Block") {
+            newClass = new VMBlock();
         } else {
             newClass = new VMClass(identifier);
         }

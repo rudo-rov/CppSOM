@@ -56,6 +56,9 @@ namespace som {
             case ValueTag::ClassVal:
                 loadClassVal();
                 break;
+            case ValueTag::BlockVal:
+                loadBlockVal();
+                break;
             
             default:
                 m_lastError = "Unknown tag occurred.";
@@ -117,6 +120,13 @@ namespace som {
         m_program->registerClass(args[0], slots);
     }
 
+    void CBytecodeLoader::loadBlockVal()
+    {
+        int32_t nargs;
+        m_file.read(reinterpret_cast<char*>(&nargs), sizeof nargs);
+        m_program->registerBlock(nargs, loadInstructionBlock());
+    }
+
     insVector* CBytecodeLoader::loadInstructionBlock()
     {
         insVector* block = new insVector();
@@ -151,6 +161,8 @@ namespace som {
             return loadGetArgIns();
         case OpCode::GetSelfOp:
             return loadGetSelfIns();
+        case OpCode::BlockOp:
+            return loadBlockIns();
         
         default:
             return new ByteIns();
@@ -207,6 +219,13 @@ namespace som {
     GetSelfIns* CBytecodeLoader::loadGetSelfIns()
     {
         return new GetSelfIns();
+    }
+
+    BlockIns* CBytecodeLoader::loadBlockIns()
+    {
+        int32_t idx;
+        m_file.read(reinterpret_cast<char*>(&idx), sizeof idx);
+        return new BlockIns(idx);
     }
 
 }

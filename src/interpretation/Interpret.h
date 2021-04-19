@@ -32,6 +32,7 @@ namespace som {
         void execute(SetSlotIns* ins);
         void execute(GetArgIns* ins);
         void execute(GetSelfIns* ins);
+        void execute(BlockIns* ins);
 
         std::shared_ptr<VMObject> objFromValue(Value* val);
         bool shouldExit() const;

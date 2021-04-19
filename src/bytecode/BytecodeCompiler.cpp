@@ -320,6 +320,7 @@ namespace som {
             nargs = 0;
         }
         insVector* compiledBlock = std::any_cast<insVector*>(visit(nestedBlock->m_block.get()));
+        compiledBlock->emplace_back(new ReturnIns());
         int32_t blockValIdx = m_program->registerBlock(nargs, compiledBlock);
 
         insVector* result = new insVector();

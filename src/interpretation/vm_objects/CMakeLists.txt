@@ -3,6 +3,7 @@ add_library(vm_objects
     VMObject.h VMObject.cpp
     VMString.h VMString.cpp
     VMInteger.h VMInteger.cpp
+    VMBlock.h VMBlock.cpp
     VMValue.h
 )
 

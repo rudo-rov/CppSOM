@@ -30,6 +30,7 @@ namespace som {
 
         // Object instantiation
         std::shared_ptr<VMObject> newObject(CHeap& heap, CGlobalContext& globalCtx);
+        std::shared_ptr<VMObject> newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val);
 
     protected:
         std::string m_identifier;

@@ -9,11 +9,14 @@ namespace som {
     {
         while (!shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            currentInstruction->print();
+            // currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
                 execute(static_cast<LitIns*>(currentInstruction));
+                break;
+            case OpCode::BlockOp:
+                execute(static_cast<BlockIns*>(currentInstruction));
                 break;
             case OpCode::SendOp:
                 execute(static_cast<SendIns*>(currentInstruction));
@@ -26,6 +29,9 @@ namespace som {
                 break;
             case OpCode::GetSelfOp:
                 execute(static_cast<GetSelfIns*>(currentInstruction));
+                break;
+            case OpCode::GetArgOp:
+                execute(static_cast<GetArgIns*>(currentInstruction));
                 break;
         
         
@@ -121,6 +127,15 @@ namespace som {
     void CInterpret::execute(GetSelfIns* ins)
     {
         m_executionStack.push(m_executionStack.getSelf());
+        m_pc.nextInstruction();
+    }
+
+    void CInterpret::execute(BlockIns* ins)
+    {
+        auto& blockClass = m_globalCtx.getClass("Block");
+        auto blockAddr = dynamic_cast<BlockValue*>(m_program->getValue(ins->idx))->code->begin();
+        auto& newObj = blockClass->newObject(m_heap, m_globalCtx, VMValue(blockAddr));
+        m_executionStack.push(newObj);
         m_pc.nextInstruction();
     }
 

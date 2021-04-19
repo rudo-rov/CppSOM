@@ -49,4 +49,9 @@ namespace som {
         return heap.newObject(globalCtx.getClass(m_identifier));
     }
 
+    std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val)
+    {
+        return heap.newObject(globalCtx.getClass(m_identifier), val);
+    }
+
 }

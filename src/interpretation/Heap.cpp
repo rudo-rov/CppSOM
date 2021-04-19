@@ -10,4 +10,11 @@ namespace som {
         return newObject;
     }
 
+    std::shared_ptr<VMObject> CHeap::newObject(std::shared_ptr<VMClass>& clazz, VMValue val)
+    {
+        auto newObject = std::make_shared<VMObject>(clazz, val);
+        m_objects.push_back(newObject);
+        return newObject;
+    }
+
 }

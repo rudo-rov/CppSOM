@@ -29,6 +29,7 @@ namespace som {
         void loadMethodVal();
         void loadPrimitiveVal();
         void loadClassVal();
+        void loadBlockVal();
 
         insVector* loadInstructionBlock();
         ByteIns* loadInstruction();
@@ -40,6 +41,7 @@ namespace som {
         ReturnIns* loadReturnIns();
         GetArgIns* loadGetArgIns();
         GetSelfIns* loadGetSelfIns();
+        BlockIns* loadBlockIns();
     };
 
 }

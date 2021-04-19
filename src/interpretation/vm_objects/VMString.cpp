@@ -9,7 +9,6 @@ namespace som {
         if (fnIt == stringPrimitives.end()) {
             // VMClass::dispatchPrimitive(selector, stack);
         }
-        // Push new frame with receiver and arguments -- arity?
         auto fn = stringPrimitives.at(selector);
         stack.pushFrame(retAddress, arity + 1); // +1 because of the receiver of the message
         fn(this, stack, globalCtx);

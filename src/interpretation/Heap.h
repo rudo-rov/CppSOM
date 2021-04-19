@@ -11,6 +11,7 @@ namespace som {
         ~CHeap() = default;
 
         std::shared_ptr<VMObject> newObject(std::shared_ptr<VMClass>& clazz);
+        std::shared_ptr<VMObject> newObject(std::shared_ptr<VMClass>& clazz, VMValue val);
 
     private:
         std::vector<std::shared_ptr<VMObject>> m_objects;
