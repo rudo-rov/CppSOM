@@ -43,6 +43,17 @@ namespace som {
         }
     }
 
+    void BlockValue::serialize(std::ofstream& file)
+    {
+        Value::serialize(file);
+        file.write(reinterpret_cast<char*>(&nargs), sizeof nargs);
+        int32_t blockSize = code->size();
+        file.write(reinterpret_cast<char*>(&blockSize), sizeof blockSize);
+        for (const auto& ins : *code) {
+            ins->serialize(file);
+        }
+    }
+
     void PrimitiveValue::serialize(std::ofstream& file)
     {
         Value::serialize(file);
@@ -72,6 +83,12 @@ namespace som {
     {
         ByteIns::serialize(file);
         file.write(reinterpret_cast<char*>(&slotIdx), sizeof slotIdx);
+    }
+
+    void BlockIns::serialize(std::ofstream& file)
+    {
+        ByteIns::serialize(file);
+        file.write(reinterpret_cast<char*>(&idx), sizeof idx);
     }
 
     void SetSlotIns::serialize(std::ofstream& file)
@@ -147,6 +164,15 @@ namespace som {
         }
     }
 
+    void BlockValue::print()
+    {
+        std::cout << "BLOCK nargs: " << nargs << std::endl;
+        for (const auto& ins: *code) {
+            std::cout << "   ";
+            ins->print();
+        } 
+    }
+
     void PrimitiveValue::print()
     {
         std::cout << "PRIMITIVE name: " << name << " nargs: " << nargs << std::endl;
@@ -168,6 +194,11 @@ namespace som {
     void SlotIns::print()
     {
         std::cout << "GET slot: " << slotIdx << std::endl;
+    }
+
+    void BlockIns::print()
+    {
+        std::cout << "BLOCK " << idx << std::endl;
     }
     
     void SetSlotIns::print()

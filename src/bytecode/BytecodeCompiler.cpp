@@ -307,6 +307,26 @@ namespace som {
         return visit(nestedTerm->m_expression.get());
     }
 
+    std::any CBytecodeCompiler::visit(NestedBlock* nestedBlock)
+    {
+        m_scopes.newScope();
+        int32_t nargs;
+        if (nestedBlock->m_arguments) {
+            for (const auto& arg : *nestedBlock->m_arguments) {
+                m_scopes.addArgument(dynamic_cast<Variable*>(arg.get())->m_identifier);
+            }
+            nargs = nestedBlock->m_arguments->size();
+        } else {
+            nargs = 0;
+        }
+        insVector* compiledBlock = std::any_cast<insVector*>(visit(nestedBlock->m_block.get()));
+        int32_t blockValIdx = m_program->registerBlock(nargs, compiledBlock);
+
+        insVector* result = new insVector();
+        result->emplace_back(new BlockIns(blockValIdx));
+        return result;
+    }
+
 
     void CBytecodeCompiler::appendInstructions(insVector* first, insVector* second) const
     {

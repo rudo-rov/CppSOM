@@ -34,6 +34,13 @@ namespace som {
         return m_constants.size() - 1;
     }
 
+    int32_t Program::registerBlock(int32_t nargs, insVector* code)
+    {
+        BlockValue* nestedBlock = new BlockValue(nargs, code);
+        m_constants.emplace_back(nestedBlock);
+        return m_constants.size() - 1;
+    }
+
     int32_t Program::registerMethod(int32_t patternIdx, int32_t nargs)
     {
         PrimitiveValue* newMethod = new PrimitiveValue(patternIdx, nargs);

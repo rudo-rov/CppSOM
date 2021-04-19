@@ -14,7 +14,8 @@ namespace som {
         StringVal,
         MethodVal,
         PrimitiveVal,
-        ClassVal
+        ClassVal,
+        BlockVal
     };
     
     enum class OpCode : uint8_t {
@@ -22,7 +23,7 @@ namespace som {
         LabelOp,
         LitOp,
         ArrayOp,
-        ObjectOp,
+        BlockOp,
         SlotOp,
         SetSlotOp,
         GetSlotOp,
@@ -106,6 +107,14 @@ namespace som {
         NilValue() : Value(ValueTag::NilVal) {}
     };
 
+    struct BlockValue : Value {
+        BlockValue(int32_t nargs, insVector* code) : Value(ValueTag::BlockVal), nargs(nargs), code(code) {}
+        void print() override;
+        void serialize(std::ofstream& file) override;
+        int32_t nargs;
+        std::unique_ptr<std::vector<std::unique_ptr<ByteIns>>> code;
+    };
+
     // Opcodes
 
     struct LabelIns : ByteIns {
@@ -123,8 +132,11 @@ namespace som {
 
     };
 
-    struct ObjectIns : ByteIns {
-
+    struct BlockIns : ByteIns {
+        BlockIns(int32_t idx) : ByteIns(OpCode::BlockOp), idx(idx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t idx;
     };
 
     struct SlotIns : ByteIns {
@@ -187,7 +199,10 @@ namespace som {
     };
 
     struct GetGlobalIns : ByteIns {
-
+        GetGlobalIns(int32_t identifierIdx) : ByteIns(OpCode::GetGlobalOp), identifierIdx(identifierIdx) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t identifierIdx;
     };
 
     struct BranchIns : ByteIns {

@@ -22,7 +22,7 @@ namespace som {
         std::any visit(Class* classNode) override;
         std::any visit(Method* method) override;
         std::any visit(Block* block) override;
-        std::any visit(NestedBlock* nestedBlock) override { return std::any(); }
+        std::any visit(NestedBlock* nestedBlock) override;
         std::any visit(UnaryPattern* unaryPattern) override;
         std::any visit(BinaryPattern* binaryPattern) override;
         std::any visit(KeywordPattern* keywordPattern) override;
