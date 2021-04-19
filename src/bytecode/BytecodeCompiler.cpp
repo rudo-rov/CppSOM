@@ -32,49 +32,51 @@ namespace som {
     }
 
     std::any CBytecodeCompiler::visit(Method* method)
-    {
-        m_scopes.newScope();
-        
+    {       
         if (method->m_primitive) {
             return std::make_any<int32_t>(primitiveMethod(method));
         }
         
+        m_scopes.newScope();
         Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock ? methodBlock->m_localDefs->size() : 0;
+        int32_t arity, patternIdx;
+        bool isEntryPoint = false;
         
         if (methodBlock)
             m_scopes.registerLocals(methodBlock->m_localDefs.get());
 
-        insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
-        instructions->emplace_back(new ReturnIns());
 
         UnaryPattern* unaryPtr = dynamic_cast<UnaryPattern*>(method->m_pattern.get());
         if (unaryPtr) {
-            int32_t patternIdx = std::any_cast<int32_t>(visit(unaryPtr));
-            int32_t methodIdx = m_program->registerMethod(patternIdx, 0, nlocals, instructions);
+            patternIdx = std::any_cast<int32_t>(visit(unaryPtr));
+            arity = 0;
             if (unaryPtr->m_identifier == "run") {
-                m_program->setEntryPoint(methodIdx);
+                isEntryPoint = true;
             }
-            m_scopes.popScope();
-            return std::make_any<int32_t>(methodIdx);
         }
 
         BinaryPattern* binPtr = dynamic_cast<BinaryPattern*>(method->m_pattern.get());
         if (binPtr) {
-            int32_t patternIdx = std::any_cast<int32_t>(visit(binPtr));
-            m_scopes.popScope();
-            return std::make_any<int32_t>(m_program->registerMethod(patternIdx, 1, nlocals, instructions));
+            patternIdx = std::any_cast<int32_t>(visit(binPtr));
+            arity = 1;
         }
 
         KeywordPattern* keyPtr = dynamic_cast<KeywordPattern*>(method->m_pattern.get());
         if (keyPtr) {
-            int32_t patternIdx = std::any_cast<int32_t>(visit(keyPtr));
-            m_scopes.popScope();
-            return std::make_any<int32_t>(m_program->registerMethod(patternIdx, keyPtr->m_keywords->size(), nlocals, instructions));
+            patternIdx = std::any_cast<int32_t>(visit(keyPtr));
+            arity = keyPtr->m_arguments->size();
         }
 
-        // Unreachable
-        return std::any();
+        insVector* instructions = std::any_cast<insVector*>(visit(methodBlock));
+        instructions->emplace_back(new ReturnIns());
+
+        int32_t methodIdx = m_program->registerMethod(patternIdx, arity, nlocals, instructions);
+        if (isEntryPoint)
+            m_program->setEntryPoint(methodIdx);
+
+        m_scopes.popScope();
+        return std::make_any<int32_t>(methodIdx);
     }
 
     int32_t CBytecodeCompiler::primitiveMethod(Method* method)
@@ -105,6 +107,9 @@ namespace som {
     std::any CBytecodeCompiler::visit(KeywordPattern* keywordPattern)
     {
         std::stringstream selector;
+        for (const auto& arg : *keywordPattern->m_arguments) {
+            m_scopes.addArgument(dynamic_cast<Variable*>(arg.get())->m_identifier);
+        }
         for (const auto& keyword : *keywordPattern->m_keywords) {
             selector << std::any_cast<std::string>(visit(keyword.get()));
         }
