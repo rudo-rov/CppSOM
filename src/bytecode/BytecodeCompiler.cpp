@@ -33,11 +33,11 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(Method* method)
     {       
+        m_scopes.newScope();
         if (method->m_primitive) {
             return std::make_any<int32_t>(primitiveMethod(method));
         }
         
-        m_scopes.newScope();
         Block* methodBlock = dynamic_cast<Block*>(method->m_methodBlock.get());
         int32_t nlocals = methodBlock ? methodBlock->m_localDefs->size() : 0;
         int32_t arity, patternIdx;
@@ -82,13 +82,13 @@ namespace som {
     int32_t CBytecodeCompiler::primitiveMethod(Method* method)
     {
         int32_t patternIdx = std::any_cast<int32_t>(visit(method->m_pattern.get()));
-        m_scopes.popScope();
         int32_t arity = 0;
         if (dynamic_cast<BinaryPattern*>(method->m_pattern.get())) {
             arity = 1;
         } else if (dynamic_cast<KeywordPattern*>(method->m_pattern.get())) {
             arity = dynamic_cast<KeywordPattern*>(method->m_pattern.get())->m_keywords->size();
         }
+        m_scopes.popScope();
         return m_program->registerMethod(patternIdx, arity);
     }
 
