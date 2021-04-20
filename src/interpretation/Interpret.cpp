@@ -21,6 +21,9 @@ namespace som {
             case OpCode::SendOp:
                 execute(static_cast<SendIns*>(currentInstruction));
                 break;
+            case OpCode::GetSlotOp:
+                execute(static_cast<GetSlotIns*>(currentInstruction));
+                break;
             case OpCode::SetSlotOp:
                 execute(static_cast<SetSlotIns*>(currentInstruction));
                 break;
@@ -67,13 +70,13 @@ namespace som {
         {
         case ValueTag::StringVal:
             clazz = m_globalCtx.getClass("String");
-            return std::make_shared<VMObject>(clazz, VMValue(dynamic_cast<StringValue*>(val)->value));
+            return m_heap.newObject(clazz, VMValue(dynamic_cast<StringValue*>(val)->value));
         case ValueTag::IntVal:
             clazz = m_globalCtx.getClass("Integer");
-            return std::make_shared<VMObject>(clazz, VMValue(dynamic_cast<IntValue*>(val)->value));
+            return m_heap.newObject(clazz, VMValue(dynamic_cast<IntValue*>(val)->value));
         case ValueTag::DoubleVal:
             clazz = m_globalCtx.getClass("Double");
-            return std::make_shared<VMObject>(clazz, VMValue(dynamic_cast<DoubleValue*>(val)->value));
+            return m_heap.newObject(clazz, VMValue(dynamic_cast<DoubleValue*>(val)->value));
         
         default:
             return std::make_shared<VMObject>(); // Should not be reachable
@@ -115,7 +118,16 @@ namespace som {
 
     void CInterpret::execute(SetSlotIns* ins)
     {
-        
+        auto& self = m_executionStack.getSelf();
+        self->setField(m_program->getStringValue(ins->slotIdx), m_executionStack.pop());
+        m_pc.nextInstruction();
+    }
+
+    void CInterpret::execute(GetSlotIns* ins)
+    {
+        auto& self = m_executionStack.getSelf();
+        m_executionStack.push(self->getField(m_program->getStringValue(ins->slotIdx)));
+        m_pc.nextInstruction();
     }
 
     void CInterpret::execute(GetArgIns* ins)

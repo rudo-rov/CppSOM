@@ -17,4 +17,11 @@ namespace som {
         return newObject;
     }
 
+    std::shared_ptr<VMObject> CHeap::newObject(std::shared_ptr<VMClass>& clazz, CGlobalContext& globalCtx)
+    {
+        auto newObject = std::make_shared<VMObject>(clazz, globalCtx);
+        m_objects.push_back(newObject);
+        return newObject;
+    }
+
 }

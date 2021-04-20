@@ -24,6 +24,7 @@ namespace som {
         
         virtual void addSlot(const Program* program, int32_t slotIdx);
         const std::string& className() const { return m_identifier; }
+        const std::vector<std::string>& instanceFields() { return m_instanceFields; }
 
         // Method handling
         bool isPrimitive(const std::string& selector) const;
@@ -36,9 +37,11 @@ namespace som {
         std::string m_identifier;
         std::vector<std::string> m_primitives;
         std::map<std::string, CodeAddress> m_methods;
+        std::vector<std::string> m_instanceFields;
 
         virtual void addPrimitive(const Program* program, const Value* valPtr);
         void addMethod(const Program* program, const Value* valPtr);
+        void addInstanceField(const std::string& identifier);
     };
 
 }

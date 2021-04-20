@@ -11,6 +11,9 @@ namespace som {
             break;
         case ValueTag::MethodVal:
             addMethod(program, program->getValue(slotIdx));
+            break;
+        case ValueTag::StringVal:
+            addInstanceField(program->getStringValue(slotIdx));
         
         default:
             break;
@@ -44,9 +47,14 @@ namespace som {
         }
     }
 
+    void VMClass::addInstanceField(const std::string& identifier)
+    {
+        m_instanceFields.push_back(identifier);
+    }
+
     std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx)
     {
-        return heap.newObject(globalCtx.getClass(m_identifier));
+        return heap.newObject(globalCtx.getClass(m_identifier), globalCtx);
     }
 
     std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val)
