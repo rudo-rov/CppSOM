@@ -163,6 +163,8 @@ namespace som {
             return loadGetSelfIns();
         case OpCode::BlockOp:
             return loadBlockIns();
+        case OpCode::ReturnNLOp:
+            return loadReturnNLIns();
         
         default:
             return new ByteIns();
@@ -226,6 +228,13 @@ namespace som {
         int32_t idx;
         m_file.read(reinterpret_cast<char*>(&idx), sizeof idx);
         return new BlockIns(idx);
+    }
+
+    ReturnNLIns* CBytecodeLoader::loadReturnNLIns()
+    {
+        int32_t lvl;
+        m_file.read(reinterpret_cast<char*>(&lvl), sizeof lvl);
+        return new ReturnNLIns(lvl);
     }
 
 }

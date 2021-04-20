@@ -42,6 +42,7 @@ namespace som {
         GetArgIns* loadGetArgIns();
         GetSelfIns* loadGetSelfIns();
         BlockIns* loadBlockIns();
+        ReturnNLIns* loadReturnNLIns();
     };
 
 }

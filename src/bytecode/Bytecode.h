@@ -34,7 +34,8 @@ namespace som {
         GetGlobalOp,
         GetArgOp,
         GetSelfOp,
-        ReturnOp
+        ReturnOp,
+        ReturnNLOp
     };
 
     // Values
@@ -205,18 +206,17 @@ namespace som {
         int32_t identifierIdx;
     };
 
-    struct BranchIns : ByteIns {
-
-    };
-
-    struct GotoIns : ByteIns {
-
-    };
-
     struct ReturnIns : ByteIns {
         ReturnIns() : ByteIns(OpCode::ReturnOp) {}
         void print() override;
         void serialize(std::ofstream& file) override;
+    };
+
+    struct ReturnNLIns : ByteIns {
+        ReturnNLIns(int32_t lvl) : ByteIns(OpCode::ReturnNLOp), lvl(lvl) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        int32_t lvl;
     };
 
 }

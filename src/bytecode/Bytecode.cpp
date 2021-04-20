@@ -139,6 +139,12 @@ namespace som {
         ByteIns::serialize(file);
     }
 
+    void ReturnNLIns::serialize(std::ofstream& file)
+    {
+        ByteIns::serialize(file);
+        file.write(reinterpret_cast<char*>(&lvl), sizeof lvl);
+    }
+
     // Bytecode printing
     void IntValue::print()
     {
@@ -244,6 +250,11 @@ namespace som {
     void GetSelfIns::print()
     {
         std::cout << "GET SELF" << std::endl;
+    }
+
+    void ReturnNLIns::print()
+    {
+        std::cout << "RETNL " << lvl << std::endl;
     }
 
 }
