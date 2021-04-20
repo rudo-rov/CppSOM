@@ -12,7 +12,9 @@ namespace som {
     {
         size_t classNameIdx = m_program->registerConstant(classNode->m_identifier);
         std::vector<int32_t> slots;
-        // Handle the superclass - register new class and instantiate the object?
+
+        int32_t superclass = -1;
+        // if (classNode->)        
         
         // Instance fields - create slots
         for (const auto& insField : *(classNode->m_instanceFields)) {
@@ -27,7 +29,7 @@ namespace som {
         for (const auto& insMethod : *(classNode->m_instanceMethods)) {
             slots.push_back(std::any_cast<int32_t>(visit(insMethod.get())));
         }
-        m_program->registerClass(classNameIdx, slots);
+        m_program->registerClass(classNameIdx, superclass, slots);
         return std::make_any<bool>(true);
     }
 

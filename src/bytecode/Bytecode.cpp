@@ -65,6 +65,7 @@ namespace som {
     {
         Value::serialize(file);
         file.write(reinterpret_cast<char*>(&identifier), sizeof identifier);
+        file.write(reinterpret_cast<char*>(&superclass), sizeof superclass);
         int32_t slotsNr = slots.size();
         file.write(reinterpret_cast<char*>(&slotsNr), sizeof slotsNr);
         for (int32_t slot : slots) {

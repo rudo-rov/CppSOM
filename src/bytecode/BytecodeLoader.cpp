@@ -109,15 +109,15 @@ namespace som {
 
     void CBytecodeLoader::loadClassVal()
     {
-        int32_t args[2]; // identifier, number of slots
-        m_file.read(reinterpret_cast<char*>(args), 2 * (sizeof *args));
+        int32_t args[3]; // identifier, number of slots
+        m_file.read(reinterpret_cast<char*>(args), 3 * (sizeof *args));
         std::vector<int32_t> slots;
-        for (auto i = 0; i < args[1]; ++i) {
+        for (auto i = 0; i < args[2]; ++i) {
             int32_t tmp;
             m_file.read(reinterpret_cast<char*>(&tmp), sizeof tmp);
             slots.push_back(tmp);
         }
-        m_program->registerClass(args[0], slots);
+        m_program->registerClass(args[0], args[1], slots);
     }
 
     void CBytecodeLoader::loadBlockVal()
