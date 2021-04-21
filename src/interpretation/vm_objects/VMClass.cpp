@@ -62,4 +62,13 @@ namespace som {
         return heap.newObject(globalCtx.getClass(m_identifier), val);
     }
 
+    bool VMClass::hasField(const std::string& identifier) const
+    {
+        for (const auto& field : m_instanceFields) {
+            if (field == identifier)
+                return true;
+        }
+        return false;
+    }
+
 }

@@ -7,26 +7,28 @@
 
 namespace som {
 
+    class CInterpret;
+    
     class VMInteger : public VMClass {
     public:
         VMInteger() : VMClass("Integer") {}
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) override;
+        virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) override;
 
         // Implementations of primitive methods
-        void asString(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void plus(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void minus(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void mult(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void div(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void floatDiv(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void mod(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void asString(CInterpret* interpret);
+        void plus(CInterpret* interpret);
+        void minus(CInterpret* interpret);
+        void mult(CInterpret* interpret);
+        void div(CInterpret* interpret);
+        void floatDiv(CInterpret* interpret);
+        void mod(CInterpret* interpret);
 
     private:
 
     };
 
-    const std::map<std::string, std::function<void(VMInteger*, CExecutionStack&, CGlobalContext&)>> integerPrimitives = {
+    const std::map<std::string, std::function<void(VMInteger*, CInterpret*)>> integerPrimitives = {
         { "asString", std::mem_fn(&VMInteger::asString) },
         { "+", std::mem_fn(&VMInteger::plus) },
         { "-", std::mem_fn(&VMInteger::minus) },

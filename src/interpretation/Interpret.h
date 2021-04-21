@@ -19,6 +19,13 @@ namespace som {
         void initialize();
         void interpret();
 
+        // Getters
+        std::unique_ptr<Program>& program() { return m_program; }
+        CExecutionStack& executionStack() { return m_executionStack; }
+        CProgramCounter& programCounter() { return m_pc; }
+        CHeap& heap() { return m_heap; }
+        CGlobalContext& globalContext() { return m_globalCtx; }
+
     private:
         std::unique_ptr<Program> m_program;
         CExecutionStack m_executionStack;
@@ -29,12 +36,16 @@ namespace som {
         void execute(LitIns* ins);
         void execute(SendIns* ins);
         void execute(ReturnIns* ins);
+        void execute(ReturnNLIns* ins);
         void execute(SetSlotIns* ins);
         void execute(GetArgIns* ins);
         void execute(GetSelfIns* ins);
         void execute(BlockIns* ins);
         void execute(GetSlotIns* ins);
 
+        void simpleReturn();
+
+        std::shared_ptr<VMObject> resolveIdentifier(const std::string& identifier, std::shared_ptr<VMObject>& self);
         std::shared_ptr<VMObject> objFromValue(Value* val);
         bool shouldExit() const;
     };

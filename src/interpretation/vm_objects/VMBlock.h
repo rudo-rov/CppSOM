@@ -5,17 +5,19 @@
 
 namespace som {
 
+    class CInterpret;
+    
     class VMBlock : public VMClass {
     public:
         VMBlock() : VMClass("Block") {}
         
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) override;
+        virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) override;
 
-        void value(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void value(CInterpret* interpret);
 
     };
 
-    const std::map<std::string, std::function<void(VMBlock*, CExecutionStack&, CGlobalContext&)>> blockPrimitives = {
+    const std::map<std::string, std::function<void(VMBlock*, CInterpret*)>> blockPrimitives = {
         { "value", std::mem_fn(&VMBlock::value) }
     };
 

@@ -12,6 +12,7 @@
 namespace som {
 
     class CGlobalContext;
+    class CInterpret;
 
     class VMClass : public VMObject {
     public:
@@ -19,12 +20,14 @@ namespace som {
         VMClass(const std::string& identifier) : m_identifier(identifier), m_primitives() {}
         ~VMClass() = default;
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) {}
+        virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) {}
         CodeAddress getMethodAddr(const std::string& selector) { return m_methods[selector]; }
         
         virtual void addSlot(const Program* program, int32_t slotIdx);
         const std::string& className() const { return m_identifier; }
         const std::vector<std::string>& instanceFields() { return m_instanceFields; }
+
+        bool hasField(const std::string& identifier) const;
 
         // Method handling
         bool isPrimitive(const std::string& selector) const;

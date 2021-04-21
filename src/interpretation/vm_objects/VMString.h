@@ -12,24 +12,24 @@ namespace som {
         VMString() : VMClass("String") {}
         ~VMString() = default;
 
-        virtual void dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity) override;
+        virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) override;
 
         // Implementation of primitive methods
-        void print(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void printLn(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void length(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void concatenate(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void isWhitespace(CExecutionStack& stack, CGlobalContext& globalCtx);
-        void isDigits(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void print(CInterpret* interpret);
+        void printLn(CInterpret* interpret);
+        void length(CInterpret* interpret);
+        void concatenate(CInterpret* interpret);
+        void isWhitespace(CInterpret* interpret);
+        void isDigits(CInterpret* interpret);
         // Comparations - binary meesage with selector '='
-        void compare(CExecutionStack& stack, CGlobalContext& globalCtx);
+        void compare(CInterpret* interpret);
 
     private:
 
     };
 
     // Standard mapping of primitive methods to their implementations
-    const std::map<std::string, std::function<void(VMString*, CExecutionStack&, CGlobalContext&)>> stringPrimitives = {
+    const std::map<std::string, std::function<void(VMString*, CInterpret*)>> stringPrimitives = {
         { "print", std::mem_fn(&VMString::print) },
         { "printLn", std::mem_fn(&VMString::printLn) },
         { "length", std::mem_fn(&VMString::length) },

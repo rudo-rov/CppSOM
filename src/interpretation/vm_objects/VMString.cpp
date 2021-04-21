@@ -1,57 +1,58 @@
 #include <iostream>
+#include "../Interpret.h"
 #include "VMString.h"
 
 namespace som {
     
-    void VMString::dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity)
+    void VMString::dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret)
     {
         auto fnIt = stringPrimitives.find(selector);
         if (fnIt == stringPrimitives.end()) {
             // VMClass::dispatchPrimitive(selector, stack);
         }
         auto fn = stringPrimitives.at(selector);
-        stack.pushFrame(retAddress, arity + 1); // +1 because of the receiver of the message
-        fn(this, stack, globalCtx);
+        interpret->executionStack().pushFrame(retAddress, arity + 1);
+        fn(this, interpret);
     }
     
-    void VMString::print(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::print(CInterpret* interpret)
     {
-        auto receiver = stack.getArgument(0);
+        auto receiver = interpret->executionStack().getArgument(0);
         std::string strVal = receiver->getValue().asString();
         std::cout << strVal;
-        stack.push(receiver);
+        interpret->executionStack().push(receiver);
     }
 
-    void VMString::printLn(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::printLn(CInterpret* interpret)
     {
-        print(stack, globalCtx);
+        print(interpret);
         std::cout << std::endl;
     }
 
-    void VMString::length(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::length(CInterpret* interpret)
     {
-        auto receiver = stack.getArgument(0)->getValue().asString();
-        stack.push(std::make_shared<VMObject>(globalCtx.getClass("Integer"), VMValue((int32_t)receiver.size())));
+        auto receiver = interpret->executionStack().getArgument(0)->getValue().asString();
+        interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue((int32_t)receiver.size())));
     }
 
-    void VMString::concatenate(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::concatenate(CInterpret* interpret)
     {
-        auto argument = stack.getArgument(0)->getValue().asString();
-        auto receiver = stack.getArgument(1)->getValue().asString();
-        stack.push(std::make_shared<VMObject>(globalCtx.getClass("String"), VMValue(receiver.append(argument))));
+        auto argument = interpret->executionStack().getArgument(0)->getValue().asString();
+        auto receiver = interpret->executionStack().getArgument(1)->getValue().asString();
+        interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("String"), VMValue(receiver.append(argument))));
     }
     
-    void VMString::isWhitespace(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::isWhitespace(CInterpret* interpret)
     {
         std::cout << "String isWhitespace" << std::endl;
     }
     
-    void VMString::isDigits(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::isDigits(CInterpret* interpret)
     {
         std::cout << "String isDigits" << std::endl;
     }
         
-    void VMString::compare(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMString::compare(CInterpret* interpret)
     {
         std::cout << "String =" << std::endl;
     }

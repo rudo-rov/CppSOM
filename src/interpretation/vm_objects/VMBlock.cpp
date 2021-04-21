@@ -1,23 +1,25 @@
 #include <iostream>
+#include "../Interpret.h"
 #include "VMBlock.h"
 
 namespace som {
 
-    void VMBlock::dispatchPrimitive(const std::string& selector, CExecutionStack& stack, CGlobalContext& globalCtx, CodeAddress retAddress, int32_t arity)
+    void VMBlock::dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret)
     {
         auto fnIt = blockPrimitives.find(selector);
         if (fnIt == blockPrimitives.end()) {
             // Try to resolve in superclass
         }
         auto fn = blockPrimitives.at(selector);
-        stack.pushFrame(retAddress, arity + 1);
-        fn(this, stack, globalCtx);
+        interpret->executionStack().pushFrame(retAddress, arity + 1);
+        fn(this, interpret);
     }
     
-    void VMBlock::value(CExecutionStack& stack, CGlobalContext& globalCtx)
+    void VMBlock::value(CInterpret* interpret)
     {
-        
-        std::cout << "Value on a block has been called.\n";
+        auto block = interpret->executionStack().getArgument(0);
+        interpret->executionStack().pushFrame(interpret->programCounter().nextInstruction(), 1);
+        interpret->programCounter().setAddress(block->getValue().asBlockAddress());
     }
 
 }
