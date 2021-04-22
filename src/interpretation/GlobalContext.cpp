@@ -24,6 +24,22 @@ namespace som {
             }
         }
         m_runClass = getClass(runClassIdentifier);
+
+        // Create special global instances - true, false, nil
+        auto& nilClass = getClass("Nil");
+        if (nilClass) {
+            m_nil = std::make_shared<VMObject>(nilClass);
+        }
+
+        auto& trueClass = getClass("True");
+        if (trueClass) {
+            m_true = std::make_shared<VMObject>(trueClass);
+        }
+
+        auto& falseClass = getClass("False");
+        if (falseClass) {
+            m_false = std::make_shared<VMObject>(falseClass);
+        }
     }
 
     std::shared_ptr<VMClass> CGlobalContext::getClass(const std::string& identifier) const
@@ -60,6 +76,18 @@ namespace som {
         }
         return newClass;
         
+    }
+
+    std::shared_ptr<VMObject> CGlobalContext::getObject(const std::string& identifier)
+    {
+        if (identifier == "nil")
+            return getNil();
+        else if (identifier == "true")
+            return getTrue();
+        else if (identifier == "false")
+            return getFalse();
+        else
+            return nullptr;
     }
 
 }
