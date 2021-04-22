@@ -57,6 +57,7 @@ namespace som {
         BCClass m_class;
         CScopeStack m_scopes;
         std::string m_lastError;
+        int m_nlReturnLvl;
 
         void appendInstructions(insVector* first, insVector* second) const;
         ByteIns* resolveVariable(ASTNode* node);

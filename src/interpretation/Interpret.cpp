@@ -36,6 +36,9 @@ namespace som {
             case OpCode::GetArgOp:
                 execute(static_cast<GetArgIns*>(currentInstruction));
                 break;
+            case OpCode::ReturnNLOp:
+                execute(static_cast<ReturnNLIns*>(currentInstruction));
+                return; // Jump out of the nested interpret() call
         
         
             default:
@@ -96,7 +99,7 @@ namespace som {
         std::string selector = m_program->getStringValue(ins->methodIdx);
         if (receiver->getClass()->isPrimitive(selector)) {
             // Dispatch the primitive method call
-            receiver->getClass()->dispatchPrimitive(selector, m_executionStack, m_globalCtx, m_pc.nextInstruction(), ins->arity);
+            receiver->getClass()->dispatchPrimitive(selector, m_pc.nextInstruction(), ins->arity, this);
             m_pc.setAddress(m_executionStack.topFrame().returnAddress());
             auto retValue = m_executionStack.pop();
             m_executionStack.popFrame();
@@ -110,10 +113,7 @@ namespace som {
     
     void CInterpret::execute(ReturnIns* ins)
     {
-        auto oldFrame = m_executionStack.popFrame();
-        m_pc.setAddress(oldFrame.returnAddress());
-        // Push the return value to the current frame
-        m_executionStack.push(oldFrame.top());
+        simpleReturn();
     }
 
     void CInterpret::execute(SetSlotIns* ins)
@@ -147,8 +147,36 @@ namespace som {
         auto& blockClass = m_globalCtx.getClass("Block");
         auto blockAddr = dynamic_cast<BlockValue*>(m_program->getValue(ins->idx))->code->begin();
         auto& newObj = blockClass->newObject(m_heap, m_globalCtx, VMValue(blockAddr));
+        m_executionStack.push(m_executionStack.getSelf());
         m_executionStack.push(newObj);
         m_pc.nextInstruction();
+    }
+
+    void CInterpret::execute(ReturnNLIns* ins)
+    {
+        for (auto i = 0; i < ins->lvl; ++i)
+            simpleReturn();
+    }
+
+    void CInterpret::simpleReturn()
+    {
+        auto oldFrame = m_executionStack.popFrame();
+        m_pc.setAddress(oldFrame.returnAddress());
+        // Push the return value to the current frame
+        m_executionStack.push(oldFrame.top());
+
+    }
+
+    std::shared_ptr<VMObject> CInterpret::resolveIdentifier(const std::string& identifier, std::shared_ptr<VMObject>& self)
+    {
+        if (self->getClass()->hasField(identifier)) {
+            return self->getField(identifier);
+        }
+        if (m_globalCtx.getObject(identifier))
+            return m_globalCtx.getObject(identifier);
+        
+        return m_globalCtx.getClass(identifier);
+        
     }
 
 }

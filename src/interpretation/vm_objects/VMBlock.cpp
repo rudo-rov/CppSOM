@@ -18,8 +18,8 @@ namespace som {
     void VMBlock::value(CInterpret* interpret)
     {
         auto block = interpret->executionStack().getArgument(0);
-        interpret->executionStack().pushFrame(interpret->programCounter().nextInstruction(), 1);
         interpret->programCounter().setAddress(block->getValue().asBlockAddress());
+        interpret->interpret();
     }
 
 }

@@ -10,6 +10,7 @@ namespace som {
 
     std::any CBytecodeCompiler::visit(Class* classNode)
     {
+        m_nlReturnLvl = 0;
         size_t classNameIdx = m_program->registerConstant(classNode->m_identifier);
         std::vector<int32_t> slots;
 
@@ -312,6 +313,7 @@ namespace som {
     std::any CBytecodeCompiler::visit(NestedBlock* nestedBlock)
     {
         m_scopes.newScope();
+        m_nlReturnLvl++;
         int32_t nargs;
         if (nestedBlock->m_arguments) {
             for (const auto& arg : *nestedBlock->m_arguments) {
@@ -322,7 +324,7 @@ namespace som {
             nargs = 0;
         }
         insVector* compiledBlock = std::any_cast<insVector*>(visit(nestedBlock->m_block.get()));
-        compiledBlock->emplace_back(new ReturnIns());
+        compiledBlock->emplace_back(new ReturnNLIns(m_nlReturnLvl));
         int32_t blockValIdx = m_program->registerBlock(nargs, compiledBlock);
 
         insVector* result = new insVector();
