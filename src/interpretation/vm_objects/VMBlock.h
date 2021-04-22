@@ -9,7 +9,7 @@ namespace som {
     
     class VMBlock : public VMClass {
     public:
-        VMBlock() : VMClass("Block") {}
+        VMBlock() : VMClass("Block", "Object") {}
         
         virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) override;
 

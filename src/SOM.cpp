@@ -60,9 +60,9 @@ int main(int argc, char** argv)
             std::cerr << bcLoader.lastError() << std::endl;
             return 1;
         }
-        std::cout << "Loaded bytecode:" << std::endl;
-        program->print();
+        // program->print();
         som::CInterpret interpret(std::move(program));
+        interpret.initialize();
         interpret.interpret();
     }
     

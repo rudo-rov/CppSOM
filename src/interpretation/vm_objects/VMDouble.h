@@ -11,7 +11,7 @@ namespace som {
     
     class VMDouble : public VMClass {
     public:
-        VMDouble() : VMClass("Double") {}
+        VMDouble() : VMClass("Double", "Object") {}
 
         virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) override;
 

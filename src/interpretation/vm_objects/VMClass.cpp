@@ -29,6 +29,13 @@ namespace som {
         return false;
     }
 
+    CodeAddress VMClass::getMethodAddr(const std::string& selector, CGlobalContext& globalCtx)
+    {
+        if (m_methods.find(selector) != m_methods.end())
+            return m_methods[selector];
+        return superclass(globalCtx)->getMethodAddr(selector, globalCtx);
+    }
+
     void VMClass::addPrimitive(const Program* program, const Value* valPtr)
     {
         const PrimitiveValue* primPtr = dynamic_cast<const PrimitiveValue*>(valPtr);
@@ -69,6 +76,14 @@ namespace som {
                 return true;
         }
         return false;
+    }
+
+    std::shared_ptr<VMClass>& VMClass::superclass(CGlobalContext& globalCtx)
+    {
+        if (!m_superclass)
+            m_superclass = globalCtx.getClass(m_superclassIdentifier);
+        
+        return m_superclass;
     }
 
 }

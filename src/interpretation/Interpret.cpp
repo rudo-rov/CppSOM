@@ -9,7 +9,7 @@ namespace som {
     {
         while (!shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            // currentInstruction->print();
+            currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
@@ -105,7 +105,7 @@ namespace som {
             m_executionStack.popFrame();
             m_executionStack.push(retValue);
         } else {
-            CodeAddress newMethod = receiver->getClass()->getMethodAddr(selector);
+            CodeAddress newMethod = receiver->getClass()->getMethodAddr(selector, m_globalCtx);
             m_executionStack.pushFrame(m_pc.nextInstruction(), ins->arity + 1);
             m_pc.setAddress(newMethod);
         }
@@ -147,7 +147,7 @@ namespace som {
         auto& blockClass = m_globalCtx.getClass("Block");
         auto blockAddr = dynamic_cast<BlockValue*>(m_program->getValue(ins->idx))->code->begin();
         auto& newObj = blockClass->newObject(m_heap, m_globalCtx, VMValue(blockAddr));
-        m_executionStack.push(m_executionStack.getSelf());
+        // m_executionStack.push(m_executionStack.getSelf());
         m_executionStack.push(newObj);
         m_pc.nextInstruction();
     }

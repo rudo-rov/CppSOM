@@ -11,7 +11,7 @@ namespace som {
     
     class VMInteger : public VMClass {
     public:
-        VMInteger() : VMClass("Integer") {}
+        VMInteger() : VMClass("Integer", "Object") {}
 
         virtual void dispatchPrimitive(const std::string& selector, CodeAddress retAddress, int32_t arity, CInterpret* interpret) override;
 

@@ -54,7 +54,12 @@ namespace som {
         
     void VMString::compare(CInterpret* interpret)
     {
-        std::cout << "String =" << std::endl;
+        auto& argument = interpret->executionStack().getArgument(0)->getValue().asString();
+        auto& receiver = interpret->executionStack().getArgument(1)->getValue().asString();
+        if (receiver == argument)
+            interpret->executionStack().push(interpret->globalContext().getTrue());
+        else
+            interpret->executionStack().push(interpret->globalContext().getFalse());
     }
 
 }

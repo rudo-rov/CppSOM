@@ -55,6 +55,12 @@ namespace som {
     {
         // Get the class identifier - handles String, Boolean etc. in special cases
         std::string identifier = program->getStringValue(classVal->identifier);
+        std::string superclass;
+        if (classVal->superclass >= 0) {
+            superclass = program->getStringValue(classVal->superclass);
+        } else {
+            superclass = "Object";
+        }
         VMClass* newClass = nullptr;
         if (identifier == "String") {
            newClass = new VMString();
@@ -63,7 +69,7 @@ namespace som {
         } else if (identifier == "Block") {
             newClass = new VMBlock();
         } else {
-            newClass = new VMClass(identifier);
+            newClass = new VMClass(identifier, superclass);
         }
         for (int32_t slotIdx : classVal->slots) {
             newClass->addSlot(program, slotIdx);
