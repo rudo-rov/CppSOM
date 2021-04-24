@@ -21,7 +21,7 @@ namespace som {
         void setValue(VMValue val) { m_primValue = val; }
 
         const std::shared_ptr<VMClass> getClass() const { return m_class; }
-        VMValue getValue() const;
+        VMValue& getValue();
         std::shared_ptr<VMObject>& getField(const std::string& identifier) { return m_instanceFields[identifier]; }
         void setField(const std::string& identifier, std::shared_ptr<VMObject>& newValue);
 

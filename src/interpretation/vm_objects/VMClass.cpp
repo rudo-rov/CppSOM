@@ -1,3 +1,4 @@
+#include <iostream>
 #include "VMClass.h"
 
 namespace som {
@@ -33,7 +34,12 @@ namespace som {
     {
         if (m_methods.find(selector) != m_methods.end())
             return m_methods[selector];
-        return superclass(globalCtx)->getMethodAddr(selector, globalCtx);
+        if (m_identifier != "Object")
+            return superclass(globalCtx)->getMethodAddr(selector, globalCtx);
+        else {
+            std::cout << "Method not found: " << selector << std::endl;
+            exit(0);
+        }
     }
 
     void VMClass::addPrimitive(const Program* program, const Value* valPtr)

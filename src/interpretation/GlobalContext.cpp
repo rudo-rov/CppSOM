@@ -3,6 +3,7 @@
 #include "vm_objects/VMString.h"
 #include "vm_objects/VMInteger.h"
 #include "vm_objects/VMBlock.h"
+#include "vm_objects/VMArray.h"
 
 namespace som { 
 
@@ -68,6 +69,8 @@ namespace som {
             newClass = new VMInteger();
         } else if (identifier == "Block") {
             newClass = new VMBlock();
+        } else if (identifier == "Array") {
+            newClass = new VMArray();
         } else {
             newClass = new VMClass(identifier, superclass);
         }

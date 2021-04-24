@@ -9,7 +9,7 @@ namespace som {
     {
         while (!shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            currentInstruction->print();
+            // currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
@@ -80,10 +80,33 @@ namespace som {
         case ValueTag::DoubleVal:
             clazz = m_globalCtx.getClass("Double");
             return m_heap.newObject(clazz, VMValue(dynamic_cast<DoubleValue*>(val)->value));
-        
+        case ValueTag::ArrayVal:
+            return newArrayObj(dynamic_cast<ArrayValue*>(val));
+
         default:
             return std::make_shared<VMObject>(); // Should not be reachable
         }
+    }
+
+    std::shared_ptr<VMObject> CInterpret::newArrayObj(ArrayValue* val)
+    {
+        std::vector<std::shared_ptr<VMObject>> elements;
+        CodeAddress currentIns = m_pc.currentInstruction();
+        for (const auto& elem : *val->values) {
+            LitIns* litIns = dynamic_cast<LitIns*>(elem.get());
+            if (litIns)
+                execute(litIns);
+            GetSlotIns* getSlotIns = dynamic_cast<GetSlotIns*>(elem.get());
+            if (getSlotIns)
+                execute(getSlotIns);
+            GetArgIns* getArgIns = dynamic_cast<GetArgIns*>(elem.get());
+            if (getArgIns)
+                execute(getArgIns);
+            elements.push_back(m_executionStack.pop());
+        }
+        auto& clazz = m_globalCtx.getClass("Array");
+        m_pc.setAddress(currentIns);
+        return m_heap.newObject(clazz, VMValue(std::move(elements)));
     }
 
     void CInterpret::execute(LitIns* ins)
