@@ -12,6 +12,7 @@ namespace som {
         DoubleVal,
         NilVal,
         StringVal,
+        ArrayVal,
         MethodVal,
         PrimitiveVal,
         ClassVal,
@@ -75,6 +76,13 @@ namespace som {
         virtual void print() override;
         virtual void serialize(std::ofstream& file) override;
         std::string value;
+    };
+
+    struct ArrayValue : Value {
+        ArrayValue(insVector* values) : Value(ValueTag::ArrayVal), values(values) {}
+        virtual void print() override;
+        virtual void serialize(std::ofstream& file) override;
+        std::unique_ptr<std::vector<std::unique_ptr<ByteIns>>> values;
     };
 
     struct MethodValue : Value {

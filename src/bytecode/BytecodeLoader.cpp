@@ -59,6 +59,9 @@ namespace som {
             case ValueTag::BlockVal:
                 loadBlockVal();
                 break;
+            case ValueTag::ArrayVal:
+                loadArrayVal();
+                break;
             
             default:
                 m_lastError = "Unknown tag occurred.";
@@ -125,6 +128,17 @@ namespace som {
         int32_t nargs;
         m_file.read(reinterpret_cast<char*>(&nargs), sizeof nargs);
         m_program->registerBlock(nargs, loadInstructionBlock());
+    }
+
+    void CBytecodeLoader::loadArrayVal()
+    {
+        int32_t elemsNr;
+        insVector* values = new insVector();
+        m_file.read(reinterpret_cast<char*>(&elemsNr), sizeof elemsNr);
+        for (auto i = 0; i < elemsNr; ++i) {
+            values->emplace_back(loadInstruction());
+        }
+        m_program->registerArray(values);
     }
 
     insVector* CBytecodeLoader::loadInstructionBlock()

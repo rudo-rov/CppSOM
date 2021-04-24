@@ -264,7 +264,7 @@ namespace som {
 			ASTNode* literalPtr = visit(lit).as<ASTNode*>();
 			arr->emplace_back(literalPtr);
 		}
-		return arr;
+		return makeNode<LiteralArray>(arr);
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitLiteralString(SOMParser::LiteralStringContext* ctx)
@@ -294,8 +294,15 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitPrimary(SOMParser::PrimaryContext* ctx)
 	{
-		// Visits one of the: variable, nestedTerm, nestedBlock, literal
-		return visitChildren(ctx).as<ASTNode*>();
+		if (ctx->variable()) {
+			return visit(ctx->variable()).as<ASTNode*>();
+		} else if (ctx->nestedTerm()) {
+			return visit(ctx->nestedTerm()).as<ASTNode*>();
+		} else if (ctx->nestedBlock()) {
+			return visit(ctx->nestedBlock()).as<ASTNode*>();
+		} else {
+			return visit(ctx->literal()).as<ASTNode*>();
+		}
 	}
 
 	antlrcpp::Any CParseTreeConverter::visitNestedTerm(SOMParser::NestedTermContext* ctx)

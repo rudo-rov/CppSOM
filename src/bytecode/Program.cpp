@@ -54,6 +54,12 @@ namespace som {
         return m_constants.size() - 1;
     }
 
+    int32_t Program::registerArray(insVector* elements)
+    {
+        m_constants.emplace_back(new ArrayValue(elements));
+        return m_constants.size() - 1;
+    }
+
     void Program::print()
     {
         int i = 0;

@@ -295,6 +295,19 @@ namespace som {
         return std::make_any<insVector*>(result);
     }
 
+    std::any CBytecodeCompiler::visit(LiteralArray* litArray)
+    {
+        insVector* result = new insVector();
+        insVector* elements = new insVector();
+
+        for (const auto& elem : *litArray->m_literals) {
+            appendInstructions(elements, std::any_cast<insVector*>(visit(elem.get())));
+        }
+
+        result->emplace_back(new LitIns(m_program->registerArray(elements)));
+        return std::make_any<insVector*>(result);
+    }
+
     void CBytecodeCompiler::trimString(std::string& val)
     {
         if (val.front() == '\'') {

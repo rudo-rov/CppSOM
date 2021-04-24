@@ -42,7 +42,7 @@ namespace som {
         
         std::any visit(LiteralInteger* litInteger) override;
         std::any visit(LiteralString* litString) override;
-        std::any visit(LiteralArray* litArray) override { return std::any(); }
+        std::any visit(LiteralArray* litArray) override;
         std::any visit(LiteralDouble* litDouble) override;
 
         // Will return insVector* with compiled code

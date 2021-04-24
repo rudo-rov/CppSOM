@@ -30,6 +30,7 @@ namespace som {
         void loadPrimitiveVal();
         void loadClassVal();
         void loadBlockVal();
+        void loadArrayVal();
 
         insVector* loadInstructionBlock();
         ByteIns* loadInstruction();

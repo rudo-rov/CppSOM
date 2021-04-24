@@ -19,6 +19,7 @@ namespace som {
         int32_t registerMethod(int32_t patternIdx, int32_t nargs); // Primitive methods
         int32_t registerClass(int32_t identifierIdx, int32_t superclass, std::vector<int32_t>& slots);
         int32_t registerBlock(int32_t nargs, insVector* code);
+        int32_t registerArray(insVector* elements);
         
         int32_t registerConstant(int32_t value);
         int32_t registerConstant(double value);

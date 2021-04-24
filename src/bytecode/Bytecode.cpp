@@ -73,6 +73,16 @@ namespace som {
         }
     }
 
+    void ArrayValue::serialize(std::ofstream& file)
+    {
+        Value::serialize(file);
+        int32_t elemsNr = values->size();
+        file.write(reinterpret_cast<char*>(&elemsNr), sizeof elemsNr);
+        for (const auto& elem : *values) {
+            elem->serialize(file);
+        }
+    }
+
     /* INSTRUCTIONS SERIALIZATION */
     
     void ByteIns::serialize(std::ofstream& file)
@@ -160,6 +170,15 @@ namespace som {
     void StringValue::print()
     {
         std::cout << "STR '" << value << "'" << std::endl; 
+    }
+
+    void ArrayValue::print()
+    {
+        std::cout << "ARRAY\n";
+        for (const auto& elem : *values) {
+            std::cout << "  ";
+            elem->print(); 
+        }
     }
 
     void MethodValue::print()
