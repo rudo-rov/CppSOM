@@ -9,7 +9,7 @@ namespace som {
     {
         while (!shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            // currentInstruction->print();
+            currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
@@ -66,7 +66,7 @@ namespace som {
 
     }
 
-    std::shared_ptr<VMObject> CInterpret::objFromValue(Value* val)
+    std::shared_ptr<VMObject>& CInterpret::objFromValue(Value* val)
     {
         std::shared_ptr<VMClass> clazz;
         switch (val->tag)
@@ -88,7 +88,7 @@ namespace som {
         }
     }
 
-    std::shared_ptr<VMObject> CInterpret::newArrayObj(ArrayValue* val)
+    std::shared_ptr<VMObject>& CInterpret::newArrayObj(ArrayValue* val)
     {
         std::vector<std::shared_ptr<VMObject>> elements;
         CodeAddress currentIns = m_pc.currentInstruction();

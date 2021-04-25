@@ -46,9 +46,9 @@ namespace som {
         void simpleReturn();
 
         std::shared_ptr<VMObject> resolveIdentifier(const std::string& identifier, std::shared_ptr<VMObject>& self);
-        std::shared_ptr<VMObject> objFromValue(Value* val);
+        std::shared_ptr<VMObject>& objFromValue(Value* val);
         bool shouldExit() const;
-        std::shared_ptr<VMObject> newArrayObj(ArrayValue* val);
+        std::shared_ptr<VMObject>& newArrayObj(ArrayValue* val);
     };
 
 }

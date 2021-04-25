@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include "GlobalContext.h"
 #include "vm_objects/VMString.h"
 #include "vm_objects/VMInteger.h"
@@ -43,13 +44,14 @@ namespace som {
         }
     }
 
-    std::shared_ptr<VMClass> CGlobalContext::getClass(const std::string& identifier) const
+    std::shared_ptr<VMClass>& CGlobalContext::getClass(const std::string& identifier)
     {
-        for (const auto& clazz : m_classes) {
+        for (auto& clazz : m_classes) {
             if (clazz->className() == identifier)
                 return clazz;
         }
-        return nullptr;
+        std::cout << "Unresolved class name: " << identifier << std::endl;
+        exit(0);
     }
 
     VMClass* CGlobalContext::createClass(const Program* program, const ClassValue* classVal, std::string& runClass)
@@ -87,7 +89,7 @@ namespace som {
         
     }
 
-    std::shared_ptr<VMObject> CGlobalContext::getObject(const std::string& identifier)
+    std::shared_ptr<VMObject>& CGlobalContext::getObject(const std::string& identifier)
     {
         if (identifier == "nil")
             return getNil();
@@ -95,8 +97,11 @@ namespace som {
             return getTrue();
         else if (identifier == "false")
             return getFalse();
-        else
-            return nullptr;
+        else {
+            std::cout << "Unresolved identifier: " << identifier << std::endl;
+            exit(1);
+        }
+
     }
 
 }

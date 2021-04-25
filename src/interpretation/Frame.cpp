@@ -21,7 +21,7 @@ namespace som {
         m_args.push_back(std::move(obj));
     }
 
-    std::shared_ptr<VMObject> Frame::getArgument(int32_t idx)
+    std::shared_ptr<VMObject>& Frame::getArgument(int32_t idx)
     {
         assert(idx < m_args.size());
         return m_args.at(idx);
@@ -33,7 +33,7 @@ namespace som {
         return m_stack.at(m_stack.size() - idx - 1);
     }
 
-    std::shared_ptr<VMObject> Frame::getSelf()
+    std::shared_ptr<VMObject>& Frame::getSelf()
     {
         assert(m_args.size() > 0);
         return m_args.back();

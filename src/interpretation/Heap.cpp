@@ -3,25 +3,22 @@
 
 namespace som {
 
-    std::shared_ptr<VMObject> CHeap::newObject(std::shared_ptr<VMClass>& clazz)
+    std::shared_ptr<VMObject>& CHeap::newObject(std::shared_ptr<VMClass>& clazz)
     {
-        auto newObject = std::make_shared<VMObject>(clazz);
-        m_objects.push_back(newObject);
-        return newObject;
+        m_objects.emplace_back(std::make_shared<VMObject>(clazz));
+        return m_objects.back();
     }
 
-    std::shared_ptr<VMObject> CHeap::newObject(std::shared_ptr<VMClass>& clazz, VMValue val)
+    std::shared_ptr<VMObject>& CHeap::newObject(std::shared_ptr<VMClass>& clazz, VMValue val)
     {
-        auto newObject = std::make_shared<VMObject>(clazz, val);
-        m_objects.push_back(newObject);
-        return newObject;
+        m_objects.emplace_back(std::make_shared<VMObject>(clazz, val));
+        return m_objects.back();
     }
 
-    std::shared_ptr<VMObject> CHeap::newObject(std::shared_ptr<VMClass>& clazz, CGlobalContext& globalCtx)
+    std::shared_ptr<VMObject>& CHeap::newObject(std::shared_ptr<VMClass>& clazz, CGlobalContext& globalCtx)
     {
-        auto newObject = std::make_shared<VMObject>(clazz, globalCtx);
-        m_objects.push_back(newObject);
-        return newObject;
+        m_objects.emplace_back(std::make_shared<VMObject>(clazz, globalCtx));
+        return m_objects.back();
     }
 
 }

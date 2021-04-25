@@ -36,12 +36,12 @@ namespace som {
         return m_stack.top().pop();
     }
 
-    std::shared_ptr<VMObject> CExecutionStack::getArgument(int32_t idx)
+    std::shared_ptr<VMObject>& CExecutionStack::getArgument(int32_t idx)
     {
         return m_stack.top().getArgument(idx);
     }
 
-    std::shared_ptr<VMObject> CExecutionStack::getSelf()
+    std::shared_ptr<VMObject>& CExecutionStack::getSelf()
     {
         return m_stack.top().getSelf();
     }

@@ -65,12 +65,12 @@ namespace som {
         m_instanceFields.push_back(identifier);
     }
 
-    std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx)
+    std::shared_ptr<VMObject>& VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx)
     {
         return heap.newObject(globalCtx.getClass(m_identifier), globalCtx);
     }
 
-    std::shared_ptr<VMObject> VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val)
+    std::shared_ptr<VMObject>& VMClass::newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val)
     {
         return heap.newObject(globalCtx.getClass(m_identifier), val);
     }

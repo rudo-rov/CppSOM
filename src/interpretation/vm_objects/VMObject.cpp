@@ -4,7 +4,7 @@
 
 namespace som {
 
-    VMObject::VMObject(std::shared_ptr<VMClass> clazz, CGlobalContext& globalCtx) : m_class(clazz), m_primValue()
+    VMObject::VMObject(std::shared_ptr<VMClass>& clazz, CGlobalContext& globalCtx) : m_class(clazz), m_primValue()
     {
         initializeInstanceFields(globalCtx);
     }

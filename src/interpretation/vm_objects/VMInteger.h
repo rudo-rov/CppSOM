@@ -23,6 +23,7 @@ namespace som {
         void div(CInterpret* interpret);
         void floatDiv(CInterpret* interpret);
         void mod(CInterpret* interpret);
+        void cmp(CInterpret* interpret);
 
     private:
 
@@ -35,7 +36,8 @@ namespace som {
         { "*", std::mem_fn(&VMInteger::mult) },
         { "/", std::mem_fn(&VMInteger::div) },
         { "//", std::mem_fn(&VMInteger::floatDiv) },
-        { "%", std::mem_fn(&VMInteger::mod) }
+        { "%", std::mem_fn(&VMInteger::mod) },
+        { "=", std::mem_fn(&VMInteger::cmp) }
     };
 
 }

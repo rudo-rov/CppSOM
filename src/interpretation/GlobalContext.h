@@ -13,14 +13,14 @@ namespace som {
         ~CGlobalContext();
 
         void initialize(const Program* program);
-        std::shared_ptr<VMClass> getClass(const std::string& identifier) const;
+        std::shared_ptr<VMClass>& getClass(const std::string& identifier);
 
-        std::shared_ptr<VMClass> getRunClass() { return m_runClass; }
+        std::shared_ptr<VMClass>& getRunClass() { return m_runClass; }
         std::shared_ptr<VMObject>& getNil() { return m_nil; }
         std::shared_ptr<VMObject>& getTrue() { return m_true; }
         std::shared_ptr<VMObject>& getFalse() { return m_false; }
 
-        std::shared_ptr<VMObject> getObject(const std::string& identifier);
+        std::shared_ptr<VMObject>& getObject(const std::string& identifier);
 
     private:
         std::vector<std::shared_ptr<VMClass>> m_classes;

@@ -20,8 +20,8 @@ namespace som {
         Frame popFrame();
         Frame& topFrame() { return m_stack.top(); }
 
-        std::shared_ptr<VMObject> getArgument(int32_t idx);
-        std::shared_ptr<VMObject> getSelf();
+        std::shared_ptr<VMObject>& getArgument(int32_t idx);
+        std::shared_ptr<VMObject>& getSelf();
         std::shared_ptr<VMObject>& fromTop(int32_t idx) { return m_stack.top().fromTop(idx); }
 
         size_t size() const { return m_stack.size(); }

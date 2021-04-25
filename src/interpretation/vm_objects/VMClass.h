@@ -33,8 +33,8 @@ namespace som {
         bool isPrimitive(const std::string& selector) const;
 
         // Object instantiation
-        std::shared_ptr<VMObject> newObject(CHeap& heap, CGlobalContext& globalCtx);
-        std::shared_ptr<VMObject> newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val);
+        std::shared_ptr<VMObject>& newObject(CHeap& heap, CGlobalContext& globalCtx);
+        std::shared_ptr<VMObject>& newObject(CHeap& heap, CGlobalContext& globalCtx, VMValue val);
 
         std::shared_ptr<VMClass>& superclass(CGlobalContext& globalCtx);
 

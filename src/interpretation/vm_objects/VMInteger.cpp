@@ -64,4 +64,15 @@ namespace som {
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue(receiver % argument)));
     }
 
+    void VMInteger::cmp(CInterpret* interpret)
+    {
+        auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
+        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        if (argument == receiver) {
+            interpret->executionStack().push(interpret->globalContext().getTrue());
+        } else {
+            interpret->executionStack().push(interpret->globalContext().getTrue());
+        }
+    }
+
 }
