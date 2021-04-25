@@ -342,6 +342,7 @@ namespace som {
 
         insVector* result = new insVector();
         result->emplace_back(new BlockIns(blockValIdx));
+        m_scopes.popScope();
         return result;
     }
 
