@@ -179,6 +179,10 @@ namespace som {
             return loadBlockIns();
         case OpCode::ReturnNLOp:
             return loadReturnNLIns();
+        case OpCode::GetLocalOp:
+            return loadGetLocalIns();
+        case OpCode::SetLocalOp:
+            return loadSetLocalIns();
         
         default:
             return new ByteIns();
@@ -249,6 +253,20 @@ namespace som {
         int32_t lvl;
         m_file.read(reinterpret_cast<char*>(&lvl), sizeof lvl);
         return new ReturnNLIns(lvl);
+    }
+
+    GetLocalIns* CBytecodeLoader::loadGetLocalIns()
+    {
+        int32_t idx;
+        m_file.read(reinterpret_cast<char*>(&idx), sizeof idx);
+        return new GetLocalIns(idx);
+    }
+
+    SetLocalIns* CBytecodeLoader::loadSetLocalIns()
+    {
+        int32_t idx;
+        m_file.read(reinterpret_cast<char*>(&idx), sizeof idx);
+        return new SetLocalIns(idx);
     }
 
 }

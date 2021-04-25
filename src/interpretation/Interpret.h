@@ -42,6 +42,8 @@ namespace som {
         void execute(GetSelfIns* ins);
         void execute(BlockIns* ins);
         void execute(GetSlotIns* ins);
+        void execute(GetLocalIns* ins);
+        void execute(SetLocalIns* ins);
 
         void simpleReturn();
 

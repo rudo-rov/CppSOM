@@ -238,7 +238,11 @@ namespace som {
             appendInstructions(result, std::any_cast<insVector*>(visit(assignation->m_value.get())));
             Variable* varPtr = dynamic_cast<Variable*>(var.get());
             // Set the variable to the value on top of the stack
-            result->emplace_back(new SetSlotIns(m_program->indexOf(varPtr->m_identifier)));
+            if (m_scopes.localIdx(varPtr->m_identifier) >= 0) {
+                result->emplace_back(new SetLocalIns(m_scopes.localIdx(varPtr->m_identifier)));
+            } else {
+                result->emplace_back(new SetSlotIns(m_program->indexOf(varPtr->m_identifier)));
+            }   
         }
        
         return std::make_any<insVector*>(result);
@@ -337,7 +341,7 @@ namespace som {
             nargs = 0;
         }
         insVector* compiledBlock = std::any_cast<insVector*>(visit(nestedBlock->m_block.get()));
-        compiledBlock->emplace_back(new ReturnNLIns(m_nlReturnLvl));
+        compiledBlock->emplace_back(new ReturnNLIns(m_nlReturnLvl + 1));
         int32_t blockValIdx = m_program->registerBlock(nargs, compiledBlock);
 
         insVector* result = new insVector();

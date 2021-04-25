@@ -39,4 +39,20 @@ namespace som {
         return m_args.back();
     }
 
+    std::shared_ptr<VMObject>& Frame::getLocal(int32_t idx)
+    {
+        if (m_locals.size() > idx) {
+            m_locals.resize(idx + 1);
+        }
+        return m_locals.at(idx);
+    }
+
+    void Frame::setLocal(int32_t idx, std::shared_ptr<VMObject>& value)
+    {
+        if (m_locals.size() >= idx) {
+            m_locals.resize(idx + 1);
+        }
+        m_locals[idx] = value;
+    }
+
 }

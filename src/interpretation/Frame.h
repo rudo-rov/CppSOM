@@ -24,12 +24,14 @@ namespace som {
         std::shared_ptr<VMObject>& getArgument(int32_t idx);
         std::shared_ptr<VMObject>& getSelf();
         std::shared_ptr<VMObject>& fromTop(int32_t idx);
+        void setLocal(int32_t idx, std::shared_ptr<VMObject>& value);
+        std::shared_ptr<VMObject>& getLocal(int32_t idx);
 
     private:
         CodeAddress m_returnAddress;
-        // std::stack<std::shared_ptr<VMObject>> m_stack;
         std::vector<std::shared_ptr<VMObject>> m_stack;
         std::vector<std::shared_ptr<VMObject>> m_args;
+        std::vector<std::shared_ptr<VMObject>> m_locals;
     };
 
 }

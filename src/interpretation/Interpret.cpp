@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Interpret.h"
 #include "ExecutionStack.h"
 #include "../bytecode/Bytecode.h"
@@ -9,7 +10,7 @@ namespace som {
     {
         while (!shouldExit()) {
             ByteIns* currentInstruction = (*m_pc.currentInstruction()).get();
-            currentInstruction->print();
+            // currentInstruction->print();
             switch (currentInstruction->op)
             {
             case OpCode::LitOp:
@@ -26,6 +27,12 @@ namespace som {
                 break;
             case OpCode::SetSlotOp:
                 execute(static_cast<SetSlotIns*>(currentInstruction));
+                break;
+            case OpCode::GetLocalOp:
+                execute(static_cast<GetLocalIns*>(currentInstruction));
+                break;
+            case OpCode::SetLocalOp:
+                execute(static_cast<SetLocalIns*>(currentInstruction));
                 break;
             case OpCode::ReturnOp:
                 execute(static_cast<ReturnIns*>(currentInstruction));
@@ -84,7 +91,9 @@ namespace som {
             return newArrayObj(dynamic_cast<ArrayValue*>(val));
 
         default:
-            return std::make_shared<VMObject>(); // Should not be reachable
+            // return std::make_shared<VMObject>(); // Should not be reachable
+            std::cout << "Unknown value tag encountered.\n";
+            exit(0);
         }
     }
 
@@ -180,6 +189,19 @@ namespace som {
     {
         for (auto i = 0; i < ins->lvl; ++i)
             simpleReturn();
+    }
+
+    void CInterpret::execute(GetLocalIns* ins)
+    {
+        m_executionStack.push(m_executionStack.getLocal(ins->idx));
+        m_pc.nextInstruction();
+    }
+
+    void CInterpret::execute(SetLocalIns* ins)
+    {
+        auto& newVal = m_executionStack.pop();
+        m_executionStack.setLocal(ins->idx, newVal);
+        m_pc.nextInstruction();
     }
 
     void CInterpret::simpleReturn()
