@@ -149,7 +149,8 @@ namespace som {
     void CInterpret::execute(GetSlotIns* ins)
     {
         auto& self = m_executionStack.getSelf();
-        m_executionStack.push(self->getField(m_program->getStringValue(ins->slotIdx)));
+        auto slot = resolveIdentifier(m_program->getStringValue(ins->slotIdx), self);
+        m_executionStack.push(slot);
         m_pc.nextInstruction();
     }
 
