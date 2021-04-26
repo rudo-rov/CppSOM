@@ -11,13 +11,27 @@ namespace som {
             // Try to resolve in superclass
         }
         auto fn = blockPrimitives.at(selector);
-        interpret->executionStack().pushFrame(retAddress, arity + 1);
+        interpret->executionStack().pushFrame(retAddress, arity + 1, true);
         fn(this, interpret);
     }
     
     void VMBlock::value(CInterpret* interpret)
     {
-        auto block = interpret->executionStack().getArgument(0);
+        auto block = interpret->executionStack().getSelf();
+        interpret->programCounter().setAddress(block->getValue().asBlockAddress());
+        interpret->interpret();
+    }
+
+    void VMBlock::valueWithOneArg(CInterpret* interpret)
+    {
+        auto& block = interpret->executionStack().getSelf();
+        interpret->programCounter().setAddress(block->getValue().asBlockAddress());
+        interpret->interpret();
+    }
+
+    void VMBlock::valueWithTwoArgs(CInterpret* interpret)
+    {
+        auto& block = interpret->executionStack().getSelf();
         interpret->programCounter().setAddress(block->getValue().asBlockAddress());
         interpret->interpret();
     }

@@ -27,6 +27,9 @@ namespace som {
         void setLocal(int32_t idx, std::shared_ptr<VMObject>& value);
         std::shared_ptr<VMObject>& getLocal(int32_t idx);
 
+        std::vector<std::shared_ptr<VMObject>>& getLocals() { return m_locals; }
+        void setLocals(std::vector<std::shared_ptr<VMObject>>& locals);
+
     private:
         CodeAddress m_returnAddress;
         std::vector<std::shared_ptr<VMObject>> m_stack;

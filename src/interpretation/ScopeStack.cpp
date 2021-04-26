@@ -5,12 +5,12 @@ namespace som {
 
     void CScopeStack::newScope()
     {
-        m_scopes.push(CMethodCompilationCtx());
+        m_scopes.push_back(CMethodCompilationCtx());
     }
 
     void CScopeStack::popScope()
     {
-        m_scopes.pop();
+        m_scopes.erase(--m_scopes.end());
     }
 
     void CScopeStack::registerLocals(nodeVector* locals)
@@ -26,25 +26,43 @@ namespace som {
     void CScopeStack::addLocal(const std::string& identifier)
     {
         assert(!m_scopes.empty());
-        m_scopes.top().addLocal(identifier);
+        m_scopes.back().addLocal(identifier);
     }
 
     void CScopeStack::addArgument(const std::string& identifier)
     {
         assert(!m_scopes.empty());
-        m_scopes.top().addArgument(identifier);
+        m_scopes.back().addArgument(identifier);
     }
 
-    int32_t CScopeStack::localIdx(const std::string& identifier) const
+    int32_t CScopeStack::localIdx(const std::string& identifier)
     {
         assert(!m_scopes.empty());
-        return m_scopes.top(). localIdx(identifier);
+        int32_t currentOffset = 0;
+        for (auto& ctx : m_scopes) {
+            if (ctx.localIdx(identifier) < 0) {
+                currentOffset += ctx.sizeLocals();
+            } else {
+                return currentOffset + ctx.localIdx(identifier);
+            }
+        }
+
+        return -1;
     }
 
-    int32_t CScopeStack::argIdx(const std::string& identifier) const
+    int32_t CScopeStack::argIdx(const std::string& identifier)
     {
         assert(!m_scopes.empty());
-        return m_scopes.top().argIdx(identifier);
+        int32_t currentOffset = 0;
+        for (auto& ctx : m_scopes) {
+            if (ctx.argIdx(identifier) < 0) {
+                currentOffset += ctx.sizeArgs();
+            } else {
+                return currentOffset + ctx.argIdx(identifier);
+            }
+        }
+
+        return -1;
     }
     
     void CMethodCompilationCtx::setLocals(nodeVector* localDefs)
@@ -83,7 +101,7 @@ namespace som {
         }
     }
 
-    int32_t CMethodCompilationCtx::localIdx(const std::string& identifier) const
+    int32_t CMethodCompilationCtx::localIdx(const std::string& identifier)
     {
         for (auto i = 0; i < m_locals.size(); ++i) {
             if (m_locals.at(i) == identifier) {
@@ -93,7 +111,7 @@ namespace som {
         return -1;
     }
 
-    int32_t CMethodCompilationCtx::argIdx(const std::string& identifier) const
+    int32_t CMethodCompilationCtx::argIdx(const std::string& identifier)
     {
         for (auto i = 0; i < m_args.size(); ++i) {
             if (m_args.at(i) == identifier) {

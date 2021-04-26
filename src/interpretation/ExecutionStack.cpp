@@ -3,7 +3,7 @@
 
 namespace som {
 
-    void CExecutionStack::pushFrame(CodeAddress retAddress, int nargs)
+    void CExecutionStack::pushFrame(CodeAddress retAddress, int nargs, bool copyLocalRefs)
     {
         if (nargs > 0) {
             auto& oldFrame = m_stack.top();
@@ -11,6 +11,9 @@ namespace som {
             m_stack.push(std::move(newFrame));
             for (int i = 0; i < nargs; ++i) {
                 m_stack.top().addArgument(oldFrame.pop());
+            }
+            if (copyLocalRefs) {
+                newFrame.setLocals(oldFrame.getLocals());
             }
         } else {
             m_stack.emplace(retAddress);

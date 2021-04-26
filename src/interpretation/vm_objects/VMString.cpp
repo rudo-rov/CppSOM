@@ -8,7 +8,7 @@ namespace som {
     {
         auto fnIt = stringPrimitives.find(selector);
         if (fnIt == stringPrimitives.end()) {
-            // VMClass::dispatchPrimitive(selector, stack);
+            // VMObjectClass::dispatchPrimitive(selector, stack);
         }
         auto fn = stringPrimitives.at(selector);
         interpret->executionStack().pushFrame(retAddress, arity + 1);
@@ -17,7 +17,7 @@ namespace som {
     
     void VMString::print(CInterpret* interpret)
     {
-        auto receiver = interpret->executionStack().getArgument(0);
+        auto receiver = interpret->executionStack().getSelf();
         std::string strVal = receiver->getValue().asString();
         std::cout << strVal;
         interpret->executionStack().push(receiver);
@@ -31,14 +31,14 @@ namespace som {
 
     void VMString::length(CInterpret* interpret)
     {
-        auto receiver = interpret->executionStack().getArgument(0)->getValue().asString();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asString();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue((int32_t)receiver.size())));
     }
 
     void VMString::concatenate(CInterpret* interpret)
     {
-        auto argument = interpret->executionStack().getArgument(0)->getValue().asString();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asString();
+        auto argument = interpret->executionStack().getArgument(1)->getValue().asString();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asString();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("String"), VMValue(receiver.append(argument))));
     }
     
@@ -54,8 +54,8 @@ namespace som {
         
     void VMString::compare(CInterpret* interpret)
     {
-        auto& argument = interpret->executionStack().getArgument(0)->getValue().asString();
-        auto& receiver = interpret->executionStack().getArgument(1)->getValue().asString();
+        auto& argument = interpret->executionStack().getArgument(1)->getValue().asString();
+        auto& receiver = interpret->executionStack().getSelf()->getValue().asString();
         if (receiver == argument)
             interpret->executionStack().push(interpret->globalContext().getTrue());
         else

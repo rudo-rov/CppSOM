@@ -7,8 +7,32 @@ Integer = (
     / argument = primitive "Integer division"
     // argument = primitive "Floating point division"
     % argument = primitive "Modulo operation"
+    abs = ( ^(self < 0) ifTrue: (0 - self) ifFalse: self )
+    negated = ( ^0 - self )
 
-    
     asString = primitive
+
+    "Comparing"
+    = argument = primitive
+    <> argument = ( ^(self = argument) not )
+    < argument = primitive
+    > argument = ( ^(self >= argument) and: [ self <> argument ] )
+    >= argument = ( ^(self < argument) not )
+    <= argument = ( ^(self < argument) or: [ self = argument ] )
+    negative = ( ^self < 0 )
+    between: a and: b = ( ^(self > a) and: [ self < b ] )
+
+    "Iteration"
+    to: limit by: step do: block = (
+        | i |
+        i := self.
+        [i <= limit] whileTrue: [ block value: i. i := i + step ]
+    )
+
+    to: limit do: block = (
+        self to: limit by: 1 do: block
+    )
+
+
 
 )

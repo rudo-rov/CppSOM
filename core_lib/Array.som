@@ -4,4 +4,7 @@ Array = (
     at: index put: value = primitive
     length = primitive
     
+    first = ( ^self at: 1 )
+    last = ( ^self at: self length )
+
 )

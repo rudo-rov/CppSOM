@@ -16,7 +16,7 @@ namespace som {
         std::shared_ptr<VMObject> pop();
         std::shared_ptr<VMObject> top() { return m_stack.top().top(); }
         
-        void pushFrame(CodeAddress retAddress, int nargs = 0);
+        void pushFrame(CodeAddress retAddress, int nargs = 0, bool copyLocalRefs = false);
         Frame popFrame();
         Frame& topFrame() { return m_stack.top(); }
 

@@ -17,7 +17,7 @@ namespace som {
 
     void VMInteger::asString(CInterpret* interpret)
     {
-        auto receiver = interpret->executionStack().getArgument(0);
+        auto receiver = interpret->executionStack().getSelf();
         std::string value = std::to_string(receiver->getValue().asInt());
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("String"), VMValue(value)));
     }
@@ -25,53 +25,53 @@ namespace som {
     void VMInteger::plus(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue(receiver + argument)));
     }
 
     void VMInteger::minus(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue(receiver - argument)));
     }
 
     void VMInteger::mult(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue(receiver * argument)));
     }
 
     void VMInteger::div(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue(receiver / argument)));
     }
 
     void VMInteger::floatDiv(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Double"), VMValue((double)receiver / argument)));
     }
 
     void VMInteger::mod(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         interpret->executionStack().push(std::make_shared<VMObject>(interpret->globalContext().getClass("Integer"), VMValue(receiver % argument)));
     }
 
     void VMInteger::cmp(CInterpret* interpret)
     {
         auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
-        auto receiver = interpret->executionStack().getArgument(1)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
         if (argument == receiver) {
             interpret->executionStack().push(interpret->globalContext().getTrue());
         } else {
-            interpret->executionStack().push(interpret->globalContext().getTrue());
+            interpret->executionStack().push(interpret->globalContext().getFalse());
         }
     }
 

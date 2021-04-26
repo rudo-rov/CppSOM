@@ -24,7 +24,7 @@ namespace som {
     std::shared_ptr<VMObject>& Frame::getArgument(int32_t idx)
     {
         assert(idx < m_args.size());
-        return m_args.at(idx);
+        return m_args.at(m_args.size() - idx - 2); // Self is always the last one
     }
 
     std::shared_ptr<VMObject>& Frame::fromTop(int32_t idx)
@@ -53,6 +53,14 @@ namespace som {
             m_locals.resize(idx + 1);
         }
         m_locals[idx] = value;
+    }
+
+    void Frame::setLocals(std::vector<std::shared_ptr<VMObject>>& locals)
+    {
+        m_locals.reserve(locals.size());
+        for (auto i = 0; i < locals.size(); i++) {
+            m_locals[i] = locals[i];
+        }
     }
 
 }

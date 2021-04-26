@@ -18,8 +18,11 @@ namespace som {
             void addLocal(const std::string& identifier);
             void addArgument(const std::string& identifier);
 
-            int32_t localIdx(const std::string& identifier) const;
-            int32_t argIdx(const std::string& identifier) const;
+            int32_t localIdx(const std::string& identifier);
+            int32_t argIdx(const std::string& identifier);
+
+            int32_t sizeLocals() { return m_locals.size(); }
+            int32_t sizeArgs() { return m_args.size(); }
 
         private:
             std::vector<std::string> m_locals;
@@ -35,11 +38,11 @@ namespace som {
         void registerLocals(nodeVector* locals);
         void addLocal(const std::string& identifier);
         void addArgument(const std::string& identifier);
-        int32_t localIdx(const std::string& identifier) const;
-        int32_t argIdx(const std::string& identifier) const;
+        int32_t localIdx(const std::string& identifier);
+        int32_t argIdx(const std::string& identifier);
 
     private:
-        std::stack<CMethodCompilationCtx> m_scopes;
+        std::vector<CMethodCompilationCtx> m_scopes;
     };
 
 }
