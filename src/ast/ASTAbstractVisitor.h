@@ -30,6 +30,7 @@ namespace som {
 	struct Evaluation;
 	struct Variable;
 	struct NestedTerm;
+	struct Result;
 	
 	class CAstAbstractVisitor {
 	public:
@@ -61,6 +62,7 @@ namespace som {
 		
 		virtual std::any visit(Assignation* assignation) = 0;
 		virtual std::any visit(Evaluation* evaluation) = 0;
+		virtual std::any visit(Result* result) = 0;
 		virtual std::any visit(Variable* variable) = 0;
 		virtual std::any visit(NestedTerm* nestedTerm) = 0;
 	};

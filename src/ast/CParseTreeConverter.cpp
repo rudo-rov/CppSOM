@@ -426,7 +426,7 @@ namespace som {
 
 	antlrcpp::Any CParseTreeConverter::visitResult(SOMParser::ResultContext* ctx)
 	{
-		return visit(ctx->expression()).as<ASTNode*>();
+		return makeNode<Result>(visit(ctx->expression()).as<ASTNode*>());
 	}
 
 	antlrcpp::Any CParseTreeConverter::createLiteralDecimal(SOMParser::LiteralDecimalContext* ctx, bool isNegative)

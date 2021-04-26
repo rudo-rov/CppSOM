@@ -185,6 +185,12 @@ namespace som {
 		VISITABLE
 	};
 
+	struct Result : ASTNode {
+		Result(ASTNode* expression) : m_expression(expression) {} 
+		nodePtr m_expression;
+		VISITABLE
+	};
+
 	struct Variable : ASTNode {
 		Variable(std::string identifier) : m_identifier(identifier) {}
 		std::string m_identifier;

@@ -48,6 +48,7 @@ namespace som {
         // Will return insVector* with compiled code
         std::any visit(Assignation* assignation) override;
         std::any visit(Evaluation* evaluation) override;
+        std::any visit(Result* result) override;
         std::any visit(Variable* variable) override;
         std::any visit(NestedTerm* nestedTerm) override;    
     private:
