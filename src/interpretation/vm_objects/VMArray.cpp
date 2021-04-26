@@ -37,7 +37,7 @@ namespace som {
 
     void VMArray::length(CInterpret* interpret)
     {
-        auto& obj = interpret->executionStack().getArgument(0);
+        auto& obj = interpret->executionStack().getSelf();
         auto& arr = interpret->executionStack().getSelf()->getValue().asVector();
         int32_t size = arr.size();
         auto& intClass = interpret->globalContext().getClass("Integer");
