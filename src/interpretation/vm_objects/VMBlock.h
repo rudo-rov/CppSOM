@@ -16,6 +16,7 @@ namespace som {
         void value(CInterpret* interpret);
         void valueWithOneArg(CInterpret* interpret);
         void valueWithTwoArgs(CInterpret* interpret);
+        void restart(CInterpret* interpret);
 
     };
 
@@ -23,6 +24,7 @@ namespace som {
         { "value", std::mem_fn(&VMBlock::value) },
         { "value:", std::mem_fn(&VMBlock::valueWithOneArg) },
         { "value:value:", std::mem_fn(&VMBlock::valueWithTwoArgs) },
+        { "restart", std::mem_fn(&VMBlock::restart) },
     };
 
 }

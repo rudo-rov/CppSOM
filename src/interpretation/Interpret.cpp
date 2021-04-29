@@ -91,9 +91,8 @@ namespace som {
             return newArrayObj(dynamic_cast<ArrayValue*>(val));
 
         default:
-            // return std::make_shared<VMObject>(); // Should not be reachable
             std::cout << "Unknown value tag encountered.\n";
-            exit(0);
+            exit(1);
         }
     }
 
@@ -132,14 +131,12 @@ namespace som {
         if (receiver->getClass()->isPrimitive(selector)) {
             // Dispatch the primitive method call
             receiver->getClass()->dispatchPrimitive(selector, m_pc.nextInstruction(), ins->arity, this);
-            m_pc.setAddress(m_executionStack.topFrame().returnAddress());
-            auto retValue = m_executionStack.pop();
-            m_executionStack.popFrame();
-            m_executionStack.push(retValue);
+            simpleReturn();
         } else {
             CodeAddress newMethod = receiver->getClass()->getMethodAddr(selector, m_globalCtx);
-            m_executionStack.pushFrame(m_pc.nextInstruction(), ins->arity + 1);
+            m_executionStack.pushFrame(m_pc.nextInstruction(), ins->arity + 1, receiver->getClass()->className() == "Block");
             m_pc.setAddress(newMethod);
+            m_executionStack.topFrame().setInitialAddress(m_pc.currentInstruction());
         }
     }
     
@@ -179,16 +176,25 @@ namespace som {
     {
         auto& blockClass = m_globalCtx.getClass("Block");
         auto blockAddr = dynamic_cast<BlockValue*>(m_program->getValue(ins->idx))->code->begin();
-        auto& newObj = blockClass->newObject(m_heap, m_globalCtx, VMValue(blockAddr));
-        // m_executionStack.push(m_executionStack.getSelf());
+        auto& newObj = blockClass->newObject(m_heap, m_globalCtx, VMValue(blockAddr, m_executionStack.topFramePtr()));
         m_executionStack.push(newObj);
         m_pc.nextInstruction();
     }
 
     void CInterpret::execute(ReturnNLIns* ins)
     {
-        for (auto i = 0; i < ins->lvl; ++i)
+        if (ins->lvl == 1) {
+            m_localRetFromBlock = true;
+            return;
+        }
+        auto& blockHomeContext = m_executionStack.getSelf()->getValue().asBlockContext().homeCtx;
+        do {
             simpleReturn();
+        } while (m_executionStack.topFramePtr() != blockHomeContext && !m_executionStack.empty());
+        if (m_executionStack.empty()) {
+            std::cout << "Block home context terminated before block evaluation." << std::endl;
+            exit(1);
+        }
     }
 
     void CInterpret::execute(GetLocalIns* ins)
@@ -199,18 +205,24 @@ namespace som {
 
     void CInterpret::execute(SetLocalIns* ins)
     {
-        auto& newVal = m_executionStack.pop();
-        m_executionStack.setLocal(ins->idx, newVal);
+        m_executionStack.setLocal(ins->idx, m_executionStack.top());
+        m_executionStack.pop();
         m_pc.nextInstruction();
     }
 
     void CInterpret::simpleReturn()
     {
+        if (m_executionStack.size() <= 1) {
+            return; // Non-local return out of the program has been performed
+        }
         auto oldFrame = m_executionStack.popFrame();
-        m_pc.setAddress(oldFrame.returnAddress());
-        // Push the return value to the current frame
-        m_executionStack.push(oldFrame.top());
-
+        if (m_localRetFromBlock) {
+            m_pc.setAddress(oldFrame.localReturnAddress());
+            m_localRetFromBlock = false;
+        } else {
+            m_pc.setAddress(oldFrame.returnAddress());
+        }
+        m_executionStack.push(oldFrame.top());        
     }
 
     std::shared_ptr<VMObject> CInterpret::resolveIdentifier(const std::string& identifier, std::shared_ptr<VMObject>& self)

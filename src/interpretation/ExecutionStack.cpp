@@ -8,15 +8,15 @@ namespace som {
         if (nargs > 0) {
             auto& oldFrame = m_stack.top();
             Frame newFrame(retAddress);
-            m_stack.push(std::move(newFrame));
+            m_stack.push(std::make_shared<Frame>(retAddress));
             for (int i = 0; i < nargs; ++i) {
-                m_stack.top().addArgument(oldFrame.pop());
+                m_stack.top()->addArgument(oldFrame->pop());
             }
             if (copyLocalRefs) {
-                newFrame.setLocals(oldFrame.getLocals());
+                m_stack.top()->setLocals(oldFrame->getLocals());
             }
         } else {
-            m_stack.emplace(retAddress);
+            m_stack.emplace(std::make_shared<Frame>(retAddress));
         }
     }
 
@@ -24,29 +24,29 @@ namespace som {
     {
         auto ret = m_stack.top();
         m_stack.pop();
-        return ret;
+        return *ret;
     }
     
     void CExecutionStack::push(std::shared_ptr<VMObject>& obj)
     {
         assert(!m_stack.empty());
-        m_stack.top().push(obj);
+        m_stack.top()->push(obj);
     }
 
     std::shared_ptr<VMObject> CExecutionStack::pop()
     {
         assert(!m_stack.empty());
-        return m_stack.top().pop();
+        return m_stack.top()->pop();
     }
 
     std::shared_ptr<VMObject>& CExecutionStack::getArgument(int32_t idx)
     {
-        return m_stack.top().getArgument(idx);
+        return m_stack.top()->getArgument(idx);
     }
 
     std::shared_ptr<VMObject>& CExecutionStack::getSelf()
     {
-        return m_stack.top().getSelf();
+        return m_stack.top()->getSelf();
     }
 
 }

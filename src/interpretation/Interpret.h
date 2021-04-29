@@ -32,6 +32,7 @@ namespace som {
         CProgramCounter m_pc;
         CHeap m_heap;
         CGlobalContext m_globalCtx;
+        bool m_localRetFromBlock = false;
         
         void execute(LitIns* ins);
         void execute(SendIns* ins);

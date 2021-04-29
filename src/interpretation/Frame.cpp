@@ -57,9 +57,10 @@ namespace som {
 
     void Frame::setLocals(std::vector<std::shared_ptr<VMObject>>& locals)
     {
+        m_localsCopied = true;
         m_locals.reserve(locals.size());
         for (auto i = 0; i < locals.size(); i++) {
-            m_locals[i] = locals[i];
+            m_locals.push_back(locals[i]);
         }
     }
 

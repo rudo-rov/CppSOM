@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include "../../bytecode/Bytecode.h"
 #include "VMValue.h"
-// #include "VMClass.h"
 
 namespace som {
 
