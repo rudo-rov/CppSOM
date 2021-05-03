@@ -1,8 +1,14 @@
 #pragma once
+#include <fstream>
 #include <string>
+#include "bytecode/Program.h"
 
 namespace som {
 
+    const std::string coreLibPath = "core_lib";
+
+    void compileFile(std::ifstream& file, Program& program);
+    
     class CConfig {
     public:
         enum class Mode {

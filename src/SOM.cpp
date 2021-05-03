@@ -4,17 +4,11 @@
 #include <memory>
 #include <vector>
 
-#include "antlr4-runtime.h"
-#include "SOMLexer.h"
-#include "SOMParser.h"
-
 #include "utils/Config.h"
-#include "./ast/CParseTreeConverter.h"
 #include "SOMParserBaseVisitor.h"
 #include "./ast/ASTNodes.h"
 #include "utils/SourceFilesDir.h"
 #include "bytecode/Program.h"
-#include "bytecode/BytecodeCompiler.h"
 #include "bytecode/BytecodeLoader.h"
 #include "interpretation/Interpret.h"
 
@@ -34,18 +28,7 @@ int main(int argc, char** argv)
         }
         som::Program program;
         for (auto& file : srcFiles.getSrcFiles()) {
-            antlr4::ANTLRInputStream inputStream(*file);
-            SOMLexer lexer(&inputStream);
-            antlr4::CommonTokenStream tokens(&lexer);
-            SOMParser parser(&tokens);
-
-            SOMParser::ClassdefContext* tree = parser.classdef();
-            som::CParseTreeConverter visitor;
-            som::ASTNode* fileAST = visitor.visitClassdef(tree).as<som::ASTNode*>();
-            som::nodePtr ast(fileAST);
-
-            som::CBytecodeCompiler bcCompiler(&program);
-            ast->accept(bcCompiler);
+            som::compileFile(*file, program);
         }
         program.print();
         // TODO: some sane program name
