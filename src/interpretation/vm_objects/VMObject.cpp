@@ -8,7 +8,7 @@ namespace som {
     {
         initializeInstanceFields(globalCtx);
     }
-    
+
     // Should only be called on objects with primitive values - Strings, Integers, Bools etc.
     VMValue& VMObject::getValue()
     {
@@ -24,10 +24,20 @@ namespace som {
         }
     }
 
-    void VMObject::setField(const std::string& identifier, std::shared_ptr<VMObject>& newValue)
+    void VMObject::setField(const std::string& identifier, std::shared_ptr<VMObject> newValue)
     {
         assert(m_instanceFields.find(identifier) != m_instanceFields.end());
         m_instanceFields[identifier] = newValue;
+    }
+
+    void VMObject::mark()
+    {
+        if (m_marked)
+            return;
+        m_marked = true;
+        for (auto& var : m_instanceFields) {
+            var.second->mark();
+        } 
     }
 
 }

@@ -22,12 +22,17 @@ namespace som {
         const std::shared_ptr<VMClass>& getClass() const { return m_class; }
         VMValue& getValue();
         std::shared_ptr<VMObject>& getField(const std::string& identifier) { return m_instanceFields[identifier]; }
-        void setField(const std::string& identifier, std::shared_ptr<VMObject>& newValue);
+        void setField(const std::string& identifier, std::shared_ptr<VMObject> newValue);
+
+        bool isMarked() const { return m_marked; }
+        void mark();
+        void unmark() { m_marked = false; }
 
     private:
         std::shared_ptr<VMClass> m_class;
         std::optional<VMValue> m_primValue;
         std::unordered_map<std::string, std::shared_ptr<VMObject>> m_instanceFields;
+        bool m_marked = false;
 
         void initializeInstanceFields(CGlobalContext& globalCtx);
     };

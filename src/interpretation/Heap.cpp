@@ -21,4 +21,16 @@ namespace som {
         return m_objects.back();
     }
 
+    void CHeap::gcSweep()
+    {
+        for (auto& obj : m_objects) {
+            if (!obj) continue;
+            if (obj->isMarked()) {
+                obj->unmark();
+            } else {
+                obj.reset();
+            }
+        }
+    }
+
 }

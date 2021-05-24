@@ -28,11 +28,13 @@ namespace som {
     void VMArray::atPut(CInterpret* interpret)
     {
         auto& arr = interpret->executionStack().getSelf()->getValue().asVector();
-        int32_t idx = interpret->executionStack().getArgument(1)->getValue().asInt();
-        auto& newVal = interpret->executionStack().getArgument(0);
+        int32_t idx = interpret->executionStack().getArgument(0)->getValue().asInt();
+        auto& newVal = interpret->executionStack().getArgument(1);
         if (idx <= arr.size()) {
             arr[idx - 1] = newVal;
         }
+        // Returns the array being modified
+        interpret->executionStack().push(interpret->executionStack().getSelf());
     }
 
     void VMArray::length(CInterpret* interpret)

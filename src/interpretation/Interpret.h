@@ -52,6 +52,9 @@ namespace som {
         std::shared_ptr<VMObject>& objFromValue(Value* val);
         bool shouldExit() const;
         std::shared_ptr<VMObject>& newArrayObj(ArrayValue* val);
+
+        void runGC();
+        void gcMark();
     };
 
 }

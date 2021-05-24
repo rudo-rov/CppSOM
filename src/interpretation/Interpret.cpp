@@ -39,12 +39,14 @@ namespace som {
                 break;
             case OpCode::GetSelfOp:
                 execute(static_cast<GetSelfIns*>(currentInstruction));
+                runGC();
                 break;
             case OpCode::GetArgOp:
                 execute(static_cast<GetArgIns*>(currentInstruction));
                 break;
             case OpCode::ReturnNLOp:
                 execute(static_cast<ReturnNLIns*>(currentInstruction));
+                runGC();
                 return; // Jump out of the nested interpret() call
         
         
@@ -183,11 +185,12 @@ namespace som {
 
     void CInterpret::execute(ReturnNLIns* ins)
     {
-        if (ins->lvl == 1) {
+        if (ins->lvl < 1) {
             m_localRetFromBlock = true;
             return;
         }
-        auto& blockHomeContext = m_executionStack.getSelf()->getValue().asBlockContext().homeCtx;
+        // auto& blockHomeContext = m_executionStack.getSelf()->getValue().asBlockContext().homeCtx;
+        auto& blockHomeContext = m_executionStack.topFramePtr();
         do {
             simpleReturn();
         } while (m_executionStack.topFramePtr() != blockHomeContext && !m_executionStack.empty());
@@ -235,6 +238,24 @@ namespace som {
         
         return m_globalCtx.getClass(identifier);
         
+    }
+
+    void CInterpret::runGC()
+    {
+        gcMark();
+        m_heap.gcSweep();
+    }
+
+    void CInterpret::gcMark()
+    {
+        for (auto& frame : m_executionStack.getFrames()) {
+            for (auto& var : frame->getLocals()) {
+                var->mark();
+            }
+            for (auto& var : frame->getArgs()) {
+                var->mark();
+            }
+        }
     }
 
 }

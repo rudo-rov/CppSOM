@@ -22,7 +22,7 @@ namespace som {
         interpret->programCounter().setAddress(block->getValue().asBlockContext().address);
         interpret->executionStack().popFrame();
         interpret->executionStack().pushFrame(block->getValue().asBlockContext().homeCtx);
-        interpret->executionStack().topFrame().redefineSelf(block);
+        // interpret->executionStack().topFrame().redefineSelf(block);
         interpret->executionStack().topFrame().setLocalRetAddress(simpleRetAddress);
         interpret->interpret();
         block->getValue().asBlockContext().homeCtx->removeSelf();

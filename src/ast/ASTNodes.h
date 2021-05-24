@@ -26,13 +26,13 @@ namespace som {
 	}
 
 	struct Class : ASTNode {
-		Class(std::string identifier, nodeVector* instanceFields, nodeVector* instanceMethods,
-			nodeVector* classFields, nodeVector* classMethods) : m_identifier(identifier), m_instanceFields(instanceFields),
+		Class(std::string identifier, std::string superclass, nodeVector* instanceFields, nodeVector* instanceMethods,
+			nodeVector* classFields, nodeVector* classMethods) : m_identifier(identifier), m_superclass(superclass), m_instanceFields(instanceFields),
 			m_instanceMethods(instanceMethods), m_classFields(classFields), m_classMethods(classMethods)
 		{}
 
 		std::string m_identifier;
-		nodePtr m_superclass;
+		std::string m_superclass;
 		nodeVectorPtr m_instanceFields;
 		nodeVectorPtr m_instanceMethods;
 		nodeVectorPtr m_classFields;

@@ -75,4 +75,15 @@ namespace som {
         }
     }
 
+    void VMInteger::lessThan(CInterpret* interpret)
+    {
+        auto argument = interpret->executionStack().getArgument(0)->getValue().asInt();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asInt();
+        if (receiver < argument) {
+            interpret->executionStack().push(interpret->globalContext().getTrue());
+        } else {
+            interpret->executionStack().push(interpret->globalContext().getFalse());
+        }
+    }
+
 }

@@ -8,6 +8,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+link_libraries(stdc++fs)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 99)
 
@@ -21,7 +23,7 @@ include_directories(${ANTLR4_INCLUDE_DIRS})
 
 # set variable pointing to the antlr tool that supports C++
 # this is not required if the jar file can be found under PATH environment
-# set(ANTLR_EXECUTABLE /usr/local/lib/antlr-4.8-complete.jar)
+set(ANTLR_EXECUTABLE /home/rudo/Downloads/DP_Rovnak_2021/src/antlr-4.9.2-complete.jar)
 
 set(ANTLR4_WITH_STATIC_CRT ON)
 

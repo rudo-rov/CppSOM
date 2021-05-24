@@ -54,8 +54,8 @@ namespace som {
         
     void VMString::compare(CInterpret* interpret)
     {
-        auto& argument = interpret->executionStack().getArgument(1)->getValue().asString();
-        auto& receiver = interpret->executionStack().getSelf()->getValue().asString();
+        auto argument = interpret->executionStack().getArgument(1)->getValue().asString();
+        auto receiver = interpret->executionStack().getSelf()->getValue().asString();
         if (receiver == argument)
             interpret->executionStack().push(interpret->globalContext().getTrue());
         else

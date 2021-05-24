@@ -14,6 +14,8 @@ namespace som {
         std::shared_ptr<VMObject>& newObject(std::shared_ptr<VMClass>& clazz, VMValue val);
         std::shared_ptr<VMObject>& newObject(std::shared_ptr<VMClass>& clazz, CGlobalContext& globalCtx);
 
+        void gcSweep();
+
     private:
         std::vector<std::shared_ptr<VMObject>> m_objects;
     };

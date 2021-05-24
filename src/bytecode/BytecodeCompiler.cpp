@@ -15,7 +15,9 @@ namespace som {
         std::vector<int32_t> slots;
 
         int32_t superclass = -1;
-        // if (classNode->)        
+        if (!classNode->m_superclass.empty()) {
+            superclass = m_program->indexOf(classNode->m_superclass);
+        }        
         
         // Instance fields - create slots
         for (const auto& insField : *(classNode->m_instanceFields)) {
@@ -336,7 +338,6 @@ namespace som {
     std::any CBytecodeCompiler::visit(NestedBlock* nestedBlock)
     {
         m_scopes.newScope();
-        int originalNlReturn = m_nlReturnLvl++;
         int32_t nargs;
         if (nestedBlock->m_arguments) {
             for (const auto& arg : *nestedBlock->m_arguments) {
@@ -349,7 +350,6 @@ namespace som {
         insVector* compiledBlock = std::any_cast<insVector*>(visit(nestedBlock->m_block.get()));
         compiledBlock->emplace_back(new ReturnNLIns(m_nlReturnLvl));
         int32_t blockValIdx = m_program->registerBlock(nargs, compiledBlock);
-        m_nlReturnLvl = originalNlReturn;
 
         insVector* result = new insVector();
         result->emplace_back(new BlockIns(blockValIdx));

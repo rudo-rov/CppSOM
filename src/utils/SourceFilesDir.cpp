@@ -1,4 +1,4 @@
-#include <filesystem>
+#include <experimental/filesystem>
 #include <iostream>
 #include <memory>
 
@@ -14,7 +14,7 @@ namespace som {
 
     bool SourceFilesDir::loadSourceFiles()
     {
-        for (auto& file : std::filesystem::directory_iterator(m_sourceDirName)) {
+        for (auto& file : std::experimental::filesystem::directory_iterator(m_sourceDirName)) {
             if (file.path().extension().string() == ".som") {
                 std::cout << "Detected source file: " << file.path().filename().string() << std::endl;
                 std::unique_ptr<std::ifstream> fileStream(new std::ifstream(file.path().string()));
@@ -26,7 +26,7 @@ namespace som {
             }
         }
 
-        for (auto& file : std::filesystem::directory_iterator(coreLibPath)) {
+        for (auto& file : std::experimental::filesystem::directory_iterator(coreLibPath)) {
             if (file.path().extension().string() == ".som") {
                 std::cout << "Core library file: " << file.path().filename().string() << std::endl;
                 std::unique_ptr<std::ifstream> fileStream(new std::ifstream(file.path().string()));

@@ -12,6 +12,11 @@ namespace som {
 	{
 		nodeVector* instMethods = new nodeVector();
 		nodeVector* classMethods = new nodeVector();
+		std::string superclass;
+
+		if (ctx->superclass()) {
+			superclass = visitSuperclass(ctx->superclass()).as<std::string>();
+		}
 		
 		instMethods->reserve(ctx->method().size());
 		for (auto method : ctx->method()) {
@@ -28,6 +33,7 @@ namespace som {
 		}
 		return makeNode<Class>(
 			ctx->Identifier()->toString(),
+			superclass,
 			visit(ctx->instanceFields()).as<nodeVector*>(),
 			instMethods,
 			classFields,
